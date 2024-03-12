@@ -1,0 +1,236 @@
+basePath: /api/v1
+definitions:
+  auth.authRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.authResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  auth.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  auth.refreshRequest:
+    properties:
+      token:
+        type: string
+    type: object
+  categories.categoryItemResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  categories.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  categories.listCategoriesResponse:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/categories.categoryItemResponse'
+        type: array
+    type: object
+  users.createUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  users.createUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  users.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  users.getUserByIDResponse:
+    properties:
+      city:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  users.setCityRequest:
+    properties:
+      city:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: bookers server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.htm
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Bookers API
+  version: "1.0"
+paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.authRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/auth.authResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/auth.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/auth.errorResponse'
+      summary: Authenticate user
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh token
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth.refreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/auth.authResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/auth.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/auth.errorResponse'
+      summary: Refresh token
+      tags:
+      - auth
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/users.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/users.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user
+      tags:
+      - users
+  /users/{id}/city:
+    patch:
+      consumes:
+      - application/json
+      description: Set city
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.setCityRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/users.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/users.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Set city
+      tags:
+      - users
+swagger: "2.0"

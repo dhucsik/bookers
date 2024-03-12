@@ -1,0 +1,9 @@
+name = "bookers"
+
+[http]
+  port = "8080"
+  swagger_path = ""
+
+[env]
+  [env.postgres_dsn]
+    value = "postgres://localhost:5432/bookers"
