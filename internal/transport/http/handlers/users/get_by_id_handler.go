@@ -19,6 +19,7 @@ import (
 // @Success 200 {object} getUserByIDResponse "Success"
 // @Failure 400 {object} errorResponse "Bad request"
 // @Failure 500 {object} errorResponse "Internal server error"
+// @Router /users/{id} [get]
 func (c *Controller) getByID(ctx echo.Context) error {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)

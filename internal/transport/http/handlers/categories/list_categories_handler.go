@@ -14,6 +14,7 @@ import (
 // @Produce json
 // @Success 200 {object} listCategoriesResponse "Success"
 // @Failure 500 {object} errorResponse "Internal server error"
+// @Router /categories [get]
 func (c *Controller) listCategories(ctx echo.Context) error {
 	categories, err := c.categoriesService.ListCategories(ctx.Request().Context())
 	if err != nil {

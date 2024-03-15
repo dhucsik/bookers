@@ -1,6 +1,7 @@
 package swag
 
 import (
+	_ "github.com/dhucsik/bookers/swagger/docs"
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )

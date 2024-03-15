@@ -16,6 +16,7 @@ import (
 // @Success 201 {object} createUserResponse "Success"
 // @Failure 400 {object} errorResponse "Bad request"
 // @Failure 500 {object} errorResponse "Internal server error"
+// @Router /users [post]
 func (c *Controller) createUser(ctx echo.Context) error {
 	var req createUserRequest
 	if err := ctx.Bind(&req); err != nil {

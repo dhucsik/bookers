@@ -7,8 +7,12 @@ import (
 	"time"
 
 	"github.com/dhucsik/bookers/configs"
+	"github.com/dhucsik/bookers/internal/repositories/authors"
+	"github.com/dhucsik/bookers/internal/repositories/categories"
 	"github.com/dhucsik/bookers/internal/repositories/users"
 	"github.com/dhucsik/bookers/internal/services/auth"
+	authorsS "github.com/dhucsik/bookers/internal/services/authors"
+	categoriesS "github.com/dhucsik/bookers/internal/services/categories"
 	usersS "github.com/dhucsik/bookers/internal/services/users"
 	"github.com/dhucsik/bookers/internal/transport/http"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -17,10 +21,14 @@ import (
 type App struct {
 	cfg *configs.Config
 
-	usersRepository users.Repository
+	usersRepository      users.Repository
+	authorsRepository    authors.Repository
+	categoriesRepository categories.Repository
 
-	usersService usersS.Service
-	authService  auth.Service
+	usersService      usersS.Service
+	authService       auth.Service
+	authorsService    authorsS.Service
+	categoriesService categoriesS.Service
 
 	httpServer *http.Server
 	db         *pgxpool.Pool
@@ -72,6 +80,8 @@ func NewAppWithConfig(ctx context.Context, cfg *configs.Config) *App {
 
 func (a *App) InitRepositories(_ context.Context) error {
 	a.usersRepository = users.NewRepository(a.db)
+	a.authorsRepository = authors.NewRepository(a.db)
+	a.categoriesRepository = categories.NewRepository(a.db)
 
 	return nil
 }
@@ -79,12 +89,19 @@ func (a *App) InitRepositories(_ context.Context) error {
 func (a *App) InitServices(_ context.Context) error {
 	a.usersService = usersS.NewService(a.usersRepository)
 	a.authService = auth.NewService(time.Hour, time.Hour, a.usersService)
+	a.authorsService = authorsS.NewService(a.authorsRepository)
+	a.categoriesService = categoriesS.NewService(a.categoriesRepository)
 
 	return nil
 }
 
 func (a *App) InitHTTPServer(_ context.Context) error {
-	a.httpServer = http.NewServer(a.authService, a.usersService)
+	a.httpServer = http.NewServer(
+		a.authService,
+		a.usersService,
+		a.authorsService,
+		a.categoriesService,
+	)
 
 	return nil
 }

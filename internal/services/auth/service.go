@@ -85,8 +85,8 @@ func (s *service) Refresh(ctx context.Context, token string) (string, string, er
 		return "", "", err
 	}
 
-	if isRefresh {
-		return "", "", errors.ErrUnexpectedRefresh
+	if !isRefresh {
+		return "", "", errors.ErrNotRefreshToken
 	}
 
 	session := &models.Session{

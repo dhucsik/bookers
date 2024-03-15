@@ -6,8 +6,14 @@ import (
 	"net/http"
 
 	"github.com/dhucsik/bookers/internal/services/auth"
+	"github.com/dhucsik/bookers/internal/services/authors"
+	"github.com/dhucsik/bookers/internal/services/categories"
 	"github.com/dhucsik/bookers/internal/services/users"
+	"github.com/dhucsik/bookers/internal/transport/http/handlers/admin"
 	authC "github.com/dhucsik/bookers/internal/transport/http/handlers/auth"
+	authorsC "github.com/dhucsik/bookers/internal/transport/http/handlers/authors"
+	categoriesC "github.com/dhucsik/bookers/internal/transport/http/handlers/categories"
+	"github.com/dhucsik/bookers/internal/transport/http/handlers/swag"
 	usersC "github.com/dhucsik/bookers/internal/transport/http/handlers/users"
 	"github.com/dhucsik/bookers/internal/transport/http/middlewares"
 	"github.com/labstack/echo/v4"
@@ -36,6 +42,8 @@ type Server struct {
 func NewServer(
 	authService auth.Service,
 	usersService users.Service,
+	authorsService authors.Service,
+	categoriesService categories.Service,
 ) *Server {
 	srv := echo.New()
 	router := srv.Group("/api/v1")
@@ -50,6 +58,10 @@ func NewServer(
 	server.WithControllers(
 		authC.NewController(authService),
 		usersC.NewController(authMiddleware, usersService),
+		authorsC.NewController(authMiddleware, authorsService),
+		categoriesC.NewController(authMiddleware, categoriesService),
+		admin.NewController(),
+		swag.NewController(),
 	)
 
 	return server

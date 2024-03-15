@@ -40,6 +40,7 @@ func newCreateUserResponse(user *models.User) createUserResponse {
 		Username: user.Username,
 		Email:    user.Email,
 		Password: user.Password,
+		Role:     user.Role,
 	}
 }
 
