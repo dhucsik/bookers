@@ -8,24 +8,35 @@ services:
     build: ./
     command: ./app
     ports:
-      - "8586:8586"
+      - "8080:8080"
     volumes:
       - .:/src
     environment:
       - GONOSUMDB=off
       - TZ=Asia/Almaty
-    env_file:
-      - app.env
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    networks:
+      - book-api
 
   postgres:
     image: postgres:13.2-alpine
     volumes:
       - book-api_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
       - 5436:5432
+    networks:
+      - book-api
+
+networks:
+  book-api:

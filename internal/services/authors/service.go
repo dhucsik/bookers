@@ -9,6 +9,8 @@ import (
 
 type Service interface {
 	ListAuthors(ctx context.Context) ([]*models.Author, error)
+	CreateAuthor(ctx context.Context, author *models.Author) error
+	DeleteAuthor(ctx context.Context, id int) error
 }
 
 type service struct {
@@ -23,4 +25,12 @@ func NewService(authorsRepository authors.Repository) Service {
 
 func (s *service) ListAuthors(ctx context.Context) ([]*models.Author, error) {
 	return s.authorsRepository.ListAuthors(ctx)
+}
+
+func (s *service) CreateAuthor(ctx context.Context, author *models.Author) error {
+	return s.authorsRepository.CreateAuthor(ctx, author)
+}
+
+func (s *service) DeleteAuthor(ctx context.Context, id int) error {
+	return s.authorsRepository.DeleteAuthor(ctx, id)
 }

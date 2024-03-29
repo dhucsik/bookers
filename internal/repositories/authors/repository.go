@@ -5,10 +5,15 @@ import (
 
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lib/pq"
 )
 
 type Repository interface {
 	ListAuthors(ctx context.Context) ([]*models.Author, error)
+	CreateAuthor(ctx context.Context, author *models.Author) error
+	DeleteAuthor(ctx context.Context, id int) error
+	GetByBookID(ctx context.Context, bookID int) ([]*models.Author, error)
+	GetByBookIDs(ctx context.Context, bookIDs []int) (map[int][]*models.Author, error)
 }
 
 type repository struct {
@@ -39,4 +44,55 @@ func (r *repository) ListAuthors(ctx context.Context) ([]*models.Author, error) 
 	}
 
 	return out.convert(), nil
+}
+
+func (r *repository) CreateAuthor(ctx context.Context, author *models.Author) error {
+	_, err := r.db.Exec(ctx, createAuthorStmt, author.Name)
+	return err
+}
+
+func (r *repository) DeleteAuthor(ctx context.Context, id int) error {
+	_, err := r.db.Exec(ctx, deleteAuthorStmt, id)
+	return err
+}
+
+func (r *repository) GetByBookID(ctx context.Context, bookID int) ([]*models.Author, error) {
+	rows, err := r.db.Query(ctx, listAuthorsByBookIDStmt, bookID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out authorModels
+	for rows.Next() {
+		author := &authorModel{}
+		if err := rows.Scan(&author.ID, &author.Name); err != nil {
+			return nil, err
+		}
+
+		out = append(out, author)
+	}
+
+	return out.convert(), nil
+}
+
+func (r *repository) GetByBookIDs(ctx context.Context, bookIDs []int) (map[int][]*models.Author, error) {
+	rows, err := r.db.Query(ctx, listAuthorsByBookIDsStmt, pq.Array(bookIDs))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	out := make(map[int][]*models.Author)
+	for rows.Next() {
+		var bookID int
+		author := &authorModel{}
+		if err := rows.Scan(&bookID, &author.ID, &author.Name); err != nil {
+			return nil, err
+		}
+
+		out[bookID] = append(out[bookID], author.convert())
+	}
+
+	return out, nil
 }

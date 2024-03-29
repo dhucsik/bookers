@@ -1,5 +1,20 @@
 basePath: /api/v1
 definitions:
+  admin.createAuthorRequest:
+    properties:
+      name:
+        type: string
+    type: object
+  admin.createCategoryRequest:
+    properties:
+      name:
+        type: string
+    type: object
+  admin.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
   auth.authRequest:
     properties:
       password:
@@ -123,6 +138,13 @@ paths:
       consumes:
       - application/json
       description: Create author
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/admin.createAuthorRequest'
       produces:
       - application/json
       responses:
@@ -130,6 +152,8 @@ paths:
           description: Success
         "500":
           description: Internal server error
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
       summary: Create author
       tags:
       - admin
@@ -138,6 +162,12 @@ paths:
       consumes:
       - application/json
       description: Delete author
+      parameters:
+      - description: author ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -145,6 +175,8 @@ paths:
           description: Success
         "500":
           description: Internal server error
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
       summary: Delete author
       tags:
       - admin
@@ -153,6 +185,13 @@ paths:
       consumes:
       - application/json
       description: Create category
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/admin.createCategoryRequest'
       produces:
       - application/json
       responses:
@@ -160,6 +199,8 @@ paths:
           description: Success
         "500":
           description: Internal server error
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
       summary: Create category
       tags:
       - admin
@@ -168,6 +209,12 @@ paths:
       consumes:
       - application/json
       description: Delete category
+      parameters:
+      - description: category ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -175,6 +222,8 @@ paths:
           description: Success
         "500":
           description: Internal server error
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
       summary: Delete category
       tags:
       - admin

@@ -33,12 +33,26 @@ const docTemplate = `{
                     "admin"
                 ],
                 "summary": "Create author",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin.createAuthorRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
                     },
                     "500": {
-                        "description": "Internal server error"
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/admin.errorResponse"
+                        }
                     }
                 }
             }
@@ -56,12 +70,24 @@ const docTemplate = `{
                     "admin"
                 ],
                 "summary": "Delete author",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "author ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
                     },
                     "500": {
-                        "description": "Internal server error"
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/admin.errorResponse"
+                        }
                     }
                 }
             }
@@ -79,12 +105,26 @@ const docTemplate = `{
                     "admin"
                 ],
                 "summary": "Create category",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin.createCategoryRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
                     },
                     "500": {
-                        "description": "Internal server error"
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/admin.errorResponse"
+                        }
                     }
                 }
             }
@@ -102,12 +142,24 @@ const docTemplate = `{
                     "admin"
                 ],
                 "summary": "Delete category",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
                     },
                     "500": {
-                        "description": "Internal server error"
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/admin.errorResponse"
+                        }
                     }
                 }
             }
@@ -479,6 +531,30 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "admin.createAuthorRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "admin.createCategoryRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "admin.errorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "auth.authRequest": {
             "type": "object",
             "properties": {

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 // authHandler godoc
@@ -18,6 +19,8 @@ import (
 // @Failure 500 {object} errorResponse "Internal server error"
 // @Router /auth [post]
 func (c *Controller) authHandler(ctx echo.Context) error {
+	log.Info("authHandler")
+
 	var req authRequest
 	if err := ctx.Bind(&req); err != nil {
 		return ctx.JSON(http.StatusBadRequest, newErrorResponse(err.Error()))

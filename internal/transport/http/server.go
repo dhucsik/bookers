@@ -17,6 +17,7 @@ import (
 	usersC "github.com/dhucsik/bookers/internal/transport/http/handlers/users"
 	"github.com/dhucsik/bookers/internal/transport/http/middlewares"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 // @title Swagger Bookers API
@@ -48,6 +49,20 @@ func NewServer(
 	srv := echo.New()
 	router := srv.Group("/api/v1")
 
+	srv.Use(middleware.Logger())
+	srv.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{
+			echo.HeaderOrigin,
+			echo.HeaderContentType,
+			echo.HeaderAccept,
+			echo.HeaderAuthorization,
+			echo.HeaderXRequestedWith,
+		},
+		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
+	},
+	))
+
 	server := &Server{
 		server: srv,
 		router: router,
@@ -60,7 +75,7 @@ func NewServer(
 		usersC.NewController(authMiddleware, usersService),
 		authorsC.NewController(authMiddleware, authorsService),
 		categoriesC.NewController(authMiddleware, categoriesService),
-		admin.NewController(),
+		admin.NewController(authMiddleware, authorsService, categoriesService),
 		swag.NewController(),
 	)
 

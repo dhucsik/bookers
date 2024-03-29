@@ -6,4 +6,4 @@ name = "bookers"
 
 [env]
   [env.postgres_dsn]
-    value = "postgres://postgres:dias2003dewex@localhost:5432/diploma"
+    value = "postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable"
