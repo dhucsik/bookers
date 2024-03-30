@@ -13,6 +13,7 @@ import (
 	authC "github.com/dhucsik/bookers/internal/transport/http/handlers/auth"
 	authorsC "github.com/dhucsik/bookers/internal/transport/http/handlers/authors"
 	categoriesC "github.com/dhucsik/bookers/internal/transport/http/handlers/categories"
+	"github.com/dhucsik/bookers/internal/transport/http/handlers/personal"
 	"github.com/dhucsik/bookers/internal/transport/http/handlers/swag"
 	usersC "github.com/dhucsik/bookers/internal/transport/http/handlers/users"
 	"github.com/dhucsik/bookers/internal/transport/http/middlewares"
@@ -76,6 +77,7 @@ func NewServer(
 		authorsC.NewController(authMiddleware, authorsService),
 		categoriesC.NewController(authMiddleware, categoriesService),
 		admin.NewController(authMiddleware, authorsService, categoriesService),
+		personal.NewController(),
 		swag.NewController(),
 	)
 

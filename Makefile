@@ -1,3 +1,5 @@
+build:
+	go build -o ./bin/service ./cmd/app/main.go
 
 migrate: 
 	go install github.com/SergeiSkv/goose/v3/cmd/goose@v3.20.8

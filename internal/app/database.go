@@ -7,7 +7,7 @@ import (
 )
 
 func (a *App) InitDatabase(ctx context.Context) error {
-	pool, err := repositories.NewPostgres(ctx, a.Config().Env["postgres_dsn"].Value)
+	pool, err := repositories.NewPostgres(ctx, a.Config().Env.Get("postgres_dsn"))
 	if err != nil {
 		return err
 	}
