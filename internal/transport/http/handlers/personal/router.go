@@ -21,7 +21,18 @@ func (r *Controller) Init(router *echo.Group) {
 		return c.HTML(200, `
 			<h1>ali chert</h1>		
 		`)
+	})
 
+	router.GET("/anu", func(c echo.Context) error {
+		return c.HTML(200, `
+			<h1>anu chert</h1>
+		`)
+	})
+
+	router.GET("/erema", func(c echo.Context) error {
+		return c.HTML(200, `
+			<h1>erema chert</h1>
+		`)
 	})
 
 	router.File("/dhucs/love", "files/index.html")

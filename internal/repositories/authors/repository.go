@@ -9,7 +9,7 @@ import (
 )
 
 type Repository interface {
-	ListAuthors(ctx context.Context) ([]*models.Author, error)
+	ListAuthors(ctx context.Context, search string, limit, offset int) ([]*models.Author, error)
 	CreateAuthor(ctx context.Context, author *models.Author) error
 	DeleteAuthor(ctx context.Context, id int) error
 	GetByBookID(ctx context.Context, bookID int) ([]*models.Author, error)
@@ -26,8 +26,8 @@ func NewRepository(db *pgxpool.Pool) Repository {
 	}
 }
 
-func (r *repository) ListAuthors(ctx context.Context) ([]*models.Author, error) {
-	rows, err := r.db.Query(ctx, listAuthorsStmt)
+func (r *repository) ListAuthors(ctx context.Context, search string, limit, offset int) ([]*models.Author, error) {
+	rows, err := r.db.Query(ctx, listAuthorsStmt, search, limit, offset)
 	if err != nil {
 		return nil, err
 	}

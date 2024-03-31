@@ -1,7 +1,10 @@
 package authors
 
 const (
-	listAuthorsStmt = `SELECT id, name FROM authors`
+	listAuthorsStmt = `SELECT id, name FROM authors 
+	ORDER BY id ASC 
+	WHERE name ILIKE '%' || $1 || '%'
+	LIMIT $2 OFFSET $3`
 
 	createAuthorStmt = `INSERT INTO authors (name) VALUES ($1)`
 

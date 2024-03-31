@@ -9,7 +9,7 @@ import (
 
 type Repository interface {
 	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error
-	ListBooks(ctx context.Context, offset, limit int) ([]*models.Book, error)
+	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, error)
 	GetBookByID(ctx context.Context, id int) (*models.Book, error)
 }
 
@@ -54,8 +54,8 @@ func (r *repository) CreateBook(ctx context.Context, book *models.Book, authorID
 	return tx.Commit(ctx)
 }
 
-func (r *repository) ListBooks(ctx context.Context, offset, limit int) ([]*models.Book, error) {
-	rows, err := r.db.Query(ctx, listBooksStmt, offset, limit)
+func (r *repository) ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, error) {
+	rows, err := r.db.Query(ctx, listBooksStmt, search, offset, limit)
 	if err != nil {
 		return nil, err
 	}

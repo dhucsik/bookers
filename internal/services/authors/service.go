@@ -8,7 +8,7 @@ import (
 )
 
 type Service interface {
-	ListAuthors(ctx context.Context) ([]*models.Author, error)
+	ListAuthors(ctx context.Context, search string, limit, offset int) ([]*models.Author, error)
 	CreateAuthor(ctx context.Context, author *models.Author) error
 	DeleteAuthor(ctx context.Context, id int) error
 }
@@ -23,8 +23,8 @@ func NewService(authorsRepository authors.Repository) Service {
 	}
 }
 
-func (s *service) ListAuthors(ctx context.Context) ([]*models.Author, error) {
-	return s.authorsRepository.ListAuthors(ctx)
+func (s *service) ListAuthors(ctx context.Context, search string, limit, offset int) ([]*models.Author, error) {
+	return s.authorsRepository.ListAuthors(ctx, search, limit, offset)
 }
 
 func (s *service) CreateAuthor(ctx context.Context, author *models.Author) error {

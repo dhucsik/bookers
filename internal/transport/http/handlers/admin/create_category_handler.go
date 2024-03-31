@@ -1,7 +1,6 @@
 package admin
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/dhucsik/bookers/internal/models"
@@ -15,17 +14,20 @@ import (
 // @Accept json
 // @Produce json
 // @Param request body createCategoryRequest true "request"
-// @Success 200 {object} nil "Success"
+// @Success 201 {object} nil "Success"
+// @Failure 400 {object} errorResponse "Bad request"
+// @Failure 401 {object} errorResponse "Unauthorized"
+// @Failure 403 {object} errorResponse "Forbidden"
 // @Failure 500 {object} errorResponse "Internal server error"
 // @Router /admin/categories [post]
 func (c *Controller) createCategory(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
-		return errors.New("session not found")
+		return ctx.JSON(http.StatusUnauthorized, newErrorResponse("session not found"))
 	}
 
 	if session.Role != "admin" {
-		return errors.New("forbidden")
+		return ctx.JSON(http.StatusForbidden, newErrorResponse("forbidden"))
 	}
 
 	var req createCategoryRequest
@@ -37,5 +39,5 @@ func (c *Controller) createCategory(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, newErrorResponse(err.Error()))
 	}
 
-	return ctx.JSON(http.StatusOK, nil)
+	return ctx.JSON(http.StatusCreated, nil)
 }

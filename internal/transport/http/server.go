@@ -7,11 +7,13 @@ import (
 
 	"github.com/dhucsik/bookers/internal/services/auth"
 	"github.com/dhucsik/bookers/internal/services/authors"
+	"github.com/dhucsik/bookers/internal/services/books"
 	"github.com/dhucsik/bookers/internal/services/categories"
 	"github.com/dhucsik/bookers/internal/services/users"
 	"github.com/dhucsik/bookers/internal/transport/http/handlers/admin"
 	authC "github.com/dhucsik/bookers/internal/transport/http/handlers/auth"
 	authorsC "github.com/dhucsik/bookers/internal/transport/http/handlers/authors"
+	booksC "github.com/dhucsik/bookers/internal/transport/http/handlers/books"
 	categoriesC "github.com/dhucsik/bookers/internal/transport/http/handlers/categories"
 	"github.com/dhucsik/bookers/internal/transport/http/handlers/personal"
 	"github.com/dhucsik/bookers/internal/transport/http/handlers/swag"
@@ -46,6 +48,7 @@ func NewServer(
 	usersService users.Service,
 	authorsService authors.Service,
 	categoriesService categories.Service,
+	booksService books.Service,
 ) *Server {
 	srv := echo.New()
 	router := srv.Group("/api/v1")
@@ -76,7 +79,8 @@ func NewServer(
 		usersC.NewController(authMiddleware, usersService),
 		authorsC.NewController(authMiddleware, authorsService),
 		categoriesC.NewController(authMiddleware, categoriesService),
-		admin.NewController(authMiddleware, authorsService, categoriesService),
+		admin.NewController(authMiddleware, authorsService, categoriesService, booksService),
+		booksC.NewController(authMiddleware, booksService),
 		personal.NewController(),
 		swag.NewController(),
 	)

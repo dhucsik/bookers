@@ -22,5 +22,6 @@ func NewController(
 }
 
 func (r *Controller) Init(router *echo.Group) {
-
+	router.GET("/books", r.listBooksHandler)
+	router.GET("/books/:id", r.getBookByIDHandler)
 }

@@ -10,7 +10,8 @@ const (
 
 	listBooksStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating
 	FROM books b ORDER BY b.id
-	OFFSET $1 LIMIT $2`
+	WHERE b.title ILIKE '%' || $1 || '%'
+	LIMIT $2 OFFSET $3`
 
 	getBookStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating
 	FROM books b WHERE b.id = $1`

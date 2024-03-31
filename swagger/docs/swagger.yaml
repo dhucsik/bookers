@@ -5,6 +5,25 @@ definitions:
       name:
         type: string
     type: object
+  admin.createBookRequest:
+    properties:
+      author_ids:
+        items:
+          type: integer
+        type: array
+      category_ids:
+        items:
+          type: integer
+        type: array
+      edition:
+        type: integer
+      language:
+        type: string
+      pub_date:
+        type: string
+      title:
+        type: string
+    type: object
   admin.createCategoryRequest:
     properties:
       name:
@@ -56,6 +75,55 @@ definitions:
       authors:
         items:
           $ref: '#/definitions/authors.authorItemResponse'
+        type: array
+    type: object
+  books.authorResp:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  books.bookResponse:
+    properties:
+      authors:
+        items:
+          $ref: '#/definitions/books.authorResp'
+        type: array
+      categories:
+        items:
+          $ref: '#/definitions/books.categoryResp'
+        type: array
+      edition:
+        type: integer
+      id:
+        type: integer
+      language:
+        type: string
+      pub_date:
+        type: string
+      rating:
+        type: number
+      title:
+        type: string
+    type: object
+  books.categoryResp:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  books.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  books.listBooksResponse:
+    properties:
+      books:
+        items:
+          $ref: '#/definitions/books.bookResponse'
         type: array
     type: object
   categories.categoryItemResponse:
@@ -180,6 +248,42 @@ paths:
       summary: Delete author
       tags:
       - admin
+  /admin/books:
+    post:
+      consumes:
+      - application/json
+      description: Create book
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/admin.createBookRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
+      summary: Create book
+      tags:
+      - admin
   /admin/categories:
     post:
       consumes:
@@ -195,8 +299,20 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
+        "201":
           description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/admin.errorResponse'
         "500":
           description: Internal server error
           schema:
@@ -292,6 +408,21 @@ paths:
       consumes:
       - application/json
       description: List authors
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:
@@ -299,6 +430,10 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/authors.listAuthorsResponse'
+        "400":
+          description: Invalid limit or offset
+          schema:
+            $ref: '#/definitions/authors.errorResponse'
         "500":
           description: Internal server error
           schema:
@@ -306,6 +441,73 @@ paths:
       summary: List authors
       tags:
       - authors
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: List books
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.listBooksResponse'
+        "400":
+          description: Invalid limit or offset
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+      summary: List books
+      tags:
+      - books
+  /books/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get book by ID
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.bookResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+      summary: Get book by ID
+      tags:
+      - books
   /categories:
     get:
       consumes:

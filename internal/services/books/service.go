@@ -13,7 +13,7 @@ import (
 type Service interface {
 	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error
 	GetBookByID(ctx context.Context, id int) (*models.BookWithFields, error)
-	ListBooks(ctx context.Context, offset, limit int) ([]*models.BookWithFields, error)
+	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.BookWithFields, error)
 }
 
 type service struct {
@@ -61,8 +61,8 @@ func (s *service) GetBookByID(ctx context.Context, id int) (*models.BookWithFiel
 	}, nil
 }
 
-func (s *service) ListBooks(ctx context.Context, offset, limit int) ([]*models.BookWithFields, error) {
-	books, err := s.bookRepo.ListBooks(ctx, offset, limit)
+func (s *service) ListBooks(ctx context.Context, search string, offset, limit int) ([]*models.BookWithFields, error) {
+	books, err := s.bookRepo.ListBooks(ctx, search, offset, limit)
 	if err != nil {
 		return nil, err
 	}

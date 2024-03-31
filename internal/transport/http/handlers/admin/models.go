@@ -1,6 +1,10 @@
 package admin
 
-import "github.com/dhucsik/bookers/internal/models"
+import (
+	"time"
+
+	"github.com/dhucsik/bookers/internal/models"
+)
 
 type createCategoryRequest struct {
 	Name string `json:"name"`
@@ -28,4 +32,27 @@ type errorResponse struct {
 
 func newErrorResponse(message string) errorResponse {
 	return errorResponse{Message: message}
+}
+
+type createBookRequest struct {
+	Title       string `json:"title"`
+	PubDate     string `json:"pub_date"`
+	Edition     int    `json:"edition"`
+	Language    string `json:"language"`
+	AuthorIDs   []int  `json:"author_ids"`
+	CategoryIDs []int  `json:"category_ids"`
+}
+
+func (r createBookRequest) convert() (*models.Book, error) {
+	pubDate, err := time.Parse(time.DateOnly, r.PubDate)
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.Book{
+		Title:    r.Title,
+		PubDate:  pubDate,
+		Edition:  r.Edition,
+		Language: r.Language,
+	}, nil
 }
