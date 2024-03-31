@@ -9,8 +9,9 @@ const (
 	createBookCategoryStmt = `INSERT INTO book_categories (book_id, category_id) VALUES ($1, $2)`
 
 	listBooksStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating
-	FROM books b ORDER BY b.id
+	FROM books b 
 	WHERE b.title ILIKE '%' || $1 || '%'
+	ORDER BY b.id
 	LIMIT $2 OFFSET $3`
 
 	getBookStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating
