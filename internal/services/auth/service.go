@@ -63,7 +63,7 @@ func (s *service) GetAuth(ctx context.Context, username, password string) (strin
 
 	session := &models.Session{
 		UserID: user.ID,
-		Role:   "user",
+		Role:   user.Role,
 	}
 
 	accessToken, err := jwt.GenerateJWT(session, s.accessTokenTTL, false)

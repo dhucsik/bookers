@@ -22,6 +22,11 @@ const docTemplate = `{
     "paths": {
         "/admin/authors": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create author",
                 "consumes": [
                     "application/json"
@@ -34,6 +39,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create author",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "request",
                         "name": "request",
@@ -59,6 +71,11 @@ const docTemplate = `{
         },
         "/admin/authors/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete author",
                 "consumes": [
                     "application/json"
@@ -71,6 +88,13 @@ const docTemplate = `{
                 ],
                 "summary": "Delete author",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "author ID",
@@ -94,6 +118,11 @@ const docTemplate = `{
         },
         "/admin/books": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create book",
                 "consumes": [
                     "application/json"
@@ -106,6 +135,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create book",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "request",
                         "name": "request",
@@ -149,6 +185,11 @@ const docTemplate = `{
         },
         "/admin/categories": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create category",
                 "consumes": [
                     "application/json"
@@ -161,6 +202,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create category",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "request",
                         "name": "request",
@@ -204,6 +252,11 @@ const docTemplate = `{
         },
         "/admin/categories/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete category",
                 "consumes": [
                     "application/json"
@@ -216,6 +269,13 @@ const docTemplate = `{
                 ],
                 "summary": "Delete category",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "category ID",
@@ -757,7 +817,7 @@ const docTemplate = `{
                     }
                 },
                 "edition": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "language": {
                     "type": "string"
@@ -881,7 +941,7 @@ const docTemplate = `{
                     }
                 },
                 "edition": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "id": {
                     "type": "integer"

@@ -15,6 +15,8 @@ import (
 // @Tags admin
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
 // @Param id path int true "author ID"
 // @Success 200 {object} nil "Success"
 // @Failure 500 {object} errorResponse "Internal server error"

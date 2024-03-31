@@ -16,6 +16,11 @@
     "paths": {
         "/admin/authors": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create author",
                 "consumes": [
                     "application/json"
@@ -28,6 +33,13 @@
                 ],
                 "summary": "Create author",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "request",
                         "name": "request",
@@ -53,6 +65,11 @@
         },
         "/admin/authors/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete author",
                 "consumes": [
                     "application/json"
@@ -65,6 +82,13 @@
                 ],
                 "summary": "Delete author",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "author ID",
@@ -88,6 +112,11 @@
         },
         "/admin/books": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create book",
                 "consumes": [
                     "application/json"
@@ -100,6 +129,13 @@
                 ],
                 "summary": "Create book",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "request",
                         "name": "request",
@@ -143,6 +179,11 @@
         },
         "/admin/categories": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create category",
                 "consumes": [
                     "application/json"
@@ -155,6 +196,13 @@
                 ],
                 "summary": "Create category",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "request",
                         "name": "request",
@@ -198,6 +246,11 @@
         },
         "/admin/categories/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete category",
                 "consumes": [
                     "application/json"
@@ -210,6 +263,13 @@
                 ],
                 "summary": "Delete category",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "integer",
                         "description": "category ID",
@@ -751,7 +811,7 @@
                     }
                 },
                 "edition": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "language": {
                     "type": "string"
@@ -875,7 +935,7 @@
                     }
                 },
                 "edition": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "id": {
                     "type": "integer"

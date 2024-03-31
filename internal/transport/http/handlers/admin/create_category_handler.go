@@ -13,6 +13,8 @@ import (
 // @Tags admin
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
 // @Param request body createCategoryRequest true "request"
 // @Success 201 {object} nil "Success"
 // @Failure 400 {object} errorResponse "Bad request"

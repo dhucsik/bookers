@@ -11,7 +11,7 @@ type bookModel struct {
 	ID       int       `db:"id"`
 	Title    string    `db:"title"`
 	PubDate  time.Time `db:"pub_date"`
-	Edition  int       `db:"edition"`
+	Edition  string    `db:"edition"`
 	Language string    `db:"language"`
 	Rating   float64   `db:"rating"`
 }

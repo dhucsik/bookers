@@ -37,7 +37,7 @@ func newErrorResponse(message string) errorResponse {
 type createBookRequest struct {
 	Title       string `json:"title"`
 	PubDate     string `json:"pub_date"`
-	Edition     int    `json:"edition"`
+	Edition     string `json:"edition"`
 	Language    string `json:"language"`
 	AuthorIDs   []int  `json:"author_ids"`
 	CategoryIDs []int  `json:"category_ids"`

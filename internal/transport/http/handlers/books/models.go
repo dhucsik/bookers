@@ -45,7 +45,7 @@ type bookResponse struct {
 	ID         int            `json:"id"`
 	Title      string         `json:"title"`
 	PubDate    string         `json:"pub_date"`
-	Edition    int            `json:"edition"`
+	Edition    string         `json:"edition"`
 	Language   string         `json:"language"`
 	Rating     float64        `json:"rating"`
 	Authors    []authorResp   `json:"authors"`

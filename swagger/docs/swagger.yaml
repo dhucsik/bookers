@@ -16,7 +16,7 @@ definitions:
           type: integer
         type: array
       edition:
-        type: integer
+        type: string
       language:
         type: string
       pub_date:
@@ -95,7 +95,7 @@ definitions:
           $ref: '#/definitions/books.categoryResp'
         type: array
       edition:
-        type: integer
+        type: string
       id:
         type: integer
       language:
@@ -207,6 +207,11 @@ paths:
       - application/json
       description: Create author
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: request
         in: body
         name: request
@@ -222,6 +227,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/admin.errorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create author
       tags:
       - admin
@@ -231,6 +238,11 @@ paths:
       - application/json
       description: Delete author
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: author ID
         in: path
         name: id
@@ -245,6 +257,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/admin.errorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Delete author
       tags:
       - admin
@@ -254,6 +268,11 @@ paths:
       - application/json
       description: Create book
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: request
         in: body
         name: request
@@ -281,6 +300,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/admin.errorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create book
       tags:
       - admin
@@ -290,6 +311,11 @@ paths:
       - application/json
       description: Create category
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: request
         in: body
         name: request
@@ -317,6 +343,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/admin.errorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create category
       tags:
       - admin
@@ -326,6 +354,11 @@ paths:
       - application/json
       description: Delete category
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: category ID
         in: path
         name: id
@@ -340,6 +373,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/admin.errorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Delete category
       tags:
       - admin
