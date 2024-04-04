@@ -39,6 +39,8 @@ type createBookRequest struct {
 	PubDate     string `json:"pub_date"`
 	Edition     string `json:"edition"`
 	Language    string `json:"language"`
+	Image       string `json:"image"`
+	Description string `json:"description"`
 	AuthorIDs   []int  `json:"author_ids"`
 	CategoryIDs []int  `json:"category_ids"`
 }
@@ -50,9 +52,11 @@ func (r createBookRequest) convert() (*models.Book, error) {
 	}
 
 	return &models.Book{
-		Title:    r.Title,
-		PubDate:  pubDate,
-		Edition:  r.Edition,
-		Language: r.Language,
+		Title:       r.Title,
+		PubDate:     pubDate,
+		Edition:     r.Edition,
+		Language:    r.Language,
+		Image:       r.Image,
+		Description: r.Description,
 	}, nil
 }

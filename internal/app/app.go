@@ -10,11 +10,13 @@ import (
 	"github.com/dhucsik/bookers/internal/repositories/authors"
 	"github.com/dhucsik/bookers/internal/repositories/books"
 	"github.com/dhucsik/bookers/internal/repositories/categories"
+	"github.com/dhucsik/bookers/internal/repositories/quizzes"
 	"github.com/dhucsik/bookers/internal/repositories/users"
 	"github.com/dhucsik/bookers/internal/services/auth"
 	authorsS "github.com/dhucsik/bookers/internal/services/authors"
 	booksS "github.com/dhucsik/bookers/internal/services/books"
 	categoriesS "github.com/dhucsik/bookers/internal/services/categories"
+	quizzesS "github.com/dhucsik/bookers/internal/services/quizzes"
 	usersS "github.com/dhucsik/bookers/internal/services/users"
 	"github.com/dhucsik/bookers/internal/transport/http"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -27,12 +29,14 @@ type App struct {
 	authorsRepository    authors.Repository
 	categoriesRepository categories.Repository
 	booksRepository      books.Repository
+	quizzesRepository    quizzes.Repository
 
 	usersService      usersS.Service
 	authService       auth.Service
 	authorsService    authorsS.Service
 	categoriesService categoriesS.Service
 	booksService      booksS.Service
+	quizzesService    quizzesS.Service
 
 	httpServer *http.Server
 	db         *pgxpool.Pool
@@ -87,6 +91,7 @@ func (a *App) InitRepositories(_ context.Context) error {
 	a.authorsRepository = authors.NewRepository(a.db)
 	a.categoriesRepository = categories.NewRepository(a.db)
 	a.booksRepository = books.NewRepository(a.db)
+	a.quizzesRepository = quizzes.NewRepository(a.db)
 
 	return nil
 }
@@ -97,6 +102,7 @@ func (a *App) InitServices(_ context.Context) error {
 	a.authorsService = authorsS.NewService(a.authorsRepository)
 	a.categoriesService = categoriesS.NewService(a.categoriesRepository)
 	a.booksService = booksS.NewService(a.booksRepository, a.authorsRepository, a.categoriesRepository)
+	a.quizzesService = quizzesS.NewService(a.quizzesRepository)
 
 	return nil
 }
@@ -108,6 +114,7 @@ func (a *App) InitHTTPServer(_ context.Context) error {
 		a.authorsService,
 		a.categoriesService,
 		a.booksService,
+		a.quizzesService,
 	)
 
 	return nil

@@ -9,6 +9,7 @@ import (
 	"github.com/dhucsik/bookers/internal/services/authors"
 	"github.com/dhucsik/bookers/internal/services/books"
 	"github.com/dhucsik/bookers/internal/services/categories"
+	"github.com/dhucsik/bookers/internal/services/quizzes"
 	"github.com/dhucsik/bookers/internal/services/users"
 	"github.com/dhucsik/bookers/internal/transport/http/handlers/admin"
 	authC "github.com/dhucsik/bookers/internal/transport/http/handlers/auth"
@@ -16,6 +17,7 @@ import (
 	booksC "github.com/dhucsik/bookers/internal/transport/http/handlers/books"
 	categoriesC "github.com/dhucsik/bookers/internal/transport/http/handlers/categories"
 	"github.com/dhucsik/bookers/internal/transport/http/handlers/personal"
+	quizzesC "github.com/dhucsik/bookers/internal/transport/http/handlers/quizzes"
 	"github.com/dhucsik/bookers/internal/transport/http/handlers/swag"
 	usersC "github.com/dhucsik/bookers/internal/transport/http/handlers/users"
 	"github.com/dhucsik/bookers/internal/transport/http/middlewares"
@@ -31,7 +33,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.htm
 
-// @host bookers.kz
+// @host localhost:8080
 // @BasePath /api/v1
 
 type IController interface {
@@ -49,6 +51,7 @@ func NewServer(
 	authorsService authors.Service,
 	categoriesService categories.Service,
 	booksService books.Service,
+	quizzesService quizzes.Service,
 ) *Server {
 	srv := echo.New()
 	router := srv.Group("/api/v1")
@@ -75,12 +78,13 @@ func NewServer(
 	authMiddleware := middlewares.NewAuthMiddleware()
 
 	server.WithControllers(
-		authC.NewController(authService),
+		authC.NewController(authService, usersService),
 		usersC.NewController(authMiddleware, usersService),
 		authorsC.NewController(authMiddleware, authorsService),
 		categoriesC.NewController(authMiddleware, categoriesService),
 		admin.NewController(authMiddleware, authorsService, categoriesService, booksService),
-		booksC.NewController(authMiddleware, booksService),
+		booksC.NewController(authMiddleware, booksService, quizzesService),
+		quizzesC.NewController(authMiddleware, quizzesService),
 		personal.NewController(),
 		swag.NewController(),
 	)

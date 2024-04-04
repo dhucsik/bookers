@@ -15,7 +15,11 @@ definitions:
         items:
           type: integer
         type: array
+      description:
+        type: string
       edition:
+        type: string
+      image:
         type: string
       language:
         type: string
@@ -47,6 +51,8 @@ definitions:
         type: string
       refresh_token:
         type: string
+      user:
+        $ref: '#/definitions/models.UserWithoutPassword'
     type: object
   auth.errorResponse:
     properties:
@@ -76,6 +82,11 @@ definitions:
         items:
           $ref: '#/definitions/authors.authorItemResponse'
         type: array
+    type: object
+  books.addCommentRequest:
+    properties:
+      comment:
+        type: string
     type: object
   books.authorResp:
     properties:
@@ -114,6 +125,11 @@ definitions:
       name:
         type: string
     type: object
+  books.createQuizRequest:
+    properties:
+      title:
+        type: string
+    type: object
   books.errorResponse:
     properties:
       message:
@@ -125,6 +141,16 @@ definitions:
         items:
           $ref: '#/definitions/books.bookResponse'
         type: array
+    type: object
+  books.setRatingRequest:
+    properties:
+      rating:
+        type: integer
+    type: object
+  books.updateCommentRequest:
+    properties:
+      comment:
+        type: string
     type: object
   categories.categoryItemResponse:
     properties:
@@ -144,6 +170,143 @@ definitions:
         items:
           $ref: '#/definitions/categories.categoryItemResponse'
         type: array
+    type: object
+  models.Book:
+    properties:
+      description:
+        type: string
+      edition:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      language:
+        type: string
+      pub_date:
+        type: string
+      rating:
+        type: number
+      title:
+        type: string
+    type: object
+  models.BookComment:
+    properties:
+      book_id:
+        type: integer
+      comment:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.Question:
+    properties:
+      answer:
+        type: string
+      id:
+        type: integer
+      options:
+        items:
+          type: string
+        type: array
+      question:
+        type: string
+      quiz_id:
+        type: integer
+    type: object
+  models.QuizComment:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      quiz_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.QuizWithFields:
+    properties:
+      book:
+        $ref: '#/definitions/models.Book'
+      book_id:
+        type: integer
+      id:
+        type: integer
+      questions:
+        items:
+          $ref: '#/definitions/models.Question'
+        type: array
+      rating:
+        type: number
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/models.UserWithoutPassword'
+      user_id:
+        type: integer
+    type: object
+  models.UserWithoutPassword:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  quizzes.addCommentRequest:
+    properties:
+      comment:
+        type: string
+    type: object
+  quizzes.addQuestionRequest:
+    properties:
+      answer:
+        type: string
+      options:
+        items:
+          type: string
+        type: array
+      question:
+        type: string
+    type: object
+  quizzes.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  quizzes.setRatingRequest:
+    properties:
+      rating:
+        type: integer
+    type: object
+  quizzes.updateCommentRequest:
+    properties:
+      comment:
+        type: string
+    type: object
+  quizzes.updateQuestionRequest:
+    properties:
+      answer:
+        type: string
+      options:
+        items:
+          type: string
+        type: array
+      question:
+        type: string
+    type: object
+  quizzes.updateQuizRequest:
+    properties:
+      title:
+        type: string
     type: object
   users.createUserRequest:
     properties:
@@ -190,7 +353,7 @@ definitions:
       city:
         type: string
     type: object
-host: bookers.kz
+host: localhost:8080
 info:
   contact: {}
   description: bookers server.
@@ -543,6 +706,241 @@ paths:
       summary: Get book by ID
       tags:
       - books
+  /books/{id}/comments:
+    get:
+      consumes:
+      - application/json
+      description: List comments
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/models.BookComment'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+      summary: List comments
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: Add comment
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/books.addCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add comment
+      tags:
+      - books
+  /books/{id}/quizzes:
+    post:
+      consumes:
+      - application/json
+      description: Create quiz
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/books.createQuizRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create quiz
+      tags:
+      - books
+  /books/{id}/rating:
+    post:
+      consumes:
+      - application/json
+      description: Set rating
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/books.setRatingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Set rating
+      tags:
+      - books
+  /books/comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete comment
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete comment
+      tags:
+      - books
+    put:
+      consumes:
+      - application/json
+      description: Update comment request
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/books.updateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/books.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update comment request
+      tags:
+      - books
   /categories:
     get:
       consumes:
@@ -562,6 +960,490 @@ paths:
       summary: List categories
       tags:
       - categories
+  /quizzes/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete quiz
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: quiz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete quiz
+      tags:
+      - quizzes
+    get:
+      consumes:
+      - application/json
+      description: Get quiz
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: quiz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/models.QuizWithFields'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get quiz
+      tags:
+      - quizzes
+    put:
+      consumes:
+      - application/json
+      description: Update quiz
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: quiz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Title
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/quizzes.updateQuizRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update quiz
+      tags:
+      - quizzes
+  /quizzes/{id}/comments:
+    get:
+      consumes:
+      - application/json
+      description: List comments
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: quiz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/models.QuizComment'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List comments
+      tags:
+      - quizzes
+    post:
+      consumes:
+      - application/json
+      description: Add comment
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: quiz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/quizzes.addCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add comment
+      tags:
+      - quizzes
+  /quizzes/{id}/questions:
+    post:
+      consumes:
+      - application/json
+      description: Add question
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: quiz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/quizzes.addQuestionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add question
+      tags:
+      - quizzes
+  /quizzes/{id}/rating:
+    post:
+      consumes:
+      - application/json
+      description: Set rating
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: quiz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/quizzes.setRatingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Set rating
+      tags:
+      - quizzes
+  /quizzes/{id}/view:
+    get:
+      consumes:
+      - application/json
+      description: View quiz
+      parameters:
+      - description: Quiz ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/models.QuizWithFields'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      summary: View quiz
+      tags:
+      - quizzes
+  /quizzes/comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete comment
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete comment
+      tags:
+      - quizzes
+    put:
+      consumes:
+      - application/json
+      description: Update comment request
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: comment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/quizzes.updateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update comment request
+      tags:
+      - quizzes
+  /quizzes/questions/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete question
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: question ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete question
+      tags:
+      - quizzes
+    put:
+      consumes:
+      - application/json
+      description: Update question
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: question ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/quizzes.updateQuestionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/quizzes.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update question
+      tags:
+      - quizzes
   /users:
     post:
       consumes:

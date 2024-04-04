@@ -86,3 +86,51 @@ func newListBooksResponse(books []*models.BookWithFields) listBooksResponse {
 		Books: out,
 	}
 }
+
+type addCommentRequest struct {
+	Comment string `json:"comment"`
+}
+
+func (r addCommentRequest) convert(bookID, userID int) *models.BookComment {
+	return &models.BookComment{
+		BookID:  bookID,
+		UserID:  userID,
+		Comment: r.Comment,
+	}
+}
+
+type setRatingRequest struct {
+	Rating int `json:"rating"`
+}
+
+func (r setRatingRequest) convert(bookID, userID int) *models.BookRating {
+	return &models.BookRating{
+		BookID: bookID,
+		UserID: userID,
+		Rating: r.Rating,
+	}
+}
+
+type updateCommentRequest struct {
+	Comment string `json:"comment"`
+}
+
+func (r updateCommentRequest) convert(commentID, userID int) *models.BookComment {
+	return &models.BookComment{
+		ID:      commentID,
+		UserID:  userID,
+		Comment: r.Comment,
+	}
+}
+
+type createQuizRequest struct {
+	Title string `json:"title"`
+}
+
+func (r *createQuizRequest) convert(bookID, userID int) *models.Quiz {
+	return &models.Quiz{
+		Title:  r.Title,
+		BookID: bookID,
+		UserID: userID,
+	}
+}

@@ -11,6 +11,12 @@ type Repository interface {
 	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error
 	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, error)
 	GetBookByID(ctx context.Context, id int) (*models.Book, error)
+	SetRating(ctx context.Context, bookID, userID, rating int) error
+	InsertComment(ctx context.Context, bookID, userID int, comment string) error
+	UpdateComment(ctx context.Context, id int, comment string) error
+	ListComments(ctx context.Context, bookID int) ([]*models.BookComment, error)
+	DeleteComment(ctx context.Context, id int) error
+	GetComment(ctx context.Context, id int) (*models.BookComment, error)
 }
 
 type repository struct {
@@ -82,4 +88,77 @@ func (r *repository) GetBookByID(ctx context.Context, id int) (*models.Book, err
 	}
 
 	return book.convert(), nil
+}
+
+func (r *repository) InsertComment(ctx context.Context, bookID, userID int, comment string) error {
+	_, err := r.db.Exec(ctx, insertCommentStmt, bookID, userID, comment)
+	return err
+}
+
+func (r *repository) UpdateComment(ctx context.Context, id int, comment string) error {
+	_, err := r.db.Exec(ctx, updateCommentStmt, id, comment)
+	return err
+}
+
+func (r *repository) SetRating(ctx context.Context, bookID, userID, rating int) error {
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(ctx, insertBookRatingStmt, bookID, userID, rating)
+	if err != nil {
+		tx.Rollback(ctx)
+		return err
+	}
+
+	var avgRating float64
+	err = tx.QueryRow(ctx, getAvgRatingStmt, bookID).Scan(&avgRating)
+	if err != nil {
+		tx.Rollback(ctx)
+		return err
+	}
+
+	_, err = tx.Exec(ctx, updateBookRatingStmt, avgRating, bookID)
+	if err != nil {
+		tx.Rollback(ctx)
+		return err
+	}
+
+	return tx.Commit(ctx)
+}
+
+func (r *repository) ListComments(ctx context.Context, bookID int) ([]*models.BookComment, error) {
+	rows, err := r.db.Query(ctx, listCommentsStmt, bookID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []*models.BookComment
+	for rows.Next() {
+		comment := &bookComment{}
+		if err := rows.Scan(&comment.ID, &comment.BookID, &comment.UserID, &comment.Comment, &comment.CreatedAt); err != nil {
+			return nil, err
+		}
+
+		out = append(out, comment.convert())
+	}
+
+	return out, nil
+}
+
+func (r *repository) DeleteComment(ctx context.Context, id int) error {
+	_, err := r.db.Exec(ctx, deleteCommentStmt, id)
+	return err
+}
+
+func (r *repository) GetComment(ctx context.Context, id int) (*models.BookComment, error) {
+	comment := &bookComment{}
+	err := r.db.QueryRow(ctx, getCommentStmt, id).Scan(&comment.ID, &comment.BookID, &comment.UserID, &comment.Comment, &comment.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return comment.convert(), nil
 }

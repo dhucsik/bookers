@@ -1,7 +1,6 @@
 package admin
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/dhucsik/bookers/internal/models"
@@ -23,11 +22,11 @@ import (
 func (c *Controller) createAuthor(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
-		return errors.New("session not found")
+		return ctx.JSON(http.StatusUnauthorized, newErrorResponse("session not found"))
 	}
 
 	if session.Role != "admin" {
-		return errors.New("forbidden")
+		return ctx.JSON(http.StatusForbidden, newErrorResponse("forbidden"))
 	}
 
 	var req createAuthorRequest

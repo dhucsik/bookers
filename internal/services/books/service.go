@@ -3,6 +3,7 @@ package books
 import (
 	"context"
 
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/dhucsik/bookers/internal/repositories/authors"
 	"github.com/dhucsik/bookers/internal/repositories/books"
@@ -14,6 +15,11 @@ type Service interface {
 	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error
 	GetBookByID(ctx context.Context, id int) (*models.BookWithFields, error)
 	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.BookWithFields, error)
+	SetRating(ctx context.Context, rating *models.BookRating) error
+	ListComments(ctx context.Context, bookID int) ([]*models.BookComment, error)
+	AddComment(ctx context.Context, comment *models.BookComment) error
+	UpdateComment(ctx context.Context, comment *models.BookComment) error
+	DeleteComment(ctx context.Context, commentID, userID int) error
 }
 
 type service struct {
@@ -61,8 +67,8 @@ func (s *service) GetBookByID(ctx context.Context, id int) (*models.BookWithFiel
 	}, nil
 }
 
-func (s *service) ListBooks(ctx context.Context, search string, offset, limit int) ([]*models.BookWithFields, error) {
-	books, err := s.bookRepo.ListBooks(ctx, search, offset, limit)
+func (s *service) ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.BookWithFields, error) {
+	books, err := s.bookRepo.ListBooks(ctx, search, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -90,4 +96,43 @@ func (s *service) ListBooks(ctx context.Context, search string, offset, limit in
 	})
 
 	return out, nil
+}
+
+func (s *service) AddComment(ctx context.Context, comment *models.BookComment) error {
+	return s.bookRepo.InsertComment(ctx, comment.BookID, comment.UserID, comment.Comment)
+}
+
+func (s *service) UpdateComment(ctx context.Context, comment *models.BookComment) error {
+	com, err := s.bookRepo.GetComment(ctx, comment.ID)
+	if err != nil {
+		return err
+	}
+
+	if com.UserID != comment.UserID {
+		return errors.ErrForbidden
+	}
+
+	return s.bookRepo.UpdateComment(ctx, comment.ID, comment.Comment)
+}
+
+func (s *service) SetRating(ctx context.Context, rating *models.BookRating) error {
+	return s.bookRepo.SetRating(ctx, rating.BookID, rating.UserID, rating.Rating)
+}
+
+func (s *service) DeleteComment(ctx context.Context, commentID, userID int) error {
+	// TODO: check if the user is the owner of the comment
+	comment, err := s.bookRepo.GetComment(ctx, commentID)
+	if err != nil {
+		return err
+	}
+
+	if comment.UserID != userID {
+		return errors.ErrForbidden
+	}
+
+	return s.bookRepo.DeleteComment(ctx, commentID)
+}
+
+func (s *service) ListComments(ctx context.Context, bookID int) ([]*models.BookComment, error) {
+	return s.bookRepo.ListComments(ctx, bookID)
 }
