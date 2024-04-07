@@ -71,7 +71,7 @@ func (r *repository) CreateBook(ctx context.Context, book *models.Book, authorID
 }
 
 func (r *repository) ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, error) {
-	rows, err := r.db.Query(ctx, listBooksStmt, search, offset, limit)
+	rows, err := r.db.Query(ctx, listBooksStmt, search, limit, offset)
 	if err != nil {
 		return nil, err
 	}
