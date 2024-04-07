@@ -24,6 +24,9 @@ type Service interface {
 	UpdateComment(ctx context.Context, comment *models.QuizComment) error
 	SetRating(ctx context.Context, rating *models.QuizRating) error
 	AddComment(ctx context.Context, comment *models.QuizComment) error
+	CheckQuiz(ctx context.Context, userID, quizID int, userAnswers []*models.UserAnswer) (*models.QuizWithQuestionResults, error)
+	GetQuizResults(ctx context.Context, userID int) ([]*models.QuizResultWithFields, error)
+	GetQuizResultWithAnswers(ctx context.Context, resultID int) (*models.QuizQuestionWithFields, error)
 }
 
 type service struct {

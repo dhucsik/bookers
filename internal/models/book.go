@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"mime/multipart"
+	"time"
+)
 
 type Book struct {
 	ID          int       `json:"id"`
@@ -17,4 +20,21 @@ type BookWithFields struct {
 	*Book
 	Authors    []*Author   `json:"authors"`
 	Categories []*Category `json:"categories"`
+}
+
+type StockBook struct {
+	ID     int `json:"id"`
+	BookID int `json:"book_id"`
+	UserID int `json:"user_id"`
+}
+
+type StockBookWithFields struct {
+	*StockBook
+	Book *Book `json:"book"`
+}
+
+type UploadStockBook struct {
+	BookID int
+	UserID int
+	Image  *multipart.FileHeader
 }

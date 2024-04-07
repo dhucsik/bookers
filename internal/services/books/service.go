@@ -3,11 +3,16 @@ package books
 import (
 	"context"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/dhucsik/bookers/internal/repositories/authors"
 	"github.com/dhucsik/bookers/internal/repositories/books"
 	"github.com/dhucsik/bookers/internal/repositories/categories"
+	"github.com/dhucsik/bookers/internal/repositories/users"
 	"github.com/samber/lo"
 )
 
@@ -20,9 +25,22 @@ type Service interface {
 	AddComment(ctx context.Context, comment *models.BookComment) error
 	UpdateComment(ctx context.Context, comment *models.BookComment) error
 	DeleteComment(ctx context.Context, commentID, userID int) error
+	UploadStockBook(ctx context.Context, book *models.UploadStockBook) (string, error)
+	ApproveRequest(ctx context.Context, userID, id int) error
+	SenderAccepted(ctx context.Context, userID, id int) error
+	ReceiverRequested(ctx context.Context, stockBookID, userID, id int) error
+	CancelRequest(ctx context.Context, userID, id int) error
+	CreateRequest(ctx context.Context, userID, stockBookID int) error
+	GetRequest(ctx context.Context, id int) (*models.RequestWithFields, error)
+	GetRequests(ctx context.Context, userID int) ([]*models.RequestWithFields, error)
+	GetStockBooks(ctx context.Context, userID int) ([]*models.StockBookWithFields, error)
 }
 
 type service struct {
+	s3Client     *s3.S3
+	bucket       string
+	endpoint     string
+	userRepo     users.Repository
 	bookRepo     books.Repository
 	authorRepo   authors.Repository
 	categoryRepo categories.Repository
@@ -32,12 +50,28 @@ func NewService(
 	bookRepo books.Repository,
 	authorRepo authors.Repository,
 	categoryRepo categories.Repository,
-) Service {
+	endpoint string,
+	bucket string,
+	accessKey string,
+	secretKey string,
+) (Service, error) {
+	sess, err := session.NewSession(&aws.Config{
+		Endpoint:    aws.String(endpoint),
+		Region:      aws.String("us-east-1"),
+		Credentials: credentials.NewStaticCredentials(accessKey, secretKey, ""),
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return &service{
+		s3Client:     s3.New(sess),
+		bucket:       bucket,
+		endpoint:     endpoint,
 		bookRepo:     bookRepo,
 		authorRepo:   authorRepo,
 		categoryRepo: categoryRepo,
-	}
+	}, nil
 }
 
 func (s *service) CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error {

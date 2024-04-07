@@ -5,18 +5,28 @@ import (
 
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lib/pq"
 )
 
 type Repository interface {
 	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error
 	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, error)
 	GetBookByID(ctx context.Context, id int) (*models.Book, error)
+	GetBooksByIDs(ctx context.Context, ids []int) ([]*models.Book, error)
 	SetRating(ctx context.Context, bookID, userID, rating int) error
 	InsertComment(ctx context.Context, bookID, userID int, comment string) error
 	UpdateComment(ctx context.Context, id int, comment string) error
 	ListComments(ctx context.Context, bookID int) ([]*models.BookComment, error)
 	DeleteComment(ctx context.Context, id int) error
 	GetComment(ctx context.Context, id int) (*models.BookComment, error)
+	UploadStockBook(ctx context.Context, book *models.StockBook) (int, error)
+	CreateRequest(ctx context.Context, req *models.ShareRequest) error
+	UpdateRequest(ctx context.Context, req *models.ShareRequest) error
+	GetRequest(ctx context.Context, id int) (*models.ShareRequest, error)
+	GetStockBook(ctx context.Context, bookID int) (*models.StockBook, error)
+	GetBooksByStockIDs(ctx context.Context, ids []int) ([]*models.Book, error)
+	ListRequests(ctx context.Context, userID int) ([]*models.ShareRequest, error)
+	GetStockBooksByUser(ctx context.Context, userID int) ([]*models.StockBook, error)
 }
 
 type repository struct {
@@ -35,7 +45,7 @@ func (r *repository) CreateBook(ctx context.Context, book *models.Book, authorID
 		return err
 	}
 
-	err = tx.QueryRow(ctx, createBookStmt, book.Title, book.PubDate, book.Edition, book.Language, book.Rating).Scan(&book.ID)
+	err = tx.QueryRow(ctx, createBookStmt, book.Title, book.PubDate, book.Edition, book.Language, book.Rating, book.Image, book.Description).Scan(&book.ID)
 	if err != nil {
 		tx.Rollback(ctx)
 		return err
@@ -70,7 +80,7 @@ func (r *repository) ListBooks(ctx context.Context, search string, limit, offset
 	var out bookModels
 	for rows.Next() {
 		book := &bookModel{}
-		if err := rows.Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating); err != nil {
+		if err := rows.Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating, &book.Image, &book.Description); err != nil {
 			return nil, err
 		}
 
@@ -82,12 +92,32 @@ func (r *repository) ListBooks(ctx context.Context, search string, limit, offset
 
 func (r *repository) GetBookByID(ctx context.Context, id int) (*models.Book, error) {
 	book := &bookModel{}
-	err := r.db.QueryRow(ctx, getBookStmt, id).Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating)
+	err := r.db.QueryRow(ctx, getBookStmt, id).Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating, &book.Image, &book.Description)
 	if err != nil {
 		return nil, err
 	}
 
 	return book.convert(), nil
+}
+
+func (r *repository) GetBooksByIDs(ctx context.Context, ids []int) ([]*models.Book, error) {
+	rows, err := r.db.Query(ctx, getBooksByIDsStmt, pq.Array(ids))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out bookModels
+	for rows.Next() {
+		book := &bookModel{}
+		if err := rows.Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating, &book.Image, &book.Description); err != nil {
+			return nil, err
+		}
+
+		out = append(out, book)
+	}
+
+	return out.convert(), nil
 }
 
 func (r *repository) InsertComment(ctx context.Context, bookID, userID int, comment string) error {

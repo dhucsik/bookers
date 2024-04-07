@@ -7,3 +7,12 @@ name = "bookers"
 [env]
   [env.postgres_dsn]
     value = "postgres://diploma:@localhost:5432/diploma?sslmode=disable"
+  [env.s3_endpoint]
+    value = "https://hb.vkcs.cloud"
+  [env.s3_bucket]
+    value = "bookers-images"
+  [env.s3_access_key]
+    value = "access-key"
+  [env.s3_secret_key]
+    value = "secret-key"
+    

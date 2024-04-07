@@ -42,14 +42,16 @@ func newAuthorResp(author *models.Author) authorResp {
 }
 
 type bookResponse struct {
-	ID         int            `json:"id"`
-	Title      string         `json:"title"`
-	PubDate    string         `json:"pub_date"`
-	Edition    string         `json:"edition"`
-	Language   string         `json:"language"`
-	Rating     float64        `json:"rating"`
-	Authors    []authorResp   `json:"authors"`
-	Categories []categoryResp `json:"categories"`
+	ID          int            `json:"id"`
+	Title       string         `json:"title"`
+	PubDate     string         `json:"pub_date"`
+	Edition     string         `json:"edition"`
+	Language    string         `json:"language"`
+	Rating      float64        `json:"rating"`
+	Description string         `json:"description"`
+	Image       string         `json:"image"`
+	Authors     []authorResp   `json:"authors"`
+	Categories  []categoryResp `json:"categories"`
 }
 
 func newBookResp(book *models.BookWithFields) bookResponse {
@@ -62,14 +64,16 @@ func newBookResp(book *models.BookWithFields) bookResponse {
 	})
 
 	return bookResponse{
-		ID:         book.ID,
-		Title:      book.Title,
-		PubDate:    book.PubDate.Format(time.DateOnly),
-		Edition:    book.Edition,
-		Language:   book.Language,
-		Rating:     book.Rating,
-		Authors:    authors,
-		Categories: categories,
+		ID:          book.ID,
+		Title:       book.Title,
+		PubDate:     book.PubDate.Format(time.DateOnly),
+		Edition:     book.Edition,
+		Language:    book.Language,
+		Rating:      book.Rating,
+		Description: book.Description,
+		Image:       book.Image,
+		Authors:     authors,
+		Categories:  categories,
 	}
 }
 
@@ -133,4 +137,8 @@ func (r *createQuizRequest) convert(bookID, userID int) *models.Quiz {
 		BookID: bookID,
 		UserID: userID,
 	}
+}
+
+type requestReceived struct {
+	BookID int `json:"book_id"`
 }

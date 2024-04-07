@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+	"github.com/joho/godotenv"
 )
 
 const defaultName = "./configs/app.toml"
@@ -35,9 +36,13 @@ type Variable struct {
 }
 
 func Parse() (*Config, error) {
-	var config Config
+	err := godotenv.Load()
+	if err != nil {
+		return nil, err
+	}
 
-	if _, err := toml.DecodeFile(defaultName, &config); err != nil {
+	var config Config
+	if _, err = toml.DecodeFile(defaultName, &config); err != nil {
 		return nil, err
 	}
 

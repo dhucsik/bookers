@@ -9,4 +9,5 @@ var (
 	ErrUnexpectedRefresh = errors.New("unexpected refresh token")
 	ErrNotRefreshToken   = errors.New("not a refresh token")
 	ErrForbidden         = errors.New("forbidden")
+	ErrWrongStatus       = errors.New("wrong status")
 )

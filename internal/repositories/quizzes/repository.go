@@ -5,11 +5,13 @@ import (
 
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lib/pq"
 )
 
 type Repository interface {
 	CreateQuiz(ctx context.Context, quiz *models.Quiz) error
 	GetQuiz(ctx context.Context, quizID int) (*models.Quiz, error)
+	GetQuizzes(ctx context.Context, quizIDs []int) ([]*models.Quiz, error)
 	UpdateQuizTitle(ctx context.Context, quizID int, title string) error
 	DeleteQuiz(ctx context.Context, quizID int) error
 	InsertQuestion(ctx context.Context, question *models.Question) error
@@ -23,6 +25,9 @@ type Repository interface {
 	DeleteComment(ctx context.Context, id int) error
 	GetComment(ctx context.Context, id int) (*models.QuizComment, error)
 	GetQuizByQuestion(ctx context.Context, questionID int) (*models.Quiz, error)
+	SaveResults(ctx context.Context, result *models.QuizWithQuestionResults) error
+	GetQuizResults(ctx context.Context, userID int) ([]*models.QuizResult, error)
+	GetQuizResult(ctx context.Context, id int) (*models.QuizWithQuestionResults, error)
 }
 
 type repository struct {
@@ -39,6 +44,26 @@ func (r *repository) GetQuiz(ctx context.Context, quizID int) (*models.Quiz, err
 	var quiz models.Quiz
 	err := r.db.QueryRow(ctx, getQuizStmt, quizID).Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating)
 	return &quiz, err
+}
+
+func (r *repository) GetQuizzes(ctx context.Context, quizIDs []int) ([]*models.Quiz, error) {
+	rows, err := r.db.Query(ctx, getQuizzesStmt, pq.Array(quizIDs))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []*models.Quiz
+	for rows.Next() {
+		quiz := &models.Quiz{}
+		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating); err != nil {
+			return nil, err
+		}
+
+		out = append(out, quiz)
+	}
+
+	return out, nil
 }
 
 func (r *repository) CreateQuiz(ctx context.Context, quiz *models.Quiz) error {

@@ -5,6 +5,7 @@ import (
 
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lib/pq"
 )
 
 type Repository interface {
@@ -13,6 +14,7 @@ type Repository interface {
 	GetUserByID(ctx context.Context, userID int) (*models.User, error)
 	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
 	DeleteUser(ctx context.Context, userID int) error
+	GetUsersByIDs(ctx context.Context, ids []int) ([]*models.User, error)
 }
 
 type repository struct {
@@ -66,4 +68,24 @@ func (r *repository) GetUserByUsername(ctx context.Context, username string) (*m
 func (r *repository) DeleteUser(ctx context.Context, userID int) error {
 	_, err := r.db.Exec(ctx, deleteUserStmt, userID)
 	return err
+}
+
+func (r *repository) GetUsersByIDs(ctx context.Context, ids []int) ([]*models.User, error) {
+	rows, err := r.db.Query(ctx, getUsersByIDsStmt, pq.Array(ids))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []*models.User
+	for rows.Next() {
+		model := &userModel{}
+		if err := rows.Scan(&model.ID, &model.Username, &model.Email, &model.Password, &model.Role, &model.City); err != nil {
+			return nil, err
+		}
+
+		out = append(out, model.convert())
+	}
+
+	return out, nil
 }

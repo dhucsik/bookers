@@ -3,6 +3,8 @@ package quizzes
 const (
 	getQuizStmt = `SELECT id, user_id, book_id, title, rating FROM quizzes WHERE id = $1`
 
+	getQuizzesStmt = `SELECT id, user_id, book_id, title, rating FROM quizzes WHERE id = ANY($1)`
+
 	getQuestionsStmt = `SELECT id, quiz_id, question, options, answer
 	FROM questions WHERE quiz_id = $1`
 
@@ -40,4 +42,16 @@ const (
 
 	getQuizByQuestionStmt = `SELECT q.id, q.user_id, q.book_id, q.title, q.rating
 	FROM quizzes q JOIN questions qu ON q.id = qu.quiz_id WHERE qu.id = $1`
+
+	insertQuizResultStmt = `INSERT INTO quiz_results (quiz_id, user_id, correct, total) VALUES ($1, $2, $3, $4) RETURNING id`
+
+	insertQuestionResultStmt = `INSERT INTO question_results (quiz_result_id, question_id, user_answer, is_correct)
+	VALUES ($1, $2, $3, $4)`
+
+	getQuizResultsStmt = `SELECT id, quiz_id, user_id, correct, total FROM quiz_results WHERE user_id = $1`
+
+	getQuizResultStmt = `SELECT id, quiz_id, user_id, correct, total FROM quiz_results WHERE id = $1`
+
+	getQuestionResultsStmt = `SELECT id, quiz_result_id, question_id, user_answer, is_correct
+	FROM question_results WHERE quiz_result_id = $1`
 )

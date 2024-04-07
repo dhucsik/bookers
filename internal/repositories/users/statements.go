@@ -14,4 +14,7 @@ const (
 					FROM users WHERE username = $1`
 
 	deleteUserStmt = `DELETE FROM users WHERE id = $1`
+
+	getUsersByIDsStmt = `SELECT id, username, email, role, city
+					FROM users WHERE id = ANY($1)`
 )

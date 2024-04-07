@@ -24,6 +24,10 @@ func (c *Controller) Init(router *echo.Group) {
 	router.PUT("/quizzes/:id", c.auth.Handler(c.updateQuizHandler))
 	router.DELETE("/quizzes/:id", c.auth.Handler(c.deleteQuizHandler))
 
+	router.GET("/quizzes/results/:id", c.auth.Handler(c.getQuizResultHandler))
+	router.POST("/quizzes/:id/check", c.auth.Handler(c.checkQuizHandler))
+	router.GET("/quizzes/results", c.auth.Handler(c.getQuizResultsHandler))
+
 	router.POST("/quizzes/:id/questions", c.auth.Handler(c.addQuestionHandler))
 	router.PUT("/quizzes/questions/:id", c.auth.Handler(c.updateQuestionHandler))
 	router.DELETE("/quizzes/questions/:id", c.auth.Handler(c.deleteQuestionHandler))

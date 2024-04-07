@@ -97,11 +97,24 @@ func (a *App) InitRepositories(_ context.Context) error {
 }
 
 func (a *App) InitServices(_ context.Context) error {
+	var err error
+
 	a.usersService = usersS.NewService(a.usersRepository)
 	a.authService = auth.NewService(time.Hour, time.Hour, a.usersService)
 	a.authorsService = authorsS.NewService(a.authorsRepository)
 	a.categoriesService = categoriesS.NewService(a.categoriesRepository)
-	a.booksService = booksS.NewService(a.booksRepository, a.authorsRepository, a.categoriesRepository)
+	a.booksService, err = booksS.NewService(
+		a.booksRepository,
+		a.authorsRepository,
+		a.categoriesRepository,
+		a.cfg.Env.Get("s3_endpoint"),
+		a.cfg.Env.Get("s3_bucket"),
+		a.cfg.Env.Get("s3_access_key"),
+		a.cfg.Env.Get("s3_secret_key"),
+	)
+	if err != nil {
+		return err
+	}
 	a.quizzesService = quizzesS.NewService(a.quizzesRepository)
 
 	return nil

@@ -1,6 +1,9 @@
 package quizzes
 
-import "github.com/dhucsik/bookers/internal/models"
+import (
+	"github.com/dhucsik/bookers/internal/models"
+	"github.com/samber/lo"
+)
 
 type errorResponse struct {
 	Message string `json:"message"`
@@ -80,4 +83,26 @@ func (r *setRatingRequest) convert(quizID, userID int) *models.QuizRating {
 		QuizID: quizID,
 		Rating: r.Rating,
 	}
+}
+
+type checkQuizRequest struct {
+	UserAnswers []checkQuestionRequest `json:"user_answers"`
+}
+
+type checkQuestionRequest struct {
+	QuestionID int    `json:"question_id"`
+	Answer     string `json:"answer"`
+}
+
+func (r *checkQuestionRequest) convert() *models.UserAnswer {
+	return &models.UserAnswer{
+		QuestionID: r.QuestionID,
+		UserAnswer: r.Answer,
+	}
+}
+
+func (r *checkQuizRequest) convert() []*models.UserAnswer {
+	return lo.Map(r.UserAnswers, func(item checkQuestionRequest, _ int) *models.UserAnswer {
+		return item.convert()
+	})
 }
