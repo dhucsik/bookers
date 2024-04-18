@@ -787,7 +787,7 @@ definitions:
       city:
         type: string
     type: object
-host: localhost:8080
+host: bookers.kz
 info:
   contact: {}
   description: bookers server.
