@@ -80,7 +80,7 @@ func (r *repository) GetUsersByIDs(ctx context.Context, ids []int) ([]*models.Us
 	var out []*models.User
 	for rows.Next() {
 		model := &userModel{}
-		if err := rows.Scan(&model.ID, &model.Username, &model.Email, &model.Password, &model.Role, &model.City); err != nil {
+		if err := rows.Scan(&model.ID, &model.Username, &model.Email, &model.Role, &model.City); err != nil {
 			return nil, err
 		}
 

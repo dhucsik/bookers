@@ -58,12 +58,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/admin.createAuthorResponse"
+                        }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -105,12 +108,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -154,30 +160,33 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/admin.createAuthorResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -221,30 +230,33 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/admin.createAuthorResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -286,12 +298,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/admin.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -331,13 +346,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/auth.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/auth.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -377,13 +392,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/auth.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/auth.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -434,13 +449,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid limit or offset",
                         "schema": {
-                            "$ref": "#/definitions/authors.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/authors.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -491,13 +506,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid limit or offset",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -548,24 +563,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -605,12 +623,70 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/books/request": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get requests",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "requests"
+                ],
+                "summary": "Get requests",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/books.listRequestsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -654,25 +730,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/models.RequestWithFields"
+                            "$ref": "#/definitions/books.getRequestResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -714,24 +790,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -773,24 +852,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -841,24 +923,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -900,82 +985,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/books/requests": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Get requests",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "requests"
-                ],
-                "summary": "Get requests",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.RequestWithFields"
-                            }
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1012,22 +1042,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.StockBookWithFields"
-                            }
+                            "$ref": "#/definitions/books.getStockBookResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1078,28 +1105,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Success",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/books.uploadStockBookResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1131,19 +1155,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/books.bookResponse"
+                            "$ref": "#/definitions/books.getBookResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1175,22 +1199,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.BookComment"
-                            }
+                            "$ref": "#/definitions/books.listCommentsResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1239,30 +1260,87 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/books.createResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
             }
         },
         "/books/{id}/quizzes": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List quizzes by book",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "books"
+                ],
+                "summary": "List quizzes by book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Book ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/books.listQuizzesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -1307,24 +1385,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/books.createResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1375,24 +1456,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1434,24 +1518,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/books.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1480,7 +1567,76 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/categories.errorResponse"
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/quizzes": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List quizzes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "List quizzes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/quizzes.listQuizzesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1531,24 +1687,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1588,24 +1747,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1656,24 +1818,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1713,24 +1878,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1767,22 +1935,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.QuizResultWithFields"
-                            }
+                            "$ref": "#/definitions/quizzes.getQuizResultsResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1826,25 +1991,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/models.QuizQuestionWithFields"
+                            "$ref": "#/definitions/quizzes.getQuizResultResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1888,25 +2053,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/models.QuizWithFields"
+                            "$ref": "#/definitions/quizzes.getQuizResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1955,24 +2120,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2012,24 +2180,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2082,25 +2253,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/models.QuizWithQuestionResults"
+                            "$ref": "#/definitions/quizzes.checkQuizResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2144,28 +2315,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.QuizComment"
-                            }
+                            "$ref": "#/definitions/quizzes.listCommentsResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2214,24 +2382,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/quizzes.createResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2281,25 +2452,28 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Success"
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/quizzes.createResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2350,24 +2524,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2375,6 +2552,11 @@ const docTemplate = `{
         },
         "/quizzes/{id}/view": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "View quiz",
                 "consumes": [
                     "application/json"
@@ -2388,6 +2570,13 @@ const docTemplate = `{
                 "summary": "View quiz",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
                         "description": "Quiz ID",
                         "name": "id",
@@ -2399,19 +2588,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/models.QuizWithFields"
+                            "$ref": "#/definitions/quizzes.getQuizResponse"
                         }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/quizzes.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2451,13 +2640,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/users.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/users.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2507,13 +2696,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/users.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/users.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2553,18 +2742,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/users.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/users.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2615,18 +2807,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
                     "400": {
                         "description": "Bad request",
                         "schema": {
-                            "$ref": "#/definitions/users.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
-                            "$ref": "#/definitions/users.errorResponse"
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -2639,6 +2834,31 @@ const docTemplate = `{
             "properties": {
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "admin.createAuthorResp": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "admin.createAuthorResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/admin.createAuthorResp"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         },
@@ -2685,14 +2905,6 @@ const docTemplate = `{
                 }
             }
         },
-        "admin.errorResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
         "auth.authRequest": {
             "type": "object",
             "properties": {
@@ -2704,7 +2916,7 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.authResponse": {
+        "auth.authResp": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -2718,11 +2930,20 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.errorResponse": {
+        "auth.authResponse": {
             "type": "object",
             "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
                 "message": {
                     "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/auth.authResp"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         },
@@ -2745,15 +2966,7 @@ const docTemplate = `{
                 }
             }
         },
-        "authors.errorResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "authors.listAuthorsResponse": {
+        "authors.listAuthorsResp": {
             "type": "object",
             "properties": {
                 "authors": {
@@ -2761,6 +2974,26 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/authors.authorItemResponse"
                     }
+                },
+                "total_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "authors.listAuthorsResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/authors.listAuthorsResp"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         },
@@ -2843,15 +3076,86 @@ const docTemplate = `{
                 }
             }
         },
-        "books.errorResponse": {
+        "books.createResp": {
             "type": "object",
             "properties": {
-                "message": {
-                    "type": "string"
+                "id": {
+                    "type": "integer"
                 }
             }
         },
-        "books.listBooksResponse": {
+        "books.createResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/books.createResp"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "books.getBookResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/books.bookResponse"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "books.getRequestResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "request": {
+                    "$ref": "#/definitions/models.RequestWithFields"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "books.getStockBookResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.StockBookWithFields"
+                    }
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "books.listBooksResp": {
             "type": "object",
             "properties": {
                 "books": {
@@ -2859,6 +3163,86 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/books.bookResponse"
                     }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "books.listBooksResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/books.listBooksResp"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "books.listCommentsResponse": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.BookComment"
+                    }
+                },
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "books.listQuizzesResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.QuizWithBase"
+                    }
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "books.listRequestsResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "requests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RequestWithFields"
+                    }
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         },
@@ -2886,6 +3270,34 @@ const docTemplate = `{
                 }
             }
         },
+        "books.uploadStockBookResp": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "books.uploadStockBookResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/books.uploadStockBookResp"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
         "categories.categoryItemResponse": {
             "type": "object",
             "properties": {
@@ -2893,14 +3305,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "categories.errorResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
                     "type": "string"
                 }
             }
@@ -2913,6 +3317,15 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/categories.categoryItemResponse"
                     }
+                },
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         },
@@ -3106,6 +3519,32 @@ const docTemplate = `{
                 }
             }
         },
+        "models.QuizWithBase": {
+            "type": "object",
+            "properties": {
+                "book": {
+                    "$ref": "#/definitions/models.Book"
+                },
+                "book_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.UserWithoutPassword"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.QuizWithFields": {
             "type": "object",
             "properties": {
@@ -3274,11 +3713,150 @@ const docTemplate = `{
                 }
             }
         },
-        "quizzes.errorResponse": {
+        "quizzes.checkQuizResponse": {
             "type": "object",
             "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
                 "message": {
                     "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/models.QuizWithQuestionResults"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "quizzes.createResp": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "quizzes.createResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/quizzes.createResp"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "quizzes.getQuizResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/models.QuizWithFields"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "quizzes.getQuizResultResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/models.QuizQuestionWithFields"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "quizzes.getQuizResultsResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.QuizResultWithFields"
+                    }
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "quizzes.listCommentsResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.QuizComment"
+                    }
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "quizzes.listQuizzesResp": {
+            "type": "object",
+            "properties": {
+                "quizzes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.QuizWithBase"
+                    }
+                },
+                "total_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "quizzes.listQuizzesResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/quizzes.listQuizzesResp"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         },
@@ -3323,6 +3901,20 @@ const docTemplate = `{
                 }
             }
         },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
         "users.createUserRequest": {
             "type": "object",
             "properties": {
@@ -3337,7 +3929,7 @@ const docTemplate = `{
                 }
             }
         },
-        "users.createUserResponse": {
+        "users.createUserResp": {
             "type": "object",
             "properties": {
                 "email": {
@@ -3349,23 +3941,29 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
-                "role": {
-                    "type": "string"
-                },
                 "username": {
                     "type": "string"
                 }
             }
         },
-        "users.errorResponse": {
+        "users.createUserResponse": {
             "type": "object",
             "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
                 "message": {
                     "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/users.createUserResp"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         },
-        "users.getUserByIDResponse": {
+        "users.getUserByIDResp": {
             "type": "object",
             "properties": {
                 "city": {
@@ -3382,6 +3980,23 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "users.getUserByIDResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "$ref": "#/definitions/users.getUserByIDResp"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         },
@@ -3399,7 +4014,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "bookers.kz",
+	Host:             "localhost:8080",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Swagger Bookers API",

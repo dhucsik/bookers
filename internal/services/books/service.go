@@ -17,15 +17,15 @@ import (
 )
 
 type Service interface {
-	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error
+	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) (int, error)
 	GetBookByID(ctx context.Context, id int) (*models.BookWithFields, error)
-	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.BookWithFields, error)
+	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.BookWithFields, int, error)
 	SetRating(ctx context.Context, rating *models.BookRating) error
 	ListComments(ctx context.Context, bookID int) ([]*models.BookComment, error)
-	AddComment(ctx context.Context, comment *models.BookComment) error
+	AddComment(ctx context.Context, comment *models.BookComment) (int, error)
 	UpdateComment(ctx context.Context, comment *models.BookComment) error
 	DeleteComment(ctx context.Context, commentID, userID int) error
-	UploadStockBook(ctx context.Context, book *models.UploadStockBook) (string, error)
+	UploadStockBook(ctx context.Context, book *models.UploadStockBook) (int, string, error)
 	ApproveRequest(ctx context.Context, userID, id int) error
 	SenderAccepted(ctx context.Context, userID, id int) error
 	ReceiverRequested(ctx context.Context, stockBookID, userID, id int) error
@@ -74,7 +74,7 @@ func NewService(
 	}, nil
 }
 
-func (s *service) CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error {
+func (s *service) CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) (int, error) {
 	return s.bookRepo.CreateBook(ctx, book, authorIDs, categoryIDs)
 }
 
@@ -101,10 +101,10 @@ func (s *service) GetBookByID(ctx context.Context, id int) (*models.BookWithFiel
 	}, nil
 }
 
-func (s *service) ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.BookWithFields, error) {
-	books, err := s.bookRepo.ListBooks(ctx, search, limit, offset)
+func (s *service) ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.BookWithFields, int, error) {
+	books, totalCount, err := s.bookRepo.ListBooks(ctx, search, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	ids := lo.Map(books, func(book *models.Book, _ int) int {
@@ -113,12 +113,12 @@ func (s *service) ListBooks(ctx context.Context, search string, limit, offset in
 
 	authors, err := s.authorRepo.GetByBookIDs(ctx, ids)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	categories, err := s.categoryRepo.GetByBookIDs(ctx, ids)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	out := lo.Map(books, func(book *models.Book, _ int) *models.BookWithFields {
@@ -129,10 +129,10 @@ func (s *service) ListBooks(ctx context.Context, search string, limit, offset in
 		}
 	})
 
-	return out, nil
+	return out, totalCount, nil
 }
 
-func (s *service) AddComment(ctx context.Context, comment *models.BookComment) error {
+func (s *service) AddComment(ctx context.Context, comment *models.BookComment) (int, error) {
 	return s.bookRepo.InsertComment(ctx, comment.BookID, comment.UserID, comment.Comment)
 }
 
@@ -143,7 +143,7 @@ func (s *service) UpdateComment(ctx context.Context, comment *models.BookComment
 	}
 
 	if com.UserID != comment.UserID {
-		return errors.ErrForbidden
+		return errors.ErrForbiddenForUser
 	}
 
 	return s.bookRepo.UpdateComment(ctx, comment.ID, comment.Comment)
@@ -161,7 +161,7 @@ func (s *service) DeleteComment(ctx context.Context, commentID, userID int) erro
 	}
 
 	if comment.UserID != userID {
-		return errors.ErrForbidden
+		return errors.ErrForbiddenForUser
 	}
 
 	return s.bookRepo.DeleteComment(ctx, commentID)

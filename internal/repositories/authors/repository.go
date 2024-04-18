@@ -9,8 +9,8 @@ import (
 )
 
 type Repository interface {
-	ListAuthors(ctx context.Context, search string, limit, offset int) ([]*models.Author, error)
-	CreateAuthor(ctx context.Context, author *models.Author) error
+	ListAuthors(ctx context.Context, search string, limit, offset int) ([]*models.Author, int, error)
+	CreateAuthor(ctx context.Context, author *models.Author) (int, error)
 	DeleteAuthor(ctx context.Context, id int) error
 	GetByBookID(ctx context.Context, bookID int) ([]*models.Author, error)
 	GetByBookIDs(ctx context.Context, bookIDs []int) (map[int][]*models.Author, error)
@@ -26,29 +26,31 @@ func NewRepository(db *pgxpool.Pool) Repository {
 	}
 }
 
-func (r *repository) ListAuthors(ctx context.Context, search string, limit, offset int) ([]*models.Author, error) {
+func (r *repository) ListAuthors(ctx context.Context, search string, limit, offset int) ([]*models.Author, int, error) {
+	var totalCount int
 	rows, err := r.db.Query(ctx, listAuthorsStmt, search, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
 	var out authorModels
 	for rows.Next() {
 		author := &authorModel{}
-		if err := rows.Scan(&author.ID, &author.Name); err != nil {
-			return nil, err
+		if err := rows.Scan(&author.ID, &author.Name, &totalCount); err != nil {
+			return nil, 0, err
 		}
 
 		out = append(out, author)
 	}
 
-	return out.convert(), nil
+	return out.convert(), totalCount, nil
 }
 
-func (r *repository) CreateAuthor(ctx context.Context, author *models.Author) error {
-	_, err := r.db.Exec(ctx, createAuthorStmt, author.Name)
-	return err
+func (r *repository) CreateAuthor(ctx context.Context, author *models.Author) (int, error) {
+	var id int
+	err := r.db.QueryRow(ctx, createAuthorStmt, author.Name).Scan(&id)
+	return id, err
 }
 
 func (r *repository) DeleteAuthor(ctx context.Context, id int) error {

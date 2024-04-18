@@ -4,7 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -17,26 +19,26 @@ import (
 // @Security ApiKeyAuth
 // @Param Authorization header string true "Authorization"
 // @Param id path int true "quiz ID"
-// @Success 200 {object} nil "Success"
-// @Failure 400 {object} errorResponse "Bad request"
-// @Failure 401 {object} errorResponse "Unauthorized"
-// @Failure 500 {object} errorResponse "Internal server error"
+// @Success 200 {object} response.Response "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
 // @Router /quizzes/{id} [delete]
 func (c *Controller) deleteQuizHandler(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
-		return ctx.JSON(http.StatusUnauthorized, newErrorResponse("session not found"))
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
 	}
 
 	quizIDStr := ctx.Param("id")
 	quizID, err := strconv.Atoi(quizIDStr)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, newErrorResponse(err.Error()))
+		return response.NewBadRequest(ctx, err)
 	}
 
 	if err := c.quizService.DeleteQuiz(ctx.Request().Context(), session.UserID, quizID); err != nil {
-		return ctx.JSON(http.StatusInternalServerError, newErrorResponse(err.Error()))
+		return response.NewErrorResponse(ctx, err)
 	}
 
-	return ctx.JSON(http.StatusOK, nil)
+	return ctx.JSON(http.StatusOK, response.NewResponse())
 }

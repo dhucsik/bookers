@@ -2,17 +2,52 @@ package quizzes
 
 import (
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/samber/lo"
 )
 
-type errorResponse struct {
-	Message string `json:"message"`
+type createResponse struct {
+	response.Response
+	Result createResp `json:"result"`
 }
 
-func newErrorResponse(message string) errorResponse {
-	return errorResponse{
-		Message: message,
-	}
+type createResp struct {
+	ID int `json:"id"`
+}
+
+type listQuizzesResponse struct {
+	response.Response
+	Result listQuizzesResp `json:"result"`
+}
+
+type listQuizzesResp struct {
+	Quizzes    []*models.QuizWithBase `json:"quizzes"`
+	TotalCount int                    `json:"total_count"`
+}
+
+type listCommentsResponse struct {
+	response.Response
+	Result []*models.QuizComment `json:"result"`
+}
+
+type getQuizResponse struct {
+	response.Response
+	Result *models.QuizWithFields `json:"result"`
+}
+
+type checkQuizResponse struct {
+	response.Response
+	Result *models.QuizWithQuestionResults
+}
+
+type getQuizResultsResponse struct {
+	response.Response
+	Result []*models.QuizResultWithFields
+}
+
+type getQuizResultResponse struct {
+	response.Response
+	Result *models.QuizQuestionWithFields
 }
 
 type updateQuizRequest struct {

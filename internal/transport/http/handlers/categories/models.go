@@ -2,6 +2,7 @@ package categories
 
 import (
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/samber/lo"
 )
 
@@ -16,7 +17,8 @@ func newErrorResponse(message string) errorResponse {
 }
 
 type listCategoriesResponse struct {
-	Categories []*categoryItemResponse `json:"categories"`
+	response.Response
+	Result []*categoryItemResponse `json:"categories"`
 }
 
 type categoryItemResponse struct {
@@ -33,6 +35,7 @@ func newListCategoriesResponse(categories []*models.Category) listCategoriesResp
 	})
 
 	return listCategoriesResponse{
-		Categories: out,
+		Response: response.NewResponse(),
+		Result:   out,
 	}
 }

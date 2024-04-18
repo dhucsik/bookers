@@ -3,7 +3,9 @@ package admin
 import (
 	"net/http"
 
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,27 +18,31 @@ import (
 // @Security ApiKeyAuth
 // @Param Authorization header string true "Authorization"
 // @Param request body createAuthorRequest true "request"
-// @Success 200 {object} nil "Success"
-// @Failure 500 {object} errorResponse "Internal server error"
+// @Success 200 {object} createAuthorResponse "Success"
+// @Failure 500 {object} response.Response "Internal server error"
 // @Router /admin/authors [post]
 func (c *Controller) createAuthor(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
-		return ctx.JSON(http.StatusUnauthorized, newErrorResponse("session not found"))
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
 	}
 
 	if session.Role != "admin" {
-		return ctx.JSON(http.StatusForbidden, newErrorResponse("forbidden"))
+		return response.NewErrorResponse(ctx, errors.ErrForbiddenForRole)
 	}
 
 	var req createAuthorRequest
 	if err := ctx.Bind(&req); err != nil {
-		return ctx.JSON(http.StatusBadRequest, newErrorResponse(err.Error()))
+		return response.NewBadRequest(ctx, err)
 	}
 
-	if err := c.authorService.CreateAuthor(ctx.Request().Context(), req.convert()); err != nil {
-		return ctx.JSON(http.StatusInternalServerError, newErrorResponse(err.Error()))
+	id, err := c.authorService.CreateAuthor(ctx.Request().Context(), req.convert())
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
 	}
 
-	return ctx.JSON(http.StatusOK, nil)
+	return ctx.JSON(http.StatusOK, createAuthorResponse{
+		Response: response.NewResponse(),
+		Result:   newCreateAuthorResp(id),
+	})
 }

@@ -8,7 +8,9 @@ const (
 
 	createBookCategoryStmt = `INSERT INTO books_categories (book_id, category_id) VALUES ($1, $2)`
 
-	listBooksStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating, b.image, b.description
+	countBooksStmt = `SELECT COUNT(*) FROM books`
+
+	listBooksStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating, b.image, b.description, COUNT(*) OVER()
 	FROM books b 
 	WHERE b.title ILIKE '%' || $1 || '%'
 	ORDER BY b.id
@@ -20,7 +22,7 @@ const (
 	getBooksByIDsStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating, b.image, b.description
 	FROM books b WHERE b.id = ANY($1)`
 
-	insertCommentStmt = `INSERT INTO book_comments (book_id, user_id, comment) VALUES ($1, $2, $3)`
+	insertCommentStmt = `INSERT INTO book_comments (book_id, user_id, comment) VALUES ($1, $2, $3) RETURNING id`
 
 	updateCommentStmt = `UPDATE book_comments SET comment = $2, updated_at = NOW() WHERE id = $1`
 

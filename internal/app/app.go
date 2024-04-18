@@ -115,7 +115,7 @@ func (a *App) InitServices(_ context.Context) error {
 	if err != nil {
 		return err
 	}
-	a.quizzesService = quizzesS.NewService(a.quizzesRepository)
+	a.quizzesService = quizzesS.NewService(a.quizzesRepository, a.booksRepository, a.usersRepository)
 
 	return nil
 }

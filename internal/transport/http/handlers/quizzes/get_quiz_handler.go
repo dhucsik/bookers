@@ -4,7 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -17,27 +19,70 @@ import (
 // @Security ApiKeyAuth
 // @Param Authorization header string true "Authorization"
 // @Param id path int true "quiz ID"
-// @Success 200 {object} models.QuizWithFields "Success"
-// @Failure 400 {object} errorResponse "Bad request"
-// @Failure 401 {object} errorResponse "Unauthorized"
-// @Failure 500 {object} errorResponse "Internal server error"
+// @Success 200 {object} getQuizResponse "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
 // @Router /quizzes/{id} [get]
 func (c *Controller) getQuizHandler(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
-		return ctx.JSON(http.StatusUnauthorized, newErrorResponse("session not found"))
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
 	}
 
 	quizIDStr := ctx.Param("id")
 	quizID, err := strconv.Atoi(quizIDStr)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, newErrorResponse(err.Error()))
+		return response.NewBadRequest(ctx, err)
 	}
 
 	quiz, err := c.quizService.GetQuiz(ctx.Request().Context(), session.UserID, quizID)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, newErrorResponse(err.Error()))
+		return response.NewErrorResponse(ctx, err)
 	}
 
-	return ctx.JSON(http.StatusOK, quiz)
+	return ctx.JSON(http.StatusOK, getQuizResponse{
+		Response: response.NewResponse(),
+		Result:   quiz,
+	})
+}
+
+// listQuizzesHandler godoc
+// @Summary List quizzes
+// @Description List quizzes
+// @Tags quizzes
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
+// @Param limit query int true "limit"
+// @Param offset query int true "offset"
+// @Success 200 {object} listQuizzesResponse "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /quizzes [get]
+func (c *Controller) listQuizzesHandler(ctx echo.Context) error {
+	limitStr := ctx.QueryParam("limit")
+	offsetStr := ctx.QueryParam("offset")
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		return response.NewBadRequest(ctx, err)
+	}
+
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil {
+		return response.NewBadRequest(ctx, err)
+	}
+
+	quizzes, totalCount, err := c.quizService.ListQuizzes(ctx.Request().Context(), limit, offset)
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
+	}
+
+	return ctx.JSON(http.StatusOK, listQuizzesResponse{
+		Response: response.NewResponse(),
+		Result:   listQuizzesResp{Quizzes: quizzes, TotalCount: totalCount},
+	})
 }

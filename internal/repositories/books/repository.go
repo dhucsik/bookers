@@ -9,12 +9,12 @@ import (
 )
 
 type Repository interface {
-	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error
-	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, error)
+	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) (int, error)
+	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, int, error)
 	GetBookByID(ctx context.Context, id int) (*models.Book, error)
 	GetBooksByIDs(ctx context.Context, ids []int) ([]*models.Book, error)
 	SetRating(ctx context.Context, bookID, userID, rating int) error
-	InsertComment(ctx context.Context, bookID, userID int, comment string) error
+	InsertComment(ctx context.Context, bookID, userID int, comment string) (int, error)
 	UpdateComment(ctx context.Context, id int, comment string) error
 	ListComments(ctx context.Context, bookID int) ([]*models.BookComment, error)
 	DeleteComment(ctx context.Context, id int) error
@@ -39,23 +39,23 @@ func NewRepository(db *pgxpool.Pool) Repository {
 	}
 }
 
-func (r *repository) CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) error {
+func (r *repository) CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) (int, error) {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	err = tx.QueryRow(ctx, createBookStmt, book.Title, book.PubDate, book.Edition, book.Language, book.Rating, book.Image, book.Description).Scan(&book.ID)
 	if err != nil {
 		tx.Rollback(ctx)
-		return err
+		return 0, err
 	}
 
 	for _, authorID := range authorIDs {
 		_, err = tx.Exec(ctx, createBookAuthorStmt, book.ID, authorID)
 		if err != nil {
 			tx.Rollback(ctx)
-			return err
+			return 0, err
 		}
 	}
 
@@ -63,31 +63,38 @@ func (r *repository) CreateBook(ctx context.Context, book *models.Book, authorID
 		_, err = tx.Exec(ctx, createBookCategoryStmt, book.ID, categoryID)
 		if err != nil {
 			tx.Rollback(ctx)
-			return err
+			return 0, err
 		}
 	}
 
-	return tx.Commit(ctx)
+	err = tx.Commit(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	return book.ID, nil
 }
 
-func (r *repository) ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, error) {
+func (r *repository) ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, int, error) {
+	var totalCount int
+
 	rows, err := r.db.Query(ctx, listBooksStmt, search, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
 	var out bookModels
 	for rows.Next() {
 		book := &bookModel{}
-		if err := rows.Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating, &book.Image, &book.Description); err != nil {
-			return nil, err
+		if err := rows.Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating, &book.Image, &book.Description, &totalCount); err != nil {
+			return nil, 0, err
 		}
 
 		out = append(out, book)
 	}
 
-	return out.convert(), nil
+	return out.convert(), totalCount, nil
 }
 
 func (r *repository) GetBookByID(ctx context.Context, id int) (*models.Book, error) {
@@ -120,9 +127,10 @@ func (r *repository) GetBooksByIDs(ctx context.Context, ids []int) ([]*models.Bo
 	return out.convert(), nil
 }
 
-func (r *repository) InsertComment(ctx context.Context, bookID, userID int, comment string) error {
-	_, err := r.db.Exec(ctx, insertCommentStmt, bookID, userID, comment)
-	return err
+func (r *repository) InsertComment(ctx context.Context, bookID, userID int, comment string) (int, error) {
+	var id int
+	err := r.db.QueryRow(ctx, insertCommentStmt, bookID, userID, comment).Scan(&id)
+	return id, err
 }
 
 func (r *repository) UpdateComment(ctx context.Context, id int, comment string) error {

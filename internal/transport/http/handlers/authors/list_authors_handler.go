@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -17,28 +18,27 @@ import (
 // @Param offset query int true "Offset"
 // @Param search query string false "Search"
 // @Success 200 {object} listAuthorsResponse "Success"
-// @Failure 400 {object} errorResponse "Invalid limit or offset"
-// @Failure 500 {object} errorResponse "Internal server error"
+// @Failure 400 {object} response.Response "Invalid limit or offset"
+// @Failure 500 {object} response.Response "Internal server error"
 // @Router /authors [get]
 func (c *Controller) listAuthors(ctx echo.Context) error {
 	limitStr := ctx.QueryParam("limit")
 	limit, err := strconv.Atoi(limitStr)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, newErrorResponse("invalid limit"))
+		return response.NewBadRequest(ctx, err)
 	}
 
 	search := ctx.QueryParam("search")
 	offsetStr := ctx.QueryParam("offset")
 	offset, err := strconv.Atoi(offsetStr)
-
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, newErrorResponse("invalid offset"))
+		return response.NewBadRequest(ctx, err)
 	}
 
-	authors, err := c.authorsService.ListAuthors(ctx.Request().Context(), search, limit, offset)
+	authors, totalCount, err := c.authorsService.ListAuthors(ctx.Request().Context(), search, limit, offset)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, newErrorResponse(err.Error()))
+		return response.NewErrorResponse(ctx, err)
 	}
 
-	return ctx.JSON(http.StatusOK, newListAuthorsResponse(authors))
+	return ctx.JSON(http.StatusOK, newListAuthorsResponse(authors, totalCount))
 }

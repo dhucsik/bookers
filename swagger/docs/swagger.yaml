@@ -5,6 +5,22 @@ definitions:
       name:
         type: string
     type: object
+  admin.createAuthorResp:
+    properties:
+      id:
+        type: integer
+    type: object
+  admin.createAuthorResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/admin.createAuthorResp'
+      status_code:
+        type: integer
+    type: object
   admin.createBookRequest:
     properties:
       author_ids:
@@ -33,11 +49,6 @@ definitions:
       name:
         type: string
     type: object
-  admin.errorResponse:
-    properties:
-      message:
-        type: string
-    type: object
   auth.authRequest:
     properties:
       password:
@@ -45,7 +56,7 @@ definitions:
       username:
         type: string
     type: object
-  auth.authResponse:
+  auth.authResp:
     properties:
       access_token:
         type: string
@@ -54,10 +65,16 @@ definitions:
       user:
         $ref: '#/definitions/models.UserWithoutPassword'
     type: object
-  auth.errorResponse:
+  auth.authResponse:
     properties:
+      inner_code:
+        type: string
       message:
         type: string
+      result:
+        $ref: '#/definitions/auth.authResp'
+      status_code:
+        type: integer
     type: object
   auth.refreshRequest:
     properties:
@@ -71,17 +88,25 @@ definitions:
       name:
         type: string
     type: object
-  authors.errorResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  authors.listAuthorsResponse:
+  authors.listAuthorsResp:
     properties:
       authors:
         items:
           $ref: '#/definitions/authors.authorItemResponse'
         type: array
+      total_count:
+        type: integer
+    type: object
+  authors.listAuthorsResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/authors.listAuthorsResp'
+      status_code:
+        type: integer
     type: object
   books.addCommentRequest:
     properties:
@@ -134,17 +159,115 @@ definitions:
       title:
         type: string
     type: object
-  books.errorResponse:
+  books.createResp:
     properties:
+      id:
+        type: integer
+    type: object
+  books.createResponse:
+    properties:
+      inner_code:
+        type: string
       message:
         type: string
+      result:
+        $ref: '#/definitions/books.createResp'
+      status_code:
+        type: integer
     type: object
-  books.listBooksResponse:
+  books.getBookResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/books.bookResponse'
+      status_code:
+        type: integer
+    type: object
+  books.getRequestResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      request:
+        $ref: '#/definitions/models.RequestWithFields'
+      status_code:
+        type: integer
+    type: object
+  books.getStockBookResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        items:
+          $ref: '#/definitions/models.StockBookWithFields'
+        type: array
+      status_code:
+        type: integer
+    type: object
+  books.listBooksResp:
     properties:
       books:
         items:
           $ref: '#/definitions/books.bookResponse'
         type: array
+      total:
+        type: integer
+    type: object
+  books.listBooksResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/books.listBooksResp'
+      status_code:
+        type: integer
+    type: object
+  books.listCommentsResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/models.BookComment'
+        type: array
+      inner_code:
+        type: string
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+  books.listQuizzesResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        items:
+          $ref: '#/definitions/models.QuizWithBase'
+        type: array
+      status_code:
+        type: integer
+    type: object
+  books.listRequestsResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      requests:
+        items:
+          $ref: '#/definitions/models.RequestWithFields'
+        type: array
+      status_code:
+        type: integer
     type: object
   books.requestReceived:
     properties:
@@ -161,16 +284,29 @@ definitions:
       comment:
         type: string
     type: object
+  books.uploadStockBookResp:
+    properties:
+      id:
+        type: integer
+      image_url:
+        type: string
+    type: object
+  books.uploadStockBookResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/books.uploadStockBookResp'
+      status_code:
+        type: integer
+    type: object
   categories.categoryItemResponse:
     properties:
       id:
         type: integer
       name:
-        type: string
-    type: object
-  categories.errorResponse:
-    properties:
-      message:
         type: string
     type: object
   categories.listCategoriesResponse:
@@ -179,6 +315,12 @@ definitions:
         items:
           $ref: '#/definitions/categories.categoryItemResponse'
         type: array
+      inner_code:
+        type: string
+      message:
+        type: string
+      status_code:
+        type: integer
     type: object
   models.Book:
     properties:
@@ -304,6 +446,23 @@ definitions:
       user_id:
         type: integer
     type: object
+  models.QuizWithBase:
+    properties:
+      book:
+        $ref: '#/definitions/models.Book'
+      book_id:
+        type: integer
+      id:
+        type: integer
+      rating:
+        type: number
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/models.UserWithoutPassword'
+      user_id:
+        type: integer
+    type: object
   models.QuizWithFields:
     properties:
       book:
@@ -413,10 +572,100 @@ definitions:
           $ref: '#/definitions/quizzes.checkQuestionRequest'
         type: array
     type: object
-  quizzes.errorResponse:
+  quizzes.checkQuizResponse:
     properties:
+      inner_code:
+        type: string
       message:
         type: string
+      result:
+        $ref: '#/definitions/models.QuizWithQuestionResults'
+      status_code:
+        type: integer
+    type: object
+  quizzes.createResp:
+    properties:
+      id:
+        type: integer
+    type: object
+  quizzes.createResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/quizzes.createResp'
+      status_code:
+        type: integer
+    type: object
+  quizzes.getQuizResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/models.QuizWithFields'
+      status_code:
+        type: integer
+    type: object
+  quizzes.getQuizResultResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/models.QuizQuestionWithFields'
+      status_code:
+        type: integer
+    type: object
+  quizzes.getQuizResultsResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        items:
+          $ref: '#/definitions/models.QuizResultWithFields'
+        type: array
+      status_code:
+        type: integer
+    type: object
+  quizzes.listCommentsResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        items:
+          $ref: '#/definitions/models.QuizComment'
+        type: array
+      status_code:
+        type: integer
+    type: object
+  quizzes.listQuizzesResp:
+    properties:
+      quizzes:
+        items:
+          $ref: '#/definitions/models.QuizWithBase'
+        type: array
+      total_count:
+        type: integer
+    type: object
+  quizzes.listQuizzesResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/quizzes.listQuizzesResp'
+      status_code:
+        type: integer
     type: object
   quizzes.setRatingRequest:
     properties:
@@ -444,6 +693,15 @@ definitions:
       title:
         type: string
     type: object
+  response.Response:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
   users.createUserRequest:
     properties:
       email:
@@ -453,7 +711,7 @@ definitions:
       username:
         type: string
     type: object
-  users.createUserResponse:
+  users.createUserResp:
     properties:
       email:
         type: string
@@ -461,17 +719,21 @@ definitions:
         type: integer
       password:
         type: string
-      role:
-        type: string
       username:
         type: string
     type: object
-  users.errorResponse:
+  users.createUserResponse:
     properties:
+      inner_code:
+        type: string
       message:
         type: string
+      result:
+        $ref: '#/definitions/users.createUserResp'
+      status_code:
+        type: integer
     type: object
-  users.getUserByIDResponse:
+  users.getUserByIDResp:
     properties:
       city:
         type: string
@@ -484,12 +746,23 @@ definitions:
       username:
         type: string
     type: object
+  users.getUserByIDResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/users.getUserByIDResp'
+      status_code:
+        type: integer
+    type: object
   users.setCityRequest:
     properties:
       city:
         type: string
     type: object
-host: bookers.kz
+host: localhost:8080
 info:
   contact: {}
   description: bookers server.
@@ -522,10 +795,12 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/admin.createAuthorResponse'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Create author
@@ -552,10 +827,12 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Delete author
@@ -583,22 +860,24 @@ paths:
       responses:
         "201":
           description: Success
+          schema:
+            $ref: '#/definitions/admin.createAuthorResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Create book
@@ -626,22 +905,24 @@ paths:
       responses:
         "201":
           description: Success
+          schema:
+            $ref: '#/definitions/admin.createAuthorResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Create category
@@ -668,10 +949,12 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/admin.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Delete category
@@ -699,11 +982,11 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/auth.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/auth.errorResponse'
+            $ref: '#/definitions/response.Response'
       summary: Authenticate user
       tags:
       - auth
@@ -729,11 +1012,11 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/auth.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/auth.errorResponse'
+            $ref: '#/definitions/response.Response'
       summary: Refresh token
       tags:
       - auth
@@ -767,11 +1050,11 @@ paths:
         "400":
           description: Invalid limit or offset
           schema:
-            $ref: '#/definitions/authors.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/authors.errorResponse'
+            $ref: '#/definitions/response.Response'
       summary: List authors
       tags:
       - authors
@@ -805,11 +1088,11 @@ paths:
         "400":
           description: Invalid limit or offset
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       summary: List books
       tags:
       - books
@@ -830,15 +1113,15 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/books.bookResponse'
+            $ref: '#/definitions/books.getBookResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       summary: Get book by ID
       tags:
       - books
@@ -859,17 +1142,15 @@ paths:
         "200":
           description: Success
           schema:
-            items:
-              $ref: '#/definitions/models.BookComment'
-            type: array
+            $ref: '#/definitions/books.listCommentsResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       summary: List comments
       tags:
       - books
@@ -899,24 +1180,61 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/books.createResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Add comment
       tags:
       - books
   /books/{id}/quizzes:
+    get:
+      consumes:
+      - application/json
+      description: List quizzes by book
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.listQuizzesResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: List quizzes by book
+      tags:
+      - books
     post:
       consumes:
       - application/json
@@ -943,18 +1261,20 @@ paths:
       responses:
         "201":
           description: Success
+          schema:
+            $ref: '#/definitions/books.createResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Create quiz
@@ -987,18 +1307,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Set rating
@@ -1025,18 +1347,20 @@ paths:
       responses:
         "201":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Create request
@@ -1063,10 +1387,12 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Delete comment
@@ -1098,23 +1424,60 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Update comment request
       tags:
       - books
+  /books/request:
+    get:
+      consumes:
+      - application/json
+      description: Get requests
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.listRequestsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get requests
+      tags:
+      - requests
   /books/request/{id}:
     get:
       consumes:
@@ -1137,19 +1500,19 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/models.RequestWithFields'
+            $ref: '#/definitions/books.getRequestResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Get request
@@ -1176,18 +1539,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Approve request
@@ -1214,18 +1579,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Cancel request
@@ -1258,18 +1625,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Request received
@@ -1296,58 +1665,23 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Sender accepted
-      tags:
-      - requests
-  /books/requests:
-    get:
-      consumes:
-      - application/json
-      description: Get requests
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Success
-          schema:
-            items:
-              $ref: '#/definitions/models.RequestWithFields'
-            type: array
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/books.errorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/books.errorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/books.errorResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: Get requests
       tags:
       - requests
   /books/stock:
@@ -1367,17 +1701,15 @@ paths:
         "200":
           description: Success
           schema:
-            items:
-              $ref: '#/definitions/models.StockBookWithFields'
-            type: array
+            $ref: '#/definitions/books.getStockBookResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Get stock books
@@ -1410,21 +1742,19 @@ paths:
         "201":
           description: Success
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/books.uploadStockBookResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/books.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Upload stock book
@@ -1445,10 +1775,55 @@ paths:
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/categories.errorResponse'
+            $ref: '#/definitions/response.Response'
       summary: List categories
       tags:
       - categories
+  /quizzes:
+    get:
+      consumes:
+      - application/json
+      description: List quizzes
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/quizzes.listQuizzesResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: List quizzes
+      tags:
+      - quizzes
   /quizzes/{id}:
     delete:
       consumes:
@@ -1470,18 +1845,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Delete quiz
@@ -1508,19 +1885,19 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/models.QuizWithFields'
+            $ref: '#/definitions/quizzes.getQuizResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Get quiz
@@ -1552,18 +1929,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Update quiz
@@ -1597,19 +1976,19 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/models.QuizWithQuestionResults'
+            $ref: '#/definitions/quizzes.checkQuizResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Check quiz
@@ -1637,21 +2016,19 @@ paths:
         "200":
           description: Success
           schema:
-            items:
-              $ref: '#/definitions/models.QuizComment'
-            type: array
+            $ref: '#/definitions/quizzes.listCommentsResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: List comments
@@ -1683,18 +2060,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/quizzes.createResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Add comment
@@ -1725,20 +2104,22 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
+        "200":
           description: Success
+          schema:
+            $ref: '#/definitions/quizzes.createResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Add question
@@ -1771,18 +2152,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Set rating
@@ -1794,6 +2177,11 @@ paths:
       - application/json
       description: View quiz
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Quiz ID
         in: path
         name: id
@@ -1805,15 +2193,17 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/models.QuizWithFields'
+            $ref: '#/definitions/quizzes.getQuizResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
       summary: View quiz
       tags:
       - quizzes
@@ -1838,18 +2228,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Delete comment
@@ -1881,18 +2273,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Update comment request
@@ -1919,18 +2313,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Delete question
@@ -1962,18 +2358,20 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Update question
@@ -1996,17 +2394,15 @@ paths:
         "200":
           description: Success
           schema:
-            items:
-              $ref: '#/definitions/models.QuizResultWithFields'
-            type: array
+            $ref: '#/definitions/quizzes.getQuizResultsResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Get quiz results
@@ -2034,19 +2430,19 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/models.QuizQuestionWithFields'
+            $ref: '#/definitions/quizzes.getQuizResultResponse'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/quizzes.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Get quiz result
@@ -2074,11 +2470,11 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/users.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/users.errorResponse'
+            $ref: '#/definitions/response.Response'
       summary: Create user
       tags:
       - users
@@ -2103,14 +2499,16 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/users.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/users.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Delete user
@@ -2141,11 +2539,11 @@ paths:
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/users.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/users.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Get user by ID
@@ -2178,14 +2576,16 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
         "400":
           description: Bad request
           schema:
-            $ref: '#/definitions/users.errorResponse'
+            $ref: '#/definitions/response.Response'
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/users.errorResponse'
+            $ref: '#/definitions/response.Response'
       security:
       - ApiKeyAuth: []
       summary: Set city

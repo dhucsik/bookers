@@ -8,6 +8,12 @@ type Quiz struct {
 	Rating float64 `json:"rating"`
 }
 
+type QuizWithBase struct {
+	*Quiz
+	User *UserWithoutPassword `json:"user"`
+	Book *Book                `json:"book"`
+}
+
 type QuizWithFields struct {
 	*Quiz
 	User      *UserWithoutPassword `json:"user"`

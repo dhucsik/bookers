@@ -1,6 +1,9 @@
 package users
 
-import "github.com/dhucsik/bookers/internal/models"
+import (
+	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/util/response"
+)
 
 type errorResponse struct {
 	Message string `json:"message"`
@@ -27,20 +30,23 @@ func (r createUserRequest) convert() *models.User {
 }
 
 type createUserResponse struct {
+	response.Response
+	Result createUserResp `json:"result"`
+}
+
+type createUserResp struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	Role     string `json:"role"`
 }
 
-func newCreateUserResponse(user *models.User) createUserResponse {
-	return createUserResponse{
+func newCreateUserResponse(user *models.User) createUserResp {
+	return createUserResp{
 		ID:       user.ID,
 		Username: user.Username,
 		Email:    user.Email,
 		Password: user.Password,
-		Role:     user.Role,
 	}
 }
 
@@ -49,6 +55,11 @@ type setCityRequest struct {
 }
 
 type getUserByIDResponse struct {
+	response.Response
+	Result getUserByIDResp `json:"result"`
+}
+
+type getUserByIDResp struct {
 	ID       int     `json:"id"`
 	Username string  `json:"username"`
 	Email    string  `json:"email"`
@@ -56,8 +67,8 @@ type getUserByIDResponse struct {
 	City     *string `json:"city,omitempty"`
 }
 
-func newGetUserByIDResponse(user *models.User) getUserByIDResponse {
-	return getUserByIDResponse{
+func newGetUserByIDResponse(user *models.User) getUserByIDResp {
+	return getUserByIDResp{
 		ID:       user.ID,
 		Username: user.Username,
 		Email:    user.Email,

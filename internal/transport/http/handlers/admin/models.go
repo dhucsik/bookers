@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/util/response"
 )
 
 type createCategoryRequest struct {
@@ -24,14 +25,6 @@ func (r createAuthorRequest) convert() *models.Author {
 	return &models.Author{
 		Name: r.Name,
 	}
-}
-
-type errorResponse struct {
-	Message string `json:"message"`
-}
-
-func newErrorResponse(message string) errorResponse {
-	return errorResponse{Message: message}
 }
 
 type createBookRequest struct {
@@ -59,4 +52,17 @@ func (r createBookRequest) convert() (*models.Book, error) {
 		Image:       r.Image,
 		Description: r.Description,
 	}, nil
+}
+
+type createAuthorResponse struct {
+	response.Response
+	Result createAuthorResp `json:"result"`
+}
+
+type createAuthorResp struct {
+	ID int `json:"id"`
+}
+
+func newCreateAuthorResp(id int) createAuthorResp {
+	return createAuthorResp{ID: id}
 }

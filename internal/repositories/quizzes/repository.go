@@ -9,17 +9,17 @@ import (
 )
 
 type Repository interface {
-	CreateQuiz(ctx context.Context, quiz *models.Quiz) error
+	CreateQuiz(ctx context.Context, quiz *models.Quiz) (int, error)
 	GetQuiz(ctx context.Context, quizID int) (*models.Quiz, error)
 	GetQuizzes(ctx context.Context, quizIDs []int) ([]*models.Quiz, error)
 	UpdateQuizTitle(ctx context.Context, quizID int, title string) error
 	DeleteQuiz(ctx context.Context, quizID int) error
-	InsertQuestion(ctx context.Context, question *models.Question) error
+	InsertQuestion(ctx context.Context, question *models.Question) (int, error)
 	UpdateQuestion(ctx context.Context, question *models.Question) error
 	DeleteQuestion(ctx context.Context, questionID int) error
 	GetQuestions(ctx context.Context, quizID int) ([]*models.Question, error)
 	SetRating(ctx context.Context, quizID, userID, rating int) error
-	InsertComment(ctx context.Context, quizID, userID int, comment string) error
+	InsertComment(ctx context.Context, quizID, userID int, comment string) (int, error)
 	UpdateComment(ctx context.Context, id int, comment string) error
 	ListComments(ctx context.Context, quizID int) ([]*models.QuizComment, error)
 	DeleteComment(ctx context.Context, id int) error
@@ -28,6 +28,8 @@ type Repository interface {
 	SaveResults(ctx context.Context, result *models.QuizWithQuestionResults) error
 	GetQuizResults(ctx context.Context, userID int) ([]*models.QuizResult, error)
 	GetQuizResult(ctx context.Context, id int) (*models.QuizWithQuestionResults, error)
+	ListQuizzes(ctx context.Context, limit, offset int) ([]*models.Quiz, int, error)
+	ListQuizzesByBookID(ctx context.Context, bookID int) ([]*models.Quiz, error)
 }
 
 type repository struct {
@@ -66,9 +68,10 @@ func (r *repository) GetQuizzes(ctx context.Context, quizIDs []int) ([]*models.Q
 	return out, nil
 }
 
-func (r *repository) CreateQuiz(ctx context.Context, quiz *models.Quiz) error {
-	_, err := r.db.Exec(ctx, createQuizStmt, quiz.UserID, quiz.BookID, quiz.Title, quiz.Rating)
-	return err
+func (r *repository) CreateQuiz(ctx context.Context, quiz *models.Quiz) (int, error) {
+	var id int
+	err := r.db.QueryRow(ctx, createQuizStmt, quiz.UserID, quiz.BookID, quiz.Title, quiz.Rating).Scan(&id)
+	return id, err
 }
 
 func (r *repository) UpdateQuizTitle(ctx context.Context, quizID int, title string) error {
@@ -81,14 +84,15 @@ func (r *repository) DeleteQuiz(ctx context.Context, quizID int) error {
 	return err
 }
 
-func (r *repository) InsertQuestion(ctx context.Context, question *models.Question) error {
+func (r *repository) InsertQuestion(ctx context.Context, question *models.Question) (int, error) {
 	model, err := newQuestionModel(question)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	_, err = r.db.Exec(ctx, createQuestionStmt, model.ID, model.QuizID, model.Question, string(model.Options), model.Answer)
-	return err
+	var id int
+	err = r.db.QueryRow(ctx, createQuestionStmt, model.QuizID, model.Question, string(model.Options), model.Answer).Scan(&id)
+	return id, err
 }
 
 func (r *repository) UpdateQuestion(ctx context.Context, question *models.Question) error {
@@ -132,9 +136,10 @@ func (r *repository) GetQuestions(ctx context.Context, quizID int) ([]*models.Qu
 	return out, nil
 }
 
-func (r *repository) InsertComment(ctx context.Context, quizID, userID int, comment string) error {
-	_, err := r.db.Exec(ctx, insertCommentStmt, quizID, userID, comment)
-	return err
+func (r *repository) InsertComment(ctx context.Context, quizID, userID int, comment string) (int, error) {
+	var id int
+	err := r.db.QueryRow(ctx, insertCommentStmt, quizID, userID, comment).Scan(&id)
+	return id, err
 }
 
 func (r *repository) UpdateComment(ctx context.Context, id int, comment string) error {
@@ -209,4 +214,46 @@ func (r *repository) GetQuizByQuestion(ctx context.Context, questionID int) (*mo
 	var quiz models.Quiz
 	err := r.db.QueryRow(ctx, getQuizByQuestionStmt, questionID).Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating)
 	return &quiz, err
+}
+
+func (r *repository) ListQuizzes(ctx context.Context, limit, offset int) ([]*models.Quiz, int, error) {
+	var totalCount int
+
+	rows, err := r.db.Query(ctx, listQuizzesStmt, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+
+	var out []*models.Quiz
+	for rows.Next() {
+		quiz := &models.Quiz{}
+		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating, &totalCount); err != nil {
+			return nil, 0, err
+		}
+
+		out = append(out, quiz)
+	}
+
+	return out, totalCount, nil
+}
+
+func (r *repository) ListQuizzesByBookID(ctx context.Context, bookID int) ([]*models.Quiz, error) {
+	rows, err := r.db.Query(ctx, listQuizzesByBookIDStmt, bookID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []*models.Quiz
+	for rows.Next() {
+		quiz := &models.Quiz{}
+		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating); err != nil {
+			return nil, err
+		}
+
+		out = append(out, quiz)
+	}
+
+	return out, nil
 }

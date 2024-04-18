@@ -15,43 +15,43 @@ import (
 	"github.com/samber/lo"
 )
 
-func (s *service) UploadStockBook(ctx context.Context, book *models.UploadStockBook) (string, error) {
+func (s *service) UploadStockBook(ctx context.Context, book *models.UploadStockBook) (int, string, error) {
 	id, err := s.bookRepo.UploadStockBook(ctx, &models.StockBook{
 		UserID: book.UserID,
 		BookID: book.BookID,
 	})
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 
 	src, err := book.Image.Open()
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 	defer src.Close()
 
 	var file bytes.Buffer
 	_, err = io.Copy(&file, src)
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 
 	img, err := png.Decode(bytes.NewReader(file.Bytes()))
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 
 	webpImg, err := s.ConvertToWebp(img, book.Image.Header.Get("Content-Type"))
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 
 	imageURL, err := s.UploadImage(ctx, webpImg, fmt.Sprintf("stock/books/%d.webp", id))
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 
-	return imageURL, nil
+	return id, imageURL, nil
 }
 
 func (s *service) UploadImage(ctx context.Context, body []byte, filename string) (string, error) {

@@ -2,21 +2,18 @@ package authors
 
 import (
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/samber/lo"
 )
 
-type errorResponse struct {
-	Message string `json:"message"`
-}
-
-func newErrorResponse(message string) errorResponse {
-	return errorResponse{
-		Message: message,
-	}
-}
-
 type listAuthorsResponse struct {
-	Authors []*authorItemResponse `json:"authors"`
+	response.Response
+	Result listAuthorsResp `json:"result"`
+}
+
+type listAuthorsResp struct {
+	Authors    []*authorItemResponse `json:"authors"`
+	TotalCount int                   `json:"total_count"`
 }
 
 type authorItemResponse struct {
@@ -24,7 +21,7 @@ type authorItemResponse struct {
 	Name string `json:"name"`
 }
 
-func newListAuthorsResponse(authors []*models.Author) listAuthorsResponse {
+func newListAuthorsResponse(authors []*models.Author, count int) listAuthorsResponse {
 	out := lo.Map(authors, func(item *models.Author, _ int) *authorItemResponse {
 		return &authorItemResponse{
 			ID:   item.ID,
@@ -33,6 +30,7 @@ func newListAuthorsResponse(authors []*models.Author) listAuthorsResponse {
 	})
 
 	return listAuthorsResponse{
-		Authors: out,
+		Response: response.NewResponse(),
+		Result:   listAuthorsResp{Authors: out, TotalCount: count},
 	}
 }

@@ -4,17 +4,45 @@ import (
 	"time"
 
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/samber/lo"
 )
 
-type errorResponse struct {
-	Message string `json:"message"`
+type createResponse struct {
+	response.Response
+	Result createResp `json:"result"`
 }
 
-func newErrorResponse(message string) errorResponse {
-	return errorResponse{
-		Message: message,
+type createResp struct {
+	ID int `json:"id"`
+}
+
+func newCreateResp(id int) createResp {
+	return createResp{
+		ID: id,
 	}
+}
+
+type uploadStockBookResponse struct {
+	response.Response
+	Result uploadStockBookResp `json:"result"`
+}
+
+type uploadStockBookResp struct {
+	ID       int    `json:"id"`
+	ImageURL string `json:"image_url"`
+}
+
+func newUploadStockBookResp(id int, imageURL string) uploadStockBookResp {
+	return uploadStockBookResp{
+		ID:       id,
+		ImageURL: imageURL,
+	}
+}
+
+type getStockBookResponse struct {
+	response.Response
+	Result []*models.StockBookWithFields `json:"result"`
 }
 
 type categoryResp struct {
@@ -39,6 +67,11 @@ func newAuthorResp(author *models.Author) authorResp {
 		ID:   author.ID,
 		Name: author.Name,
 	}
+}
+
+type getBookResponse struct {
+	response.Response
+	Result bookResponse `json:"result"`
 }
 
 type bookResponse struct {
@@ -78,17 +111,44 @@ func newBookResp(book *models.BookWithFields) bookResponse {
 }
 
 type listBooksResponse struct {
-	Books []bookResponse `json:"books"`
+	response.Response
+	Result listBooksResp `json:"result"`
 }
 
-func newListBooksResponse(books []*models.BookWithFields) listBooksResponse {
+type listBooksResp struct {
+	Books []bookResponse `json:"books"`
+	Total int            `json:"total"`
+}
+
+func newListBooksResponse(books []*models.BookWithFields, totalCount int) listBooksResponse {
 	out := lo.Map(books, func(book *models.BookWithFields, _ int) bookResponse {
 		return newBookResp(book)
 	})
 
 	return listBooksResponse{
-		Books: out,
+		Response: response.NewResponse(),
+		Result:   listBooksResp{Books: out, Total: totalCount},
 	}
+}
+
+type listQuizzesResponse struct {
+	response.Response
+	Result []*models.QuizWithBase `json:"result"`
+}
+
+type listCommentsResponse struct {
+	response.Response
+	Result []*models.BookComment `json:"comments"`
+}
+
+type getRequestResponse struct {
+	response.Response
+	Result *models.RequestWithFields `json:"request"`
+}
+
+type listRequestsResponse struct {
+	response.Response
+	Result []*models.RequestWithFields `json:"requests"`
 }
 
 type addCommentRequest struct {

@@ -52,7 +52,9 @@ func (r *repository) GetQuizResults(ctx context.Context, userID int) ([]*models.
 }
 
 func (r *repository) GetQuizResult(ctx context.Context, id int) (*models.QuizWithQuestionResults, error) {
-	result := &models.QuizWithQuestionResults{}
+	result := &models.QuizWithQuestionResults{
+		QuizResult: &models.QuizResult{},
+	}
 	err := r.db.QueryRow(ctx, getQuizResultStmt, id).Scan(&result.ID, &result.QuizID, &result.UserID, &result.Correct, &result.Total)
 	if err != nil {
 		return nil, err

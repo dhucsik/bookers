@@ -9,7 +9,7 @@ import (
 
 type Service interface {
 	ListCategories(ctx context.Context) ([]*models.Category, error)
-	CreateCategory(ctx context.Context, category *models.Category) error
+	CreateCategory(ctx context.Context, category *models.Category) (int, error)
 	DeleteCategory(ctx context.Context, id int) error
 }
 
@@ -27,7 +27,7 @@ func (s *service) ListCategories(ctx context.Context) ([]*models.Category, error
 	return s.categoriesRepo.ListCategories(ctx)
 }
 
-func (s *service) CreateCategory(ctx context.Context, category *models.Category) error {
+func (s *service) CreateCategory(ctx context.Context, category *models.Category) (int, error) {
 	return s.categoriesRepo.CreateCategory(ctx, category)
 }
 

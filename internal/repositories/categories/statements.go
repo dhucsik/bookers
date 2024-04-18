@@ -3,7 +3,7 @@ package categories
 const (
 	listCategoriesStmt = `SELECT id, name FROM categories`
 
-	createCategoryStmt = `INSERT INTO categories (name) VALUES ($1)`
+	createCategoryStmt = `INSERT INTO categories (name) VALUES ($1) RETURNING id`
 
 	deleteCategoryStmt = `DELETE FROM categories WHERE id = $1`
 

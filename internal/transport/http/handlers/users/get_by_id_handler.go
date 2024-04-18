@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -17,20 +18,23 @@ import (
 // @Param Authorization header string true "Authorization"
 // @Param id path int true "User ID"
 // @Success 200 {object} getUserByIDResponse "Success"
-// @Failure 400 {object} errorResponse "Bad request"
-// @Failure 500 {object} errorResponse "Internal server error"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 500 {object} response.Response "Internal server error"
 // @Router /users/{id} [get]
 func (c *Controller) getByID(ctx echo.Context) error {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, newErrorResponse(err.Error()))
+		return response.NewBadRequest(ctx, err)
 	}
 
 	user, err := c.usersService.GetUserByID(ctx.Request().Context(), id)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, newErrorResponse(err.Error()))
+		return response.NewErrorResponse(ctx, err)
 	}
 
-	return ctx.JSON(http.StatusOK, newGetUserByIDResponse(user))
+	return ctx.JSON(http.StatusOK, getUserByIDResponse{
+		Response: response.NewResponse(),
+		Result:   newGetUserByIDResponse(user),
+	})
 }

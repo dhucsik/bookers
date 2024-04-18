@@ -10,7 +10,7 @@ import (
 
 type Repository interface {
 	ListCategories(ctx context.Context) ([]*models.Category, error)
-	CreateCategory(ctx context.Context, category *models.Category) error
+	CreateCategory(ctx context.Context, category *models.Category) (int, error)
 	DeleteCategory(ctx context.Context, id int) error
 	GetByBookID(ctx context.Context, bookID int) ([]*models.Category, error)
 	GetByBookIDs(ctx context.Context, bookIDs []int) (map[int][]*models.Category, error)
@@ -46,9 +46,10 @@ func (r *repository) ListCategories(ctx context.Context) ([]*models.Category, er
 	return out.convert(), nil
 }
 
-func (r *repository) CreateCategory(ctx context.Context, category *models.Category) error {
-	_, err := r.db.Exec(ctx, createCategoryStmt, category.Name)
-	return err
+func (r *repository) CreateCategory(ctx context.Context, category *models.Category) (int, error) {
+	var id int
+	err := r.db.QueryRow(ctx, createCategoryStmt, category.Name).Scan(&id)
+	return id, err
 }
 
 func (r *repository) DeleteCategory(ctx context.Context, id int) error {

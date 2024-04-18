@@ -13,7 +13,7 @@ import (
 // @Accept json
 // @Produce json
 // @Success 200 {object} listCategoriesResponse "Success"
-// @Failure 500 {object} errorResponse "Internal server error"
+// @Failure 500 {object} response.Response "Internal server error"
 // @Router /categories [get]
 func (c *Controller) listCategories(ctx echo.Context) error {
 	categories, err := c.categoriesService.ListCategories(ctx.Request().Context())

@@ -15,7 +15,7 @@ func (s *service) CreateRequest(ctx context.Context, userID, stockBookID int) er
 	}
 
 	if stockBook.UserID == userID {
-		return errors.ErrForbidden
+		return errors.ErrForbiddenForUser
 	}
 
 	return s.bookRepo.CreateRequest(ctx, &models.ShareRequest{
@@ -34,7 +34,7 @@ func (s *service) CancelRequest(ctx context.Context, userID, id int) error {
 	}
 
 	if req.SenderID != userID || req.ReceiverID != userID {
-		return errors.ErrForbidden
+		return errors.ErrForbiddenForUser
 	}
 
 	req = &models.ShareRequest{
@@ -59,7 +59,7 @@ func (s *service) ReceiverRequested(ctx context.Context, stockBookID, userID, id
 	}
 
 	if userID != req.ReceiverID || stockBook.UserID != userID {
-		return errors.ErrForbidden
+		return errors.ErrForbiddenForUser
 	}
 
 	if req.ReceiverStatus != models.StatusCreated || req.SenderStatus != models.StatusCreated {
@@ -83,7 +83,7 @@ func (s *service) SenderAccepted(ctx context.Context, userID, id int) error {
 	}
 
 	if userID != req.SenderID {
-		return errors.ErrForbidden
+		return errors.ErrForbiddenForUser
 	}
 
 	if req.SenderStatus != models.StatusCreated || req.ReceiverStatus != models.StatusReceiverRequested {
@@ -126,7 +126,7 @@ func (s *service) ApproveRequest(ctx context.Context, userID, id int) error {
 	} else if userID == req.SenderID {
 		senderStatus = models.StatusSenderProved
 	} else {
-		return errors.ErrForbidden
+		return errors.ErrForbiddenForUser
 	}
 
 	req = &models.ShareRequest{

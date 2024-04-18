@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,21 +17,21 @@ import (
 // @Security ApiKeyAuth
 // @Param Authorization header string true "Authorization"
 // @Param id path int true "User ID"
-// @Success 200 {object} nil "Success"
-// @Failure 400 {object} errorResponse "Bad request"
-// @Failure 500 {object} errorResponse "Internal server error"
+// @Success 200 {object} response.Response "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 500 {object} response.Response "Internal server error"
 // @Router /users/{id} [delete]
 func (c *Controller) deleteUser(ctx echo.Context) error {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, newErrorResponse(err.Error()))
+		return response.NewBadRequest(ctx, err)
 	}
 
 	err = c.usersService.DeleteUser(ctx.Request().Context(), id)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, newErrorResponse(err.Error()))
+		return response.NewErrorResponse(ctx, err)
 	}
 
-	return ctx.JSON(http.StatusOK, nil)
+	return ctx.JSON(http.StatusOK, response.NewResponse())
 }

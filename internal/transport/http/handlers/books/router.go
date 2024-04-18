@@ -32,6 +32,7 @@ func (r *Controller) Init(router *echo.Group) {
 	router.POST("/books/stock/upload", r.auth.Handler(r.uploadStockBookHandler))
 	router.GET("/books/stock", r.auth.Handler(r.getStockBooksHandler))
 
+	router.GET("/books/:id/quizzes", r.auth.Handler(r.listQuizzesByBookHandler))
 	router.POST("/books/:id/quizzes", r.auth.Handler(r.createQuizHandler))
 
 	router.GET("/books/:id/comments", r.listCommentsHandler)

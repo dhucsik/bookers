@@ -8,22 +8,28 @@ const (
 	getQuestionsStmt = `SELECT id, quiz_id, question, options, answer
 	FROM questions WHERE quiz_id = $1`
 
+	listQuizzesStmt = `SELECT id, user_id, book_id, title, rating, COUNT(*) OVER() FROM quizzes
+	ORDER BY id LIMIT $1 OFFSET $2`
+
+	listQuizzesByBookIDStmt = `SELECT id, user_id, book_id, title, rating FROM quizzes
+	WHERE book_id = $1`
+
 	createQuizStmt = `INSERT INTO quizzes (user_id, book_id, title, rating)
-	VALUES ($1, $2, $3, $4)`
+	VALUES ($1, $2, $3, $4) RETURNING id`
 
 	updateQuizTitleStmt = `UPDATE quizzes SET title = $2 WHERE id = $1`
 
 	deleteQuizStmt = `DELETE FROM quizzes WHERE id = $1`
 
 	createQuestionStmt = `INSERT INTO questions (quiz_id, question, options, answer)
-	VALUES ($1, $2, $3, $4)`
+	VALUES ($1, $2, $3, $4) RETURNING id`
 
 	updateQuestionStmt = `UPDATE questions SET question = $2, options = $3, answer = $4
 	WHERE id = $1`
 
 	deleteQuestionStmt = `DELETE FROM questions WHERE id = $1`
 
-	insertCommentStmt = `INSERT INTO quiz_comments (quiz_id, user_id, comment) VALUES ($1, $2, $3)`
+	insertCommentStmt = `INSERT INTO quiz_comments (quiz_id, user_id, comment) VALUES ($1, $2, $3) RETURNING id`
 
 	updateCommentStmt = `UPDATE quiz_comments SET comment = $2, updated_at = NOW() WHERE id = $1`
 
@@ -43,15 +49,15 @@ const (
 	getQuizByQuestionStmt = `SELECT q.id, q.user_id, q.book_id, q.title, q.rating
 	FROM quizzes q JOIN questions qu ON q.id = qu.quiz_id WHERE qu.id = $1`
 
-	insertQuizResultStmt = `INSERT INTO quiz_results (quiz_id, user_id, correct, total) VALUES ($1, $2, $3, $4) RETURNING id`
+	insertQuizResultStmt = `INSERT INTO quiz_results (quiz_id, user_id, coorect, total) VALUES ($1, $2, $3, $4) RETURNING id`
 
-	insertQuestionResultStmt = `INSERT INTO question_results (quiz_result_id, question_id, user_answer, is_correct)
+	insertQuestionResultStmt = `INSERT INTO question_results (quiz_result_id, quiestion_id, user_answer, is_correct)
 	VALUES ($1, $2, $3, $4)`
 
-	getQuizResultsStmt = `SELECT id, quiz_id, user_id, correct, total FROM quiz_results WHERE user_id = $1`
+	getQuizResultsStmt = `SELECT id, quiz_id, user_id, coorect, total FROM quiz_results WHERE user_id = $1`
 
-	getQuizResultStmt = `SELECT id, quiz_id, user_id, correct, total FROM quiz_results WHERE id = $1`
+	getQuizResultStmt = `SELECT id, quiz_id, user_id, coorect, total FROM quiz_results WHERE id = $1`
 
-	getQuestionResultsStmt = `SELECT id, quiz_result_id, question_id, user_answer, is_correct
+	getQuestionResultsStmt = `SELECT id, quiz_result_id, quiestion_id, user_answer, is_correct
 	FROM question_results WHERE quiz_result_id = $1`
 )

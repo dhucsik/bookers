@@ -33,7 +33,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.htm
 
-// @host bookers.kz
+// @host localhost:8080
 // @BasePath /api/v1
 
 type IController interface {
