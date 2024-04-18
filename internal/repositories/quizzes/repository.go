@@ -3,7 +3,9 @@ package quizzes
 import (
 	"context"
 
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lib/pq"
 )
@@ -30,6 +32,7 @@ type Repository interface {
 	GetQuizResult(ctx context.Context, id int) (*models.QuizWithQuestionResults, error)
 	ListQuizzes(ctx context.Context, limit, offset int) ([]*models.Quiz, int, error)
 	ListQuizzesByBookID(ctx context.Context, bookID int) ([]*models.Quiz, error)
+	ListQuizzesByUserID(ctx context.Context, userID int) ([]*models.Quiz, error)
 }
 
 type repository struct {
@@ -44,8 +47,15 @@ func NewRepository(db *pgxpool.Pool) Repository {
 
 func (r *repository) GetQuiz(ctx context.Context, quizID int) (*models.Quiz, error) {
 	var quiz models.Quiz
-	err := r.db.QueryRow(ctx, getQuizStmt, quizID).Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating)
-	return &quiz, err
+	err := r.db.QueryRow(ctx, getQuizStmt, quizID).Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating, &quiz.CreatedAt, &quiz.QuestionsCount)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, errors.ErrQuizNotFound
+		}
+
+		return nil, err
+	}
+	return &quiz, nil
 }
 
 func (r *repository) GetQuizzes(ctx context.Context, quizIDs []int) ([]*models.Quiz, error) {
@@ -58,7 +68,7 @@ func (r *repository) GetQuizzes(ctx context.Context, quizIDs []int) ([]*models.Q
 	var out []*models.Quiz
 	for rows.Next() {
 		quiz := &models.Quiz{}
-		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating); err != nil {
+		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating, &quiz.CreatedAt, &quiz.QuestionsCount); err != nil {
 			return nil, err
 		}
 
@@ -213,7 +223,15 @@ func (r *repository) GetComment(ctx context.Context, id int) (*models.QuizCommen
 func (r *repository) GetQuizByQuestion(ctx context.Context, questionID int) (*models.Quiz, error) {
 	var quiz models.Quiz
 	err := r.db.QueryRow(ctx, getQuizByQuestionStmt, questionID).Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating)
-	return &quiz, err
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &quiz, nil
 }
 
 func (r *repository) ListQuizzes(ctx context.Context, limit, offset int) ([]*models.Quiz, int, error) {
@@ -228,7 +246,7 @@ func (r *repository) ListQuizzes(ctx context.Context, limit, offset int) ([]*mod
 	var out []*models.Quiz
 	for rows.Next() {
 		quiz := &models.Quiz{}
-		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating, &totalCount); err != nil {
+		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating, &quiz.CreatedAt, &totalCount, &quiz.QuestionsCount); err != nil {
 			return nil, 0, err
 		}
 
@@ -248,7 +266,27 @@ func (r *repository) ListQuizzesByBookID(ctx context.Context, bookID int) ([]*mo
 	var out []*models.Quiz
 	for rows.Next() {
 		quiz := &models.Quiz{}
-		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating); err != nil {
+		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating, &quiz.CreatedAt, &quiz.QuestionsCount); err != nil {
+			return nil, err
+		}
+
+		out = append(out, quiz)
+	}
+
+	return out, nil
+}
+
+func (r *repository) ListQuizzesByUserID(ctx context.Context, userID int) ([]*models.Quiz, error) {
+	rows, err := r.db.Query(ctx, listQuizzesByUserIDStmt, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []*models.Quiz
+	for rows.Next() {
+		quiz := &models.Quiz{}
+		if err := rows.Scan(&quiz.ID, &quiz.UserID, &quiz.BookID, &quiz.Title, &quiz.Rating, &quiz.CreatedAt, &quiz.QuestionsCount); err != nil {
 			return nil, err
 		}
 

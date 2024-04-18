@@ -30,6 +30,7 @@ type Service interface {
 	GetQuizResultWithAnswers(ctx context.Context, resultID int) (*models.QuizQuestionWithFields, error)
 	ListQuizzes(ctx context.Context, limit, offset int) ([]*models.QuizWithBase, int, error)
 	ListQuizzesByBookID(ctx context.Context, bookID int) ([]*models.QuizWithBase, error)
+	ListQuizzesByUserID(ctx context.Context, userID int) ([]*models.QuizWithBase, error)
 }
 
 type service struct {
@@ -57,7 +58,7 @@ func (s *service) CreateQuiz(ctx context.Context, quiz *models.Quiz) (int, error
 func (s *service) UpdateQuizTitle(ctx context.Context, userID, quizID int, title string) error {
 	quiz, err := s.quizRepo.GetQuiz(ctx, quizID)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	if quiz.UserID != userID {
@@ -70,7 +71,7 @@ func (s *service) UpdateQuizTitle(ctx context.Context, userID, quizID int, title
 func (s *service) DeleteQuiz(ctx context.Context, userID, quizID int) error {
 	quiz, err := s.quizRepo.GetQuiz(ctx, quizID)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	if quiz.UserID != userID {
@@ -96,7 +97,11 @@ func (s *service) AddQuestion(ctx context.Context, userID int, question *models.
 func (s *service) UpdateQuestion(ctx context.Context, userID int, question *models.Question) error {
 	quiz, err := s.quizRepo.GetQuizByQuestion(ctx, question.ID)
 	if err != nil {
-		return nil
+		return err
+	}
+
+	if quiz == nil {
+		return errors.ErrQuizNotFound
 	}
 
 	if quiz.UserID != userID {
@@ -109,7 +114,11 @@ func (s *service) UpdateQuestion(ctx context.Context, userID int, question *mode
 func (s *service) DeleteQuestion(ctx context.Context, userID, questionID int) error {
 	quiz, err := s.quizRepo.GetQuizByQuestion(ctx, questionID)
 	if err != nil {
-		return nil
+		return err
+	}
+
+	if quiz == nil {
+		return errors.ErrQuizNotFound
 	}
 
 	if quiz.UserID != userID {
@@ -123,6 +132,11 @@ func (s *service) GetQuiz(ctx context.Context, quizID, userID int) (*models.Quiz
 	quiz, err := s.quizRepo.GetQuiz(ctx, quizID)
 	if err != nil {
 		return nil, err
+	}
+
+	if quiz == nil {
+		return nil, errors.ErrQuizNotFound
+
 	}
 
 	if quiz.UserID != userID {
@@ -291,6 +305,39 @@ func (s *service) ListQuizzesByBookID(ctx context.Context, bookID int) ([]*model
 			Quiz: quiz,
 			Book: book,
 			User: userMap[quiz.UserID].ToUserWithoutPassword(),
+		}
+	})
+
+	return out, nil
+}
+
+func (s *service) ListQuizzesByUserID(ctx context.Context, userID int) ([]*models.QuizWithBase, error) {
+	quizzes, err := s.quizRepo.ListQuizzesByUserID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := s.userRepo.GetUserByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	books, err := s.bookRepo.GetBooksByIDs(ctx, lo.Map(quizzes, func(quiz *models.Quiz, _ int) int {
+		return quiz.BookID
+	}))
+	if err != nil {
+		return nil, err
+	}
+
+	bookMap := lo.SliceToMap(books, func(book *models.Book) (int, *models.Book) {
+		return book.ID, book
+	})
+
+	out := lo.Map(quizzes, func(quiz *models.Quiz, _ int) *models.QuizWithBase {
+		return &models.QuizWithBase{
+			Quiz: quiz,
+			Book: bookMap[quiz.BookID],
+			User: user.ToUserWithoutPassword(),
 		}
 	})
 

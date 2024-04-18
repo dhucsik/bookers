@@ -3,6 +3,7 @@ package quizzes
 import (
 	"context"
 
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/samber/lo"
 )
@@ -109,9 +110,17 @@ func (s *service) GetQuizResultWithAnswers(ctx context.Context, resultID int) (*
 		return nil, err
 	}
 
+	if quiz == nil {
+		return nil, errors.ErrQuizNotFound
+	}
+
 	book, err := s.bookRepo.GetBookByID(ctx, quiz.BookID)
 	if err != nil {
 		return nil, err
+	}
+
+	if book == nil {
+		return nil, errors.ErrBookNotFound
 	}
 
 	out := &models.QuizQuestionWithFields{

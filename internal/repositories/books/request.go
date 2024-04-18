@@ -3,7 +3,9 @@ package books
 import (
 	"context"
 
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/jackc/pgx/v5"
 )
 
 func (r *repository) CreateRequest(ctx context.Context, req *models.ShareRequest) error {
@@ -58,6 +60,10 @@ func (r *repository) GetRequest(ctx context.Context, id int) (*models.ShareReque
 	req := &models.ShareRequest{}
 	err := r.db.QueryRow(ctx, getRequestStmt, id).Scan(&req.ID, &req.SenderID, &req.ReceiverID, &req.SenderBookID, &req.ReceiverBookID, &req.SenderStatus, &req.ReceiverStatus, &req.CreatedAt, &req.UpdatedAt)
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, errors.ErrRequestNotFound
+		}
+
 		return nil, err
 	}
 

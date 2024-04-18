@@ -1,18 +1,35 @@
 package quizzes
 
 const (
-	getQuizStmt = `SELECT id, user_id, book_id, title, rating FROM quizzes WHERE id = $1`
+	getQuizStmt = `SELECT q.id, q.user_id, q.book_id, q.title, q.rating, q.created_at as total_quizzes,
+	(SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) as total_questions
+	FROM quizzes q
+	WHERE q.id = $1`
 
-	getQuizzesStmt = `SELECT id, user_id, book_id, title, rating FROM quizzes WHERE id = ANY($1)`
+	getQuizzesStmt = `SELECT q.id, q.user_id, q.book_id, q.title, q.rating, q.created_at as total_quizzes,
+	(SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) as total_questions
+	FROM quizzes q
+	WHERE q.id = ANY($1)`
 
 	getQuestionsStmt = `SELECT id, quiz_id, question, options, answer
 	FROM questions WHERE quiz_id = $1`
 
-	listQuizzesStmt = `SELECT id, user_id, book_id, title, rating, COUNT(*) OVER() FROM quizzes
-	ORDER BY id LIMIT $1 OFFSET $2`
+	listQuizzesStmt = `SELECT q.id, q.user_id, q.book_id, q.title, q.rating, q.created_at, COUNT(*) OVER() as total_quizzes,
+						(SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) as total_questions
+						FROM quizzes q
+						ORDER BY q.id
+						LIMIT $1 OFFSET $2
+`
 
-	listQuizzesByBookIDStmt = `SELECT id, user_id, book_id, title, rating FROM quizzes
-	WHERE book_id = $1`
+	listQuizzesByBookIDStmt = `SELECT q.id, q.user_id, q.book_id, q.title, q.rating, q.created_at as total_quizzes,
+	(SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) as total_questions
+	FROM quizzes q
+	WHERE q.book_id = $1`
+
+	listQuizzesByUserIDStmt = `SELECT q.id, q.user_id, q.book_id, q.title, q.rating, q.created_at as total_quizzes,
+	(SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) as total_questions
+	FROM quizzes q
+	WHERE q.user_id = $1`
 
 	createQuizStmt = `INSERT INTO quizzes (user_id, book_id, title, rating)
 	VALUES ($1, $2, $3, $4) RETURNING id`

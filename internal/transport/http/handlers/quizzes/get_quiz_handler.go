@@ -36,7 +36,7 @@ func (c *Controller) getQuizHandler(ctx echo.Context) error {
 		return response.NewBadRequest(ctx, err)
 	}
 
-	quiz, err := c.quizService.GetQuiz(ctx.Request().Context(), session.UserID, quizID)
+	quiz, err := c.quizService.GetQuiz(ctx.Request().Context(), quizID, session.UserID)
 	if err != nil {
 		return response.NewErrorResponse(ctx, err)
 	}
@@ -84,5 +84,35 @@ func (c *Controller) listQuizzesHandler(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, listQuizzesResponse{
 		Response: response.NewResponse(),
 		Result:   listQuizzesResp{Quizzes: quizzes, TotalCount: totalCount},
+	})
+}
+
+// listQuizzesByUserID godoc
+// @Summary List quizzes by user ID
+// @Description List quizzes by user ID
+// @Tags quizzes
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
+// @Success 200 {object} listUserQuizzesResponse "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /quizzes/user [get]
+func (c *Controller) listQuizzesByUserID(ctx echo.Context) error {
+	session, ok := models.GetSession(ctx.Request().Context())
+	if !ok {
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
+	}
+
+	quizzes, err := c.quizService.ListQuizzesByUserID(ctx.Request().Context(), session.UserID)
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
+	}
+
+	return ctx.JSON(http.StatusOK, listUserQuizzesResponse{
+		Response: response.NewResponse(),
+		Result:   quizzes,
 	})
 }

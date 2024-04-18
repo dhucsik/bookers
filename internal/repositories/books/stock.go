@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/jackc/pgx/v5"
 	"github.com/lib/pq"
 )
 
@@ -21,6 +22,10 @@ func (r *repository) GetStockBook(ctx context.Context, bookID int) (*models.Stoc
 	book := &models.StockBook{}
 	err := r.db.QueryRow(ctx, getStockBookStmt, bookID).Scan(&book.ID, &book.UserID, &book.BookID)
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 

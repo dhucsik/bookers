@@ -2015,6 +2015,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/quizzes/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List quizzes by user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "quizzes"
+                ],
+                "summary": "List quizzes by user ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/quizzes.listUserQuizzesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/quizzes/{id}": {
             "get": {
                 "security": [
@@ -3427,7 +3482,13 @@ const docTemplate = `{
                 "book_id": {
                     "type": "integer"
                 },
+                "created_at": {
+                    "type": "string"
+                },
                 "id": {
+                    "type": "integer"
+                },
+                "questions_count": {
                     "type": "integer"
                 },
                 "rating": {
@@ -3528,7 +3589,13 @@ const docTemplate = `{
                 "book_id": {
                     "type": "integer"
                 },
+                "created_at": {
+                    "type": "string"
+                },
                 "id": {
+                    "type": "integer"
+                },
+                "questions_count": {
                     "type": "integer"
                 },
                 "rating": {
@@ -3554,6 +3621,9 @@ const docTemplate = `{
                 "book_id": {
                     "type": "integer"
                 },
+                "created_at": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -3562,6 +3632,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.Question"
                     }
+                },
+                "questions_count": {
+                    "type": "integer"
                 },
                 "rating": {
                     "type": "number"
@@ -3854,6 +3927,26 @@ const docTemplate = `{
                 },
                 "result": {
                     "$ref": "#/definitions/quizzes.listQuizzesResp"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "quizzes.listUserQuizzesResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.QuizWithBase"
+                    }
                 },
                 "status_code": {
                     "type": "integer"

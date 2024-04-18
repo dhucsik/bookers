@@ -3,7 +3,9 @@ package quizzes
 import (
 	"context"
 
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/jackc/pgx/v5"
 )
 
 func (r *repository) SaveResults(ctx context.Context, result *models.QuizWithQuestionResults) error {
@@ -57,6 +59,9 @@ func (r *repository) GetQuizResult(ctx context.Context, id int) (*models.QuizWit
 	}
 	err := r.db.QueryRow(ctx, getQuizResultStmt, id).Scan(&result.ID, &result.QuizID, &result.UserID, &result.Correct, &result.Total)
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, errors.ErrResultNotFound
+		}
 		return nil, err
 	}
 

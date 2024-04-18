@@ -84,6 +84,10 @@ func (s *service) GetBookByID(ctx context.Context, id int) (*models.BookWithFiel
 		return nil, err
 	}
 
+	if book == nil {
+		return nil, errors.ErrBookNotFound
+	}
+
 	authors, err := s.authorRepo.GetByBookID(ctx, id)
 	if err != nil {
 		return nil, err

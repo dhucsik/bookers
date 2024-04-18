@@ -386,7 +386,11 @@ definitions:
     properties:
       book_id:
         type: integer
+      created_at:
+        type: string
       id:
+        type: integer
+      questions_count:
         type: integer
       rating:
         type: number
@@ -452,7 +456,11 @@ definitions:
         $ref: '#/definitions/models.Book'
       book_id:
         type: integer
+      created_at:
+        type: string
       id:
+        type: integer
+      questions_count:
         type: integer
       rating:
         type: number
@@ -469,12 +477,16 @@ definitions:
         $ref: '#/definitions/models.Book'
       book_id:
         type: integer
+      created_at:
+        type: string
       id:
         type: integer
       questions:
         items:
           $ref: '#/definitions/models.Question'
         type: array
+      questions_count:
+        type: integer
       rating:
         type: number
       title:
@@ -664,6 +676,19 @@ definitions:
         type: string
       result:
         $ref: '#/definitions/quizzes.listQuizzesResp'
+      status_code:
+        type: integer
+    type: object
+  quizzes.listUserQuizzesResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        items:
+          $ref: '#/definitions/models.QuizWithBase'
+        type: array
       status_code:
         type: integer
     type: object
@@ -2446,6 +2471,41 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get quiz result
+      tags:
+      - quizzes
+  /quizzes/user:
+    get:
+      consumes:
+      - application/json
+      description: List quizzes by user ID
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/quizzes.listUserQuizzesResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: List quizzes by user ID
       tags:
       - quizzes
   /users:

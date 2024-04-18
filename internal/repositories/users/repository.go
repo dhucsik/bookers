@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/lib/pq"
 )
@@ -48,6 +49,10 @@ func (r *repository) GetUserByID(ctx context.Context, userID int) (*models.User,
 
 	model := &userModel{}
 	if err := row.Scan(&model.ID, &model.Username, &model.Email, &model.Password, &model.Role, &model.City); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 
@@ -59,6 +64,10 @@ func (r *repository) GetUserByUsername(ctx context.Context, username string) (*m
 
 	model := &userModel{}
 	if err := row.Scan(&model.ID, &model.Username, &model.Email, &model.Password, &model.Role, &model.City); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
+
 		return nil, err
 	}
 

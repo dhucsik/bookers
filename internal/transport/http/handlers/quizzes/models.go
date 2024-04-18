@@ -15,6 +15,11 @@ type createResp struct {
 	ID int `json:"id"`
 }
 
+type listUserQuizzesResponse struct {
+	response.Response
+	Result []*models.QuizWithBase `json:"result"`
+}
+
 type listQuizzesResponse struct {
 	response.Response
 	Result listQuizzesResp `json:"result"`

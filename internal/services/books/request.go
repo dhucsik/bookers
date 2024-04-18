@@ -14,6 +14,10 @@ func (s *service) CreateRequest(ctx context.Context, userID, stockBookID int) er
 		return err
 	}
 
+	if stockBook == nil {
+		return errors.ErrBookNotFound
+	}
+
 	if stockBook.UserID == userID {
 		return errors.ErrForbiddenForUser
 	}
@@ -56,6 +60,10 @@ func (s *service) ReceiverRequested(ctx context.Context, stockBookID, userID, id
 	stockBook, err := s.bookRepo.GetStockBook(ctx, stockBookID)
 	if err != nil {
 		return err
+	}
+
+	if stockBook == nil {
+		return errors.ErrBookNotFound
 	}
 
 	if userID != req.ReceiverID || stockBook.UserID != userID {

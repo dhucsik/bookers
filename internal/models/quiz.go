@@ -1,11 +1,15 @@
 package models
 
+import "time"
+
 type Quiz struct {
-	ID     int     `json:"id"`
-	UserID int     `json:"user_id"`
-	BookID int     `json:"book_id"`
-	Title  string  `json:"title"`
-	Rating float64 `json:"rating"`
+	ID             int       `json:"id"`
+	UserID         int       `json:"user_id"`
+	BookID         int       `json:"book_id"`
+	Title          string    `json:"title"`
+	Rating         float64   `json:"rating"`
+	CreatedAt      time.Time `json:"created_at"`
+	QuestionsCount int       `json:"questions_count"`
 }
 
 type QuizWithBase struct {
