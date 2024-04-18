@@ -14,6 +14,7 @@ var (
 	ErrTokenExpired      = NewApiError("token is expired", http.StatusUnauthorized, "401003")
 	ErrUnexpectedRefresh = NewApiError("unexpected refresh token", http.StatusUnauthorized, "401004")
 	ErrInvalidPassword   = NewApiError("invalid password", http.StatusUnauthorized, "401005")
+	ErrUsernameExists    = NewApiError("username exists", http.StatusUnauthorized, "401006")
 
 	ErrForbiddenForRole = NewApiError("forbidden for role", http.StatusForbidden, "403001")
 	ErrForbiddenForUser = NewApiError("forbidden for user", http.StatusForbidden, "403002")

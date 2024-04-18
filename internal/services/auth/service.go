@@ -61,6 +61,14 @@ func (s *service) GetAuth(ctx context.Context, username, password string) (strin
 		return "", "", err
 	}
 
+	if user == nil {
+		return "", "", errors.ErrUserNotFound
+	}
+
+	if user.Password != password {
+		return "", "", errors.ErrInvalidPassword
+	}
+
 	session := &models.Session{
 		UserID: user.ID,
 		Role:   user.Role,

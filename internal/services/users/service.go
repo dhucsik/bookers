@@ -3,9 +3,9 @@ package users
 import (
 	"context"
 
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/dhucsik/bookers/internal/repositories/users"
-	"github.com/pkg/errors"
 )
 
 type Service interface {
@@ -27,17 +27,26 @@ func NewService(userRepo users.Repository) Service {
 }
 
 func (s *service) CreateUser(ctx context.Context, user *models.User) (*models.User, error) {
+	user, err := s.userRepo.GetUserByUsername(ctx, user.Username)
+	if err != nil {
+		return nil, err
+	}
+
+	if user != nil {
+		return nil, errors.ErrUsernameExists
+	}
+
 	return s.userRepo.CreateUser(ctx, user)
 }
 
 func (s *service) SetCity(ctx context.Context, userID int, city string) error {
 	session, ok := models.GetSession(ctx)
 	if !ok {
-		return errors.New("session not found")
+		return errors.ErrInvalidJWTToken
 	}
 
 	if session.UserID != userID && session.Role != "admin" {
-		return errors.New("forbidden")
+		return errors.ErrForbiddenForUser
 	}
 
 	return s.userRepo.SetCity(ctx, session.UserID, city)
@@ -54,11 +63,11 @@ func (s *service) GetUserByUsername(ctx context.Context, username string) (*mode
 func (s *service) DeleteUser(ctx context.Context, userID int) error {
 	session, ok := models.GetSession(ctx)
 	if !ok {
-		return errors.New("session not found")
+		return errors.ErrInvalidJWTToken
 	}
 
 	if session.UserID != userID && session.Role != "admin" {
-		return errors.New("forbidden")
+		return errors.ErrForbiddenForRole
 	}
 
 	return s.userRepo.DeleteUser(ctx, userID)
