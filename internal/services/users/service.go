@@ -33,12 +33,12 @@ func NewService(userRepo users.Repository) Service {
 }
 
 func (s *service) CreateUser(ctx context.Context, user *models.User) (*models.User, error) {
-	user, err := s.userRepo.GetUserByUsername(ctx, user.Username)
+	userr, err := s.userRepo.GetUserByUsername(ctx, user.Username)
 	if err != nil {
 		return nil, err
 	}
 
-	if user != nil {
+	if userr != nil {
 		return nil, errors.ErrUsernameExists
 	}
 
