@@ -31,7 +31,7 @@ const (
 	insertBookRatingStmt = `INSERT INTO book_ratings (book_id, user_id, rating) VALUES ($1, $2, $3)
 	ON CONFLICT (book_id, user_id) DO UPDATE SET rating = $3`
 
-	getAvgRatingStmt = `SELECT AVG(rating) FROM book_ratings WHERE book_id = $1`
+	getAvgRatingStmt = `SELECT ROUND(AVG(rating), 2) as average_rating FROM book_ratings WHERE book_id = $1`
 
 	updateBookRatingStmt = `UPDATE books SET rating = $1 WHERE id = $2`
 
@@ -43,10 +43,12 @@ const (
 
 	getStockBookStmt = `SELECT id, user_id, book_id FROM stock_books WHERE id = $1`
 
-	getBooksByStockIDsStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating, b.image, b.description
+	getBooksByStockIDsStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating, b.image, b.description, sb.id
 	FROM books b JOIN stock_books sb ON b.id = sb.book_id WHERE sb.id = ANY($1)`
 
 	getStockBooksByUserStmt = `SELECT id, user_id, book_id FROM stock_books WHERE user_id = $1`
+
+	getStockByBookStmt = `SELECT id, user_id, book_id FROM stock_books WHERE book_id = $1`
 
 	createNewRequestStmt = `INSERT INTO share_requests (sender_id, receiver_id, sender_book_id, receiver_book_id, sender_status, receiver_status)
 	VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`

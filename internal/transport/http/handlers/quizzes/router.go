@@ -20,7 +20,8 @@ func NewController(auth *middlewares.AuthMiddleware, quizService quizzes.Service
 
 func (c *Controller) Init(router *echo.Group) {
 	router.GET("/quizzes", c.auth.Handler(c.listQuizzesHandler))
-	router.GET("/quizzes/user", c.auth.Handler(c.listQuizzesByUserID))
+	router.GET("/quizzes/user", c.auth.Handler(c.listQuizzesByUser))
+	router.GET("/quizzes/user/:id", c.auth.Handler(c.listQuizzesByUserID))
 	router.GET("/quizzes/:id", c.auth.Handler(c.getQuizHandler))
 	router.GET("/quizzes/:id/view", c.auth.Handler(c.viewQuizHandler))
 	router.PUT("/quizzes/:id", c.auth.Handler(c.updateQuizHandler))

@@ -14,6 +14,12 @@ type Service interface {
 	GetUserByID(ctx context.Context, userID int) (*models.User, error)
 	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
 	DeleteUser(ctx context.Context, userID int) error
+	CreateRequest(ctx context.Context, userID, friendID int) error
+	AcceptRequest(ctx context.Context, userID, friendID int) error
+	GetFriends(ctx context.Context, userID int) ([]*models.User, error)
+	GetFriendRequest(ctx context.Context, userID, friendID int) (*models.FriendRequest, error)
+	GetSentRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
+	GetReceivedRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
 }
 
 type service struct {
@@ -71,4 +77,40 @@ func (s *service) DeleteUser(ctx context.Context, userID int) error {
 	}
 
 	return s.userRepo.DeleteUser(ctx, userID)
+}
+
+func (s *service) CreateRequest(ctx context.Context, userID, friendID int) error {
+	req := &models.FriendRequest{
+		UserID:   userID,
+		FriendID: friendID,
+		Status:   models.FriendRequestSent,
+	}
+
+	return s.userRepo.CreateRequest(ctx, req)
+}
+
+func (s *service) AcceptRequest(ctx context.Context, userID, friendID int) error {
+	req := &models.FriendRequest{
+		UserID:   friendID,
+		FriendID: userID,
+		Status:   models.FriendRequestAccepted,
+	}
+
+	return s.userRepo.AcceptRequest(ctx, req)
+}
+
+func (s *service) GetFriends(ctx context.Context, userID int) ([]*models.User, error) {
+	return s.userRepo.GetFriends(ctx, userID)
+}
+
+func (s *service) GetFriendRequest(ctx context.Context, userID, friendID int) (*models.FriendRequest, error) {
+	return s.userRepo.GetFriendRequest(ctx, userID, friendID)
+}
+
+func (s *service) GetSentRequestFriends(ctx context.Context, userID int) ([]*models.User, error) {
+	return s.userRepo.GetSentRequestFriends(ctx, userID)
+}
+
+func (s *service) GetReceivedRequestFriends(ctx context.Context, userID int) ([]*models.User, error) {
+	return s.userRepo.GetReceivedRequestFriends(ctx, userID)
 }

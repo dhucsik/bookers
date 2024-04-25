@@ -87,9 +87,9 @@ func (c *Controller) listQuizzesHandler(ctx echo.Context) error {
 	})
 }
 
-// listQuizzesByUserID godoc
-// @Summary List quizzes by user ID
-// @Description List quizzes by user ID
+// listQuizzesByUser godoc
+// @Summary List quizzes by user
+// @Description List quizzes by user
 // @Tags quizzes
 // @Accept json
 // @Produce json
@@ -100,13 +100,50 @@ func (c *Controller) listQuizzesHandler(ctx echo.Context) error {
 // @Failure 401 {object} response.Response "Unauthorized"
 // @Failure 500 {object} response.Response "Internal server error"
 // @Router /quizzes/user [get]
-func (c *Controller) listQuizzesByUserID(ctx echo.Context) error {
+func (c *Controller) listQuizzesByUser(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
 		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
 	}
 
 	quizzes, err := c.quizService.ListQuizzesByUserID(ctx.Request().Context(), session.UserID)
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
+	}
+
+	return ctx.JSON(http.StatusOK, listUserQuizzesResponse{
+		Response: response.NewResponse(),
+		Result:   quizzes,
+	})
+}
+
+// listQuizzesByUserID godoc
+// @Summary List quizzes by user ID
+// @Description List quizzes by user ID
+// @Tags quizzes
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
+// @Param id path int true "User ID"
+// @Success 200 {object} listUserQuizzesResponse "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /quizzes/user/{id} [get]
+func (c *Controller) listQuizzesByUserID(ctx echo.Context) error {
+	_, ok := models.GetSession(ctx.Request().Context())
+	if !ok {
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
+	}
+
+	userIDStr := ctx.Param("id")
+	userID, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		return response.NewBadRequest(ctx, err)
+	}
+
+	quizzes, err := c.quizService.ListQuizzesByUserID(ctx.Request().Context(), userID)
 	if err != nil {
 		return response.NewErrorResponse(ctx, err)
 	}

@@ -34,8 +34,9 @@ func (r *repository) finishRequest(ctx context.Context, req *models.ShareRequest
 		return err
 	}
 
+	id := req.ID
 	req = &models.ShareRequest{}
-	err = tx.QueryRow(ctx, getRequestStmt, req.ID).Scan(&req.ID, &req.SenderID, &req.ReceiverID, &req.SenderBookID, &req.ReceiverBookID, &req.SenderStatus, &req.ReceiverStatus, &req.CreatedAt, &req.UpdatedAt)
+	err = tx.QueryRow(ctx, getRequestStmt, id).Scan(&req.ID, &req.SenderID, &req.ReceiverID, &req.SenderBookID, &req.ReceiverBookID, &req.SenderStatus, &req.ReceiverStatus, &req.CreatedAt, &req.UpdatedAt)
 	if err != nil {
 		tx.Rollback(ctx)
 		return err

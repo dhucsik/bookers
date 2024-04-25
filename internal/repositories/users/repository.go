@@ -16,6 +16,12 @@ type Repository interface {
 	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
 	DeleteUser(ctx context.Context, userID int) error
 	GetUsersByIDs(ctx context.Context, ids []int) ([]*models.User, error)
+	CreateRequest(ctx context.Context, req *models.FriendRequest) error
+	AcceptRequest(ctx context.Context, req *models.FriendRequest) error
+	GetFriends(ctx context.Context, userID int) ([]*models.User, error)
+	GetFriendRequest(ctx context.Context, userID, friendID int) (*models.FriendRequest, error)
+	GetSentRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
+	GetReceivedRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
 }
 
 type repository struct {

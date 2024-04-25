@@ -542,6 +542,8 @@ definitions:
         type: integer
       id:
         type: integer
+      user:
+        $ref: '#/definitions/models.UserWithoutPassword'
       user_id:
         type: integer
     type: object
@@ -764,6 +766,8 @@ definitions:
         type: string
       email:
         type: string
+      friend_status:
+        type: string
       id:
         type: integer
       role:
@@ -779,6 +783,35 @@ definitions:
         type: string
       result:
         $ref: '#/definitions/users.getUserByIDResp'
+      status_code:
+        type: integer
+    type: object
+  users.listFriendsResp:
+    properties:
+      friends:
+        items:
+          $ref: '#/definitions/users.listFriendsRespItem'
+        type: array
+    type: object
+  users.listFriendsRespItem:
+    properties:
+      city:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  users.listFriendsResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        $ref: '#/definitions/users.listFriendsResp'
       status_code:
         type: integer
     type: object
@@ -1391,6 +1424,46 @@ paths:
       summary: Create request
       tags:
       - requests
+  /books/{id}/stock:
+    get:
+      consumes:
+      - application/json
+      description: Get stock by book
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.getStockBookResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get stock by book
+      tags:
+      - books
   /books/comments/{id}:
     delete:
       consumes:
@@ -2477,6 +2550,41 @@ paths:
     get:
       consumes:
       - application/json
+      description: List quizzes by user
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/quizzes.listUserQuizzesResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: List quizzes by user
+      tags:
+      - quizzes
+  /quizzes/user/{id}:
+    get:
+      consumes:
+      - application/json
       description: List quizzes by user ID
       parameters:
       - description: Authorization
@@ -2484,6 +2592,11 @@ paths:
         name: Authorization
         required: true
         type: string
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -2651,4 +2764,229 @@ paths:
       summary: Set city
       tags:
       - users
+  /users/{id}/stock:
+    get:
+      consumes:
+      - application/json
+      description: Get stock books by user
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.getStockBookResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get stock books by user
+      tags:
+      - users
+  /users/friends:
+    get:
+      consumes:
+      - application/json
+      description: Get friends
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/users.listFriendsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get friends
+      tags:
+      - friends
+  /users/friends/{id}/accept:
+    put:
+      consumes:
+      - application/json
+      description: Accept friend request
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Friend ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Accept friend request
+      tags:
+      - friends
+  /users/friends/{id}/request:
+    post:
+      consumes:
+      - application/json
+      description: Send friend request
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Friend ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Send friend request
+      tags:
+      - friends
+  /users/friends/received:
+    get:
+      consumes:
+      - application/json
+      description: Get received friend requests
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/users.listFriendsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get received friend requests
+      tags:
+      - friends
+  /users/friends/sent:
+    get:
+      consumes:
+      - application/json
+      description: Get sent friend requests
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/users.listFriendsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get sent friend requests
+      tags:
+      - friends
 swagger: "2.0"

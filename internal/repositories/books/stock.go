@@ -32,28 +32,49 @@ func (r *repository) GetStockBook(ctx context.Context, bookID int) (*models.Stoc
 	return book, nil
 }
 
-func (r *repository) GetBooksByStockIDs(ctx context.Context, ids []int) ([]*models.Book, error) {
+func (r *repository) GetBooksByStockIDs(ctx context.Context, ids []int) (map[int]*models.Book, error) {
 	rows, err := r.db.Query(ctx, getBooksByStockIDsStmt, pq.Array(ids))
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var books []*models.Book
+	out := make(map[int]*models.Book)
 	for rows.Next() {
+		var id int
 		book := &models.Book{}
-		err := rows.Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating, &book.Image, &book.Description)
+		err := rows.Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating, &book.Image, &book.Description, &id)
 		if err != nil {
 			return nil, err
 		}
-		books = append(books, book)
+		out[id] = book
 	}
 
-	return books, nil
+	return out, nil
 }
 
 func (r *repository) GetStockBooksByUser(ctx context.Context, userID int) ([]*models.StockBook, error) {
 	rows, err := r.db.Query(ctx, getStockBooksByUserStmt, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var stockBooks []*models.StockBook
+	for rows.Next() {
+		book := &models.StockBook{}
+		err := rows.Scan(&book.ID, &book.UserID, &book.BookID)
+		if err != nil {
+			return nil, err
+		}
+		stockBooks = append(stockBooks, book)
+	}
+
+	return stockBooks, nil
+}
+
+func (r *repository) GetStockByBook(ctx context.Context, bookID int) ([]*models.StockBook, error) {
+	rows, err := r.db.Query(ctx, getStockByBookStmt, bookID)
 	if err != nil {
 		return nil, err
 	}

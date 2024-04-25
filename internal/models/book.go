@@ -30,7 +30,8 @@ type StockBook struct {
 
 type StockBookWithFields struct {
 	*StockBook
-	Book *Book `json:"book"`
+	Book *Book                `json:"book"`
+	User *UserWithoutPassword `json:"user"`
 }
 
 type UploadStockBook struct {

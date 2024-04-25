@@ -60,14 +60,15 @@ func (s *service) UploadImage(ctx context.Context, body []byte, filename string)
 		Key:         aws.String(filename),
 		Body:        bytes.NewReader(body),
 		ContentType: aws.String("image/webp"),
+		ACL:         aws.String("public-read"),
 	}
 
-	out, err := s.s3Client.PutObjectWithContext(ctx, &object)
+	_, err := s.s3Client.PutObjectWithContext(ctx, &object)
 	if err != nil {
 		return "", err
 	}
 
-	return out.String(), nil
+	return fmt.Sprintf("https://bookers-images.hb.kz-ast.vkcs.cloud/%s", filename), nil
 }
 
 func (s *service) ConvertToWebp(img image.Image, imageType string) ([]byte, error) {
@@ -84,6 +85,11 @@ func (s *service) ConvertToWebp(img image.Image, imageType string) ([]byte, erro
 
 func (s *service) GetStockBooks(ctx context.Context, userID int) ([]*models.StockBookWithFields, error) {
 	stockBooks, err := s.bookRepo.GetStockBooksByUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := s.userRepo.GetUserByID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +111,40 @@ func (s *service) GetStockBooks(ctx context.Context, userID int) ([]*models.Stoc
 		return &models.StockBookWithFields{
 			StockBook: item,
 			Book:      booksMap[item.BookID],
+			User:      user.ToUserWithoutPassword(),
+		}
+	}), nil
+}
+
+func (s *service) GetStockByBook(ctx context.Context, bookID int) ([]*models.StockBookWithFields, error) {
+	stockBooks, err := s.bookRepo.GetStockByBook(ctx, bookID)
+	if err != nil {
+		return nil, err
+	}
+
+	book, err := s.bookRepo.GetBookByID(ctx, bookID)
+	if err != nil {
+		return nil, err
+	}
+
+	userIDs := lo.Map(stockBooks, func(item *models.StockBook, _ int) int {
+		return item.UserID
+	})
+
+	users, err := s.userRepo.GetUsersByIDs(ctx, userIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	usersMap := lo.SliceToMap(users, func(item *models.User) (int, *models.User) {
+		return item.ID, item
+	})
+
+	return lo.Map(stockBooks, func(item *models.StockBook, _ int) *models.StockBookWithFields {
+		return &models.StockBookWithFields{
+			StockBook: item,
+			User:      usersMap[item.UserID].ToUserWithoutPassword(),
+			Book:      book,
 		}
 	}), nil
 }

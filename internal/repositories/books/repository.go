@@ -25,9 +25,10 @@ type Repository interface {
 	UpdateRequest(ctx context.Context, req *models.ShareRequest) error
 	GetRequest(ctx context.Context, id int) (*models.ShareRequest, error)
 	GetStockBook(ctx context.Context, bookID int) (*models.StockBook, error)
-	GetBooksByStockIDs(ctx context.Context, ids []int) ([]*models.Book, error)
+	GetBooksByStockIDs(ctx context.Context, ids []int) (map[int]*models.Book, error)
 	ListRequests(ctx context.Context, userID int) ([]*models.ShareRequest, error)
 	GetStockBooksByUser(ctx context.Context, userID int) ([]*models.StockBook, error)
+	GetStockByBook(ctx context.Context, bookID int) ([]*models.StockBook, error)
 }
 
 type repository struct {

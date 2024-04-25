@@ -66,7 +66,7 @@ func (s *service) ReceiverRequested(ctx context.Context, stockBookID, userID, id
 		return errors.ErrBookNotFound
 	}
 
-	if userID != req.ReceiverID || stockBook.UserID != userID {
+	if userID != req.ReceiverID || stockBook.UserID != req.SenderID {
 		return errors.ErrForbiddenForUser
 	}
 
@@ -167,16 +167,12 @@ func (s *service) GetRequest(ctx context.Context, id int) (*models.RequestWithFi
 		return nil, err
 	}
 
-	booksMap := lo.SliceToMap(books, func(item *models.Book) (int, *models.Book) {
-		return item.ID, item
-	})
-
 	return &models.RequestWithFields{
 		ID:             req.ID,
 		Sender:         usersMap[req.SenderID],
 		Receiver:       usersMap[req.ReceiverID],
-		SenderBook:     booksMap[req.SenderBookID],
-		ReceiverBook:   booksMap[req.ReceiverBookID],
+		SenderBook:     books[req.SenderBookID],
+		ReceiverBook:   books[req.ReceiverBookID],
 		SenderStatus:   req.SenderStatus,
 		ReceiverStatus: req.ReceiverStatus,
 		CreatedAt:      req.CreatedAt,
@@ -223,17 +219,13 @@ func (s *service) GetRequests(ctx context.Context, userID int) ([]*models.Reques
 		return nil, err
 	}
 
-	booksMap := lo.SliceToMap(books, func(item *models.Book) (int, *models.Book) {
-		return item.ID, item
-	})
-
 	out := lo.Map(reqs, func(req *models.ShareRequest, _ int) *models.RequestWithFields {
 		return &models.RequestWithFields{
 			ID:             req.ID,
 			Sender:         usersMap[req.SenderID],
 			Receiver:       usersMap[req.ReceiverID],
-			SenderBook:     booksMap[req.SenderBookID],
-			ReceiverBook:   booksMap[req.ReceiverBookID],
+			SenderBook:     books[req.SenderBookID],
+			ReceiverBook:   books[req.ReceiverBookID],
 			SenderStatus:   req.SenderStatus,
 			ReceiverStatus: req.ReceiverStatus,
 			CreatedAt:      req.CreatedAt,

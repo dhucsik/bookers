@@ -22,3 +22,15 @@ type UserWithoutPassword struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }
+
+const (
+	FriendRequestSent     = "sent"
+	FriendRequestAccepted = "accepted"
+)
+
+type FriendRequest struct {
+	ID       int    `json:"id"`
+	UserID   int    `json:"user_id"`
+	FriendID int    `json:"friend_id"`
+	Status   string `json:"status"`
+}

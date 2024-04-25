@@ -60,19 +60,68 @@ type getUserByIDResponse struct {
 }
 
 type getUserByIDResp struct {
+	ID           int     `json:"id"`
+	Username     string  `json:"username"`
+	Email        string  `json:"email"`
+	Role         string  `json:"role"`
+	City         *string `json:"city,omitempty"`
+	FriendStatus string  `json:"friend_status"`
+}
+
+func newGetUserByIDResponse(user *models.User, req *models.FriendRequest) getUserByIDResp {
+	friendStatus := "not_friends"
+
+	if req != nil {
+		if req.Status == models.FriendRequestAccepted {
+			friendStatus = "friends"
+		}
+
+		if req.Status == models.FriendRequestSent {
+			if req.UserID == user.ID {
+				friendStatus = "request_received"
+			} else {
+				friendStatus = "request_sent"
+			}
+		}
+	}
+
+	return getUserByIDResp{
+		ID:           user.ID,
+		Username:     user.Username,
+		Email:        user.Email,
+		City:         user.City,
+		FriendStatus: friendStatus,
+	}
+}
+
+type listFriendsResponse struct {
+	response.Response
+	Result listFriendsResp `json:"result"`
+}
+
+type listFriendsResp struct {
+	Friends []*listFriendsRespItem `json:"friends"`
+}
+
+type listFriendsRespItem struct {
 	ID       int     `json:"id"`
 	Username string  `json:"username"`
 	Email    string  `json:"email"`
-	Role     string  `json:"role"`
 	City     *string `json:"city,omitempty"`
 }
 
-func newGetUserByIDResponse(user *models.User) getUserByIDResp {
-	return getUserByIDResp{
-		ID:       user.ID,
-		Username: user.Username,
-		Email:    user.Email,
-		Role:     user.Role,
-		City:     user.City,
+func newListFriendsResponse(friends []*models.User) listFriendsResp {
+	resp := make([]*listFriendsRespItem, 0, len(friends))
+	for _, friend := range friends {
+		resp = append(resp, &listFriendsRespItem{
+			ID:       friend.ID,
+			Username: friend.Username,
+			Email:    friend.Email,
+			City:     friend.City,
+		})
+	}
+
+	return listFriendsResp{
+		Friends: resp,
 	}
 }

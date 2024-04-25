@@ -2,6 +2,7 @@ package books
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -34,6 +35,7 @@ type Service interface {
 	GetRequest(ctx context.Context, id int) (*models.RequestWithFields, error)
 	GetRequests(ctx context.Context, userID int) ([]*models.RequestWithFields, error)
 	GetStockBooks(ctx context.Context, userID int) ([]*models.StockBookWithFields, error)
+	GetStockByBook(ctx context.Context, bookID int) ([]*models.StockBookWithFields, error)
 }
 
 type service struct {
@@ -50,14 +52,20 @@ func NewService(
 	bookRepo books.Repository,
 	authorRepo authors.Repository,
 	categoryRepo categories.Repository,
+	userRepo users.Repository,
 	endpoint string,
 	bucket string,
 	accessKey string,
 	secretKey string,
 ) (Service, error) {
+	fmt.Println(accessKey)
+	fmt.Println(secretKey)
+
+	fmt.Println(endpoint)
+
 	sess, err := session.NewSession(&aws.Config{
 		Endpoint:    aws.String(endpoint),
-		Region:      aws.String("us-east-1"),
+		Region:      aws.String("kz-ast"),
 		Credentials: credentials.NewStaticCredentials(accessKey, secretKey, ""),
 	})
 	if err != nil {
@@ -71,6 +79,7 @@ func NewService(
 		bookRepo:     bookRepo,
 		authorRepo:   authorRepo,
 		categoryRepo: categoryRepo,
+		userRepo:     userRepo,
 	}, nil
 }
 

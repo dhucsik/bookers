@@ -1,15 +1,17 @@
 package models
 
+import "time"
+
 type ShareRequest struct {
-	ID             int    `json:"id"`
-	SenderID       int    `json:"sender_id"`
-	ReceiverID     int    `json:"receiver_id"`
-	SenderBookID   int    `json:"sender_book_id"`
-	ReceiverBookID int    `json:"receiver_book_id"`
-	SenderStatus   string `json:"sender_status"`
-	ReceiverStatus string `json:"receiver_status"`
-	CreatedAt      string `json:"created_at"`
-	UpdatedAt      string `json:"updated_at"`
+	ID             int       `json:"id"`
+	SenderID       int       `json:"sender_id"`
+	ReceiverID     int       `json:"receiver_id"`
+	SenderBookID   int       `json:"sender_book_id"`
+	ReceiverBookID int       `json:"receiver_book_id"`
+	SenderStatus   string    `json:"sender_status"`
+	ReceiverStatus string    `json:"receiver_status"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
 
 type RequestWithFields struct {
@@ -20,8 +22,8 @@ type RequestWithFields struct {
 	ReceiverBook   *Book                `json:"receiver_book"`
 	SenderStatus   string               `json:"sender_status"`
 	ReceiverStatus string               `json:"receiver_status"`
-	CreatedAt      string               `json:"created_at"`
-	UpdatedAt      string               `json:"updated_at"`
+	CreatedAt      time.Time            `json:"created_at"`
+	UpdatedAt      time.Time            `json:"updated_at"`
 }
 
 const (

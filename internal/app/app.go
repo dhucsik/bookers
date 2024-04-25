@@ -107,6 +107,7 @@ func (a *App) InitServices(_ context.Context) error {
 		a.booksRepository,
 		a.authorsRepository,
 		a.categoriesRepository,
+		a.usersRepository,
 		a.cfg.Env.Get("s3_endpoint"),
 		a.cfg.Env.Get("s3_bucket"),
 		a.cfg.Env.Get("s3_access_key"),
