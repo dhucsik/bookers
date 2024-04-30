@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"image"
-	"image/png"
 	"io"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -13,6 +12,7 @@ import (
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/nickalie/go-webpbin"
 	"github.com/samber/lo"
+	"github.com/yusukebe/go-pngquant"
 )
 
 func (s *service) UploadStockBook(ctx context.Context, book *models.UploadStockBook) (int, string, error) {
@@ -36,17 +36,12 @@ func (s *service) UploadStockBook(ctx context.Context, book *models.UploadStockB
 		return 0, "", err
 	}
 
-	img, err := png.Decode(bytes.NewReader(file.Bytes()))
+	compressed, err := pngquant.CompressBytes(file.Bytes(), "5")
 	if err != nil {
 		return 0, "", err
 	}
 
-	webpImg, err := s.ConvertToWebp(img, book.Image.Header.Get("Content-Type"))
-	if err != nil {
-		return 0, "", err
-	}
-
-	imageURL, err := s.UploadImage(ctx, webpImg, fmt.Sprintf("stock/books/%d.webp", id))
+	imageURL, err := s.UploadImage(ctx, compressed, fmt.Sprintf("stock/books/%d.png", id))
 	if err != nil {
 		return 0, "", err
 	}

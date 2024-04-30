@@ -34,6 +34,7 @@ require (
 	github.com/swaggo/files/v2 v2.0.0 // indirect
 	github.com/ulikunitz/xz v0.5.12 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
+	github.com/yusukebe/go-pngquant v0.0.0-20200223090257-49b91f11b627 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20240404231335-c0f41cb1a7a0 // indirect
 	golang.org/x/time v0.5.0 // indirect
