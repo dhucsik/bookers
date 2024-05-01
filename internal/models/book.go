@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"mime/multipart"
 	"time"
 )
@@ -23,9 +24,15 @@ type BookWithFields struct {
 }
 
 type StockBook struct {
-	ID     int `json:"id"`
-	BookID int `json:"book_id"`
-	UserID int `json:"user_id"`
+	ID       int    `json:"id"`
+	BookID   int    `json:"book_id"`
+	UserID   int    `json:"user_id"`
+	ImageURL string `json:"image_url"`
+}
+
+func (sb *StockBook) SetImage() {
+	sb.ImageURL = fmt.Sprintf("https://bookers-images.hb.kz-ast.vkcs.cloud/stock/books/%d.png", sb.ID)
+
 }
 
 type StockBookWithFields struct {

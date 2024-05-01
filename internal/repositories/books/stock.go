@@ -29,6 +29,7 @@ func (r *repository) GetStockBook(ctx context.Context, bookID int) (*models.Stoc
 		return nil, err
 	}
 
+	book.SetImage()
 	return book, nil
 }
 
@@ -67,6 +68,8 @@ func (r *repository) GetStockBooksByUser(ctx context.Context, userID int) ([]*mo
 		if err != nil {
 			return nil, err
 		}
+
+		book.SetImage()
 		stockBooks = append(stockBooks, book)
 	}
 
@@ -87,6 +90,8 @@ func (r *repository) GetStockByBook(ctx context.Context, bookID int) ([]*models.
 		if err != nil {
 			return nil, err
 		}
+
+		book.SetImage()
 		stockBooks = append(stockBooks, book)
 	}
 
