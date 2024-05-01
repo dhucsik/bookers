@@ -42,3 +42,28 @@ func (c *Controller) listBooksHandler(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, newListBooksResponse(books, totalCount))
 }
+
+// searchBooksHandler godoc
+// @Summary Search books
+// @Description Search books
+// @Tags books
+// @Accept json
+// @Produce json
+// @Param search body searchBooksRequest true "request"
+// @Success 200 {object} listBooksResponse "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /books/search [post]
+func (c *Controller) searchBooksHandler(ctx echo.Context) error {
+	var req searchBooksRequest
+	if err := ctx.Bind(&req); err != nil {
+		return response.NewBadRequest(ctx, err)
+	}
+
+	books, totalCount, err := c.bookService.SearchBooks(ctx.Request().Context(), req.convert())
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
+	}
+
+	return ctx.JSON(http.StatusOK, newListBooksResponse(books, totalCount))
+}

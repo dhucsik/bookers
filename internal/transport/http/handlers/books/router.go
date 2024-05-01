@@ -27,6 +27,7 @@ func NewController(
 
 func (r *Controller) Init(router *echo.Group) {
 	router.GET("/books", r.listBooksHandler)
+	router.POST("/books/search", r.searchBooksHandler)
 	router.GET("/books/:id", r.getBookByIDHandler)
 
 	router.POST("/books/stock/upload", r.auth.Handler(r.uploadStockBookHandler))

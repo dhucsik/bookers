@@ -12,6 +12,7 @@ import (
 type Repository interface {
 	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) (int, error)
 	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.Book, int, error)
+	SearchBooks(ctx context.Context, params *models.SearchParams) ([]*models.Book, int, error)
 	GetBookByID(ctx context.Context, id int) (*models.Book, error)
 	GetBooksByIDs(ctx context.Context, ids []int) ([]*models.Book, error)
 	SetRating(ctx context.Context, bookID, userID, rating int) error
@@ -89,6 +90,32 @@ func (r *repository) ListBooks(ctx context.Context, search string, limit, offset
 	}
 	defer rows.Close()
 
+	var out bookModels
+	for rows.Next() {
+		book := &bookModel{}
+		if err := rows.Scan(&book.ID, &book.Title, &book.PubDate, &book.Edition, &book.Language, &book.Rating, &book.Image, &book.Description, &totalCount); err != nil {
+			return nil, 0, err
+		}
+
+		out = append(out, book)
+	}
+
+	return out.convert(), totalCount, nil
+}
+
+func (r *repository) SearchBooks(ctx context.Context, params *models.SearchParams) ([]*models.Book, int, error) {
+	q, args, err := searchQueryBuild(params)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	rows, err := r.db.Query(ctx, q, args...)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+
+	var totalCount int
 	var out bookModels
 	for rows.Next() {
 		book := &bookModel{}

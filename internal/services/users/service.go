@@ -116,7 +116,16 @@ func (s *service) DeleteUser(ctx context.Context, userID int) error {
 }
 
 func (s *service) CreateRequest(ctx context.Context, userID, friendID int) error {
-	req := &models.FriendRequest{
+	req, err := s.userRepo.GetFriendRequest(ctx, userID, friendID)
+	if err != nil {
+		return err
+	}
+
+	if len(req.Status) > 0 {
+		return errors.ErrFriendRequestExists
+	}
+
+	req = &models.FriendRequest{
 		UserID:   userID,
 		FriendID: friendID,
 		Status:   models.FriendRequestSent,

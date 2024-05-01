@@ -22,6 +22,7 @@ type Service interface {
 	CreateBook(ctx context.Context, book *models.Book, authorIDs, categoryIDs []int) (int, error)
 	GetBookByID(ctx context.Context, id int) (*models.BookWithFields, error)
 	ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.BookWithFields, int, error)
+	SearchBooks(ctx context.Context, params *models.SearchParams) ([]*models.BookWithFields, int, error)
 	SetRating(ctx context.Context, rating *models.BookRating) error
 	ListComments(ctx context.Context, bookID int) ([]*models.BookComment, error)
 	AddComment(ctx context.Context, comment *models.BookComment) (int, error)
@@ -119,6 +120,37 @@ func (s *service) GetBookByID(ctx context.Context, id int) (*models.BookWithFiel
 
 func (s *service) ListBooks(ctx context.Context, search string, limit, offset int) ([]*models.BookWithFields, int, error) {
 	books, totalCount, err := s.bookRepo.ListBooks(ctx, search, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	ids := lo.Map(books, func(book *models.Book, _ int) int {
+		return book.ID
+	})
+
+	authors, err := s.authorRepo.GetByBookIDs(ctx, ids)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	categories, err := s.categoryRepo.GetByBookIDs(ctx, ids)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	out := lo.Map(books, func(book *models.Book, _ int) *models.BookWithFields {
+		return &models.BookWithFields{
+			Book:       book,
+			Authors:    authors[book.ID],
+			Categories: categories[book.ID],
+		}
+	})
+
+	return out, totalCount, nil
+}
+
+func (s *service) SearchBooks(ctx context.Context, params *models.SearchParams) ([]*models.BookWithFields, int, error) {
+	books, totalCount, err := s.bookRepo.SearchBooks(ctx, params)
 	if err != nil {
 		return nil, 0, err
 	}

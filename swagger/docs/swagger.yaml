@@ -274,6 +274,23 @@ definitions:
       book_id:
         type: integer
     type: object
+  books.searchBooksRequest:
+    properties:
+      author_ids:
+        items:
+          type: integer
+        type: array
+      category_ids:
+        items:
+          type: integer
+        type: array
+      limit:
+        type: integer
+      offset:
+        type: integer
+      query:
+        type: string
+    type: object
   books.setRatingRequest:
     properties:
       rating:
@@ -784,8 +801,6 @@ definitions:
       id:
         type: integer
       password:
-        type: string
-      role:
         type: string
       share_count:
         type: integer
@@ -1809,6 +1824,36 @@ paths:
       summary: Sender accepted
       tags:
       - requests
+  /books/search:
+    post:
+      consumes:
+      - application/json
+      description: Search books
+      parameters:
+      - description: request
+        in: body
+        name: search
+        required: true
+        schema:
+          $ref: '#/definitions/books.searchBooksRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.listBooksResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Search books
+      tags:
+      - books
   /books/stock:
     get:
       consumes:

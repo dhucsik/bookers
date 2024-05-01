@@ -39,3 +39,11 @@ type UploadStockBook struct {
 	UserID int
 	Image  *multipart.FileHeader
 }
+
+type SearchParams struct {
+	Search     string
+	Limit      int
+	Offset     int
+	Categories []int
+	Authors    []int
+}

@@ -207,3 +207,21 @@ func (r *createQuizRequest) convert(bookID, userID int) *models.Quiz {
 type requestReceived struct {
 	BookID int `json:"book_id"`
 }
+
+type searchBooksRequest struct {
+	Query       string `json:"query"`
+	CategoryIDs []int  `json:"category_ids"`
+	AuthorIDs   []int  `json:"author_ids"`
+	Limit       int    `json:"limit"`
+	Offset      int    `json:"offset"`
+}
+
+func (r searchBooksRequest) convert() *models.SearchParams {
+	return &models.SearchParams{
+		Search:     r.Query,
+		Limit:      r.Limit,
+		Offset:     r.Offset,
+		Categories: r.CategoryIDs,
+		Authors:    r.AuthorIDs,
+	}
+}

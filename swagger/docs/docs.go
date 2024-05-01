@@ -1011,6 +1011,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/books/search": {
+            "post": {
+                "description": "Search books",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "books"
+                ],
+                "summary": "Search books",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "search",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/books.searchBooksRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/books.listBooksResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/books/stock": {
             "get": {
                 "security": [
@@ -4031,6 +4077,32 @@ const docTemplate = `{
                 }
             }
         },
+        "books.searchBooksRequest": {
+            "type": "object",
+            "properties": {
+                "author_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "category_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "query": {
+                    "type": "string"
+                }
+            }
+        },
         "books.setRatingRequest": {
             "type": "object",
             "properties": {
@@ -4817,9 +4889,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "password": {
-                    "type": "string"
-                },
-                "role": {
                     "type": "string"
                 },
                 "share_count": {
