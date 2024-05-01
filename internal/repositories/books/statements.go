@@ -50,6 +50,8 @@ const (
 
 	getStockByBookStmt = `SELECT id, user_id, book_id FROM stock_books WHERE book_id = $1`
 
+	deleteStockBookStmt = `DELETE FROM stock_books WHERE id = $1`
+
 	createNewRequestStmt = `INSERT INTO share_requests (sender_id, receiver_id, sender_book_id, receiver_book_id, sender_status, receiver_status)
 	VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
 

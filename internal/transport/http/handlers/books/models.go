@@ -40,6 +40,11 @@ func newUploadStockBookResp(id int, imageURL string) uploadStockBookResp {
 	}
 }
 
+type updateStockResponse struct {
+	response.Response
+	Result string `json:"result"`
+}
+
 type getStockBookResponse struct {
 	response.Response
 	Result []*models.StockBookWithFields `json:"result"`

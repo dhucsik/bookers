@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"image"
 	"io"
+	"mime/multipart"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/nickalie/go-webpbin"
 	"github.com/samber/lo"
@@ -49,6 +51,59 @@ func (s *service) UploadStockBook(ctx context.Context, book *models.UploadStockB
 	return id, imageURL, nil
 }
 
+func (s *service) UpdateImage(ctx context.Context, userID, stockID int, image *multipart.FileHeader) (string, error) {
+	stock, err := s.bookRepo.GetStockBook(ctx, stockID)
+	if err != nil {
+		return "", err
+	}
+
+	if stock.UserID != userID {
+		return "", errors.ErrForbiddenForUser
+	}
+
+	src, err := image.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+
+	var file bytes.Buffer
+	_, err = io.Copy(&file, src)
+	if err != nil {
+		return "", err
+	}
+
+	compressed, err := pngquant.CompressBytes(file.Bytes(), "5")
+	if err != nil {
+		return "", err
+	}
+
+	imageURL, err := s.UploadImage(ctx, compressed, fmt.Sprintf("stock/books/%d.png", stockID))
+	if err != nil {
+		return "", err
+	}
+
+	return imageURL, nil
+}
+
+func (s *service) DeleteStockBook(ctx context.Context, userID, stockID int) error {
+	stock, err := s.bookRepo.GetStockBook(ctx, stockID)
+	if err != nil {
+		return err
+	}
+
+	if stock.UserID != userID {
+		return errors.ErrForbiddenForUser
+	}
+
+	err = s.bookRepo.DeleteStockBook(ctx, stockID)
+	if err != nil {
+		return err
+	}
+
+	return s.DeleteImage(ctx, fmt.Sprintf("stock/books/%d.png", stockID))
+}
+
 func (s *service) UploadImage(ctx context.Context, body []byte, filename string) (string, error) {
 	object := s3.PutObjectInput{
 		Bucket:      aws.String(s.bucket),
@@ -64,6 +119,20 @@ func (s *service) UploadImage(ctx context.Context, body []byte, filename string)
 	}
 
 	return fmt.Sprintf("https://bookers-images.hb.kz-ast.vkcs.cloud/%s", filename), nil
+}
+
+func (s *service) DeleteImage(ctx context.Context, filename string) error {
+	object := s3.DeleteObjectInput{
+		Bucket: aws.String(s.bucket),
+		Key:    aws.String(filename),
+	}
+
+	_, err := s.s3Client.DeleteObjectWithContext(ctx, &object)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *service) ConvertToWebp(img image.Image, imageType string) ([]byte, error) {

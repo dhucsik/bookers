@@ -3,6 +3,7 @@ package books
 import (
 	"context"
 	"fmt"
+	"mime/multipart"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -27,6 +28,7 @@ type Service interface {
 	UpdateComment(ctx context.Context, comment *models.BookComment) error
 	DeleteComment(ctx context.Context, commentID, userID int) error
 	UploadStockBook(ctx context.Context, book *models.UploadStockBook) (int, string, error)
+	UpdateImage(ctx context.Context, userID, stockID int, image *multipart.FileHeader) (string, error)
 	ApproveRequest(ctx context.Context, userID, id int) error
 	SenderAccepted(ctx context.Context, userID, id int) error
 	ReceiverRequested(ctx context.Context, stockBookID, userID, id int) error
@@ -36,6 +38,7 @@ type Service interface {
 	GetRequests(ctx context.Context, userID int) ([]*models.RequestWithFields, error)
 	GetStockBooks(ctx context.Context, userID int) ([]*models.StockBookWithFields, error)
 	GetStockByBook(ctx context.Context, bookID int) ([]*models.StockBookWithFields, error)
+	DeleteStockBook(ctx context.Context, userID, stockID int) error
 }
 
 type service struct {

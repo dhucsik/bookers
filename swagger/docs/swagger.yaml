@@ -284,6 +284,17 @@ definitions:
       comment:
         type: string
     type: object
+  books.updateStockResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        type: string
+      status_code:
+        type: integer
+    type: object
   books.uploadStockBookResp:
     properties:
       id:
@@ -1811,6 +1822,91 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get stock books
+      tags:
+      - books
+  /books/stock/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete stock book
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Stock ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete stock book
+      tags:
+      - books
+  /books/stock/{id}/image:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update stock image
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Stock ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: image
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.updateStockResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update stock image
       tags:
       - books
   /books/stock/upload:

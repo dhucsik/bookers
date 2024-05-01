@@ -92,3 +92,8 @@ func (r *repository) GetStockByBook(ctx context.Context, bookID int) ([]*models.
 
 	return stockBooks, nil
 }
+
+func (r *repository) DeleteStockBook(ctx context.Context, bookID int) error {
+	_, err := r.db.Exec(ctx, deleteStockBookStmt, bookID)
+	return err
+}

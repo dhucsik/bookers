@@ -61,6 +61,87 @@ func (c *Controller) uploadStockBookHandler(ctx echo.Context) error {
 	})
 }
 
+// updateStockImageHandler godoc
+// @Summary Update stock image
+// @Description Update stock image
+// @Tags books
+// @Accept mpfd
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
+// @Param id path int true "Stock ID"
+// @Param image formData file true "image"
+// @Success 200 {object} updateStockResponse "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /books/stock/{id}/image [put]
+func (c *Controller) updateStockImageHandler(ctx echo.Context) error {
+	session, ok := models.GetSession(ctx.Request().Context())
+	if !ok {
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
+	}
+
+	stockIDStr := ctx.Param("id")
+	stockID, err := strconv.Atoi(stockIDStr)
+	if err != nil {
+		return response.NewBadRequest(ctx, err)
+	}
+
+	img, err := ctx.FormFile("image")
+	if err != nil {
+		return response.NewBadRequest(ctx, err)
+	}
+
+	if img.Header.Get("Content-Type") != "image/png" {
+		return response.NewBadRequest(ctx, errors.ErrInvalidImageFormat)
+	}
+
+	imageURL, err := c.bookService.UpdateImage(ctx.Request().Context(), session.UserID, stockID, img)
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
+	}
+
+	return ctx.JSON(http.StatusOK, updateStockResponse{
+		Response: response.NewResponse(),
+		Result:   imageURL,
+	})
+}
+
+// deleteStockBookHandler godoc
+// @Summary Delete stock book
+// @Description Delete stock book
+// @Tags books
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
+// @Param id path int true "Stock ID"
+// @Success 200 {object} response.Response "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /books/stock/{id} [delete]
+func (c *Controller) deleteStockBookHandler(ctx echo.Context) error {
+	session, ok := models.GetSession(ctx.Request().Context())
+	if !ok {
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
+	}
+
+	stockIDStr := ctx.Param("id")
+	stockID, err := strconv.Atoi(stockIDStr)
+	if err != nil {
+		return response.NewBadRequest(ctx, err)
+	}
+
+	err = c.bookService.DeleteStockBook(ctx.Request().Context(), session.UserID, stockID)
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
+	}
+
+	return ctx.JSON(http.StatusOK, response.NewResponse())
+}
+
 // getStockBooksHandler godoc
 // @Summary Get stock books
 // @Description Get stock books
