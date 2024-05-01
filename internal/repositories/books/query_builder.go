@@ -14,12 +14,12 @@ func searchQueryBuild(params *models.SearchParams) (string, []interface{}, error
 	q = q.Where(`title ILIKE '%' || ? || '%'`, params.Search)
 
 	if len(params.Categories) > 0 {
-		q = q.Join("book_categories bc ON bc.book_id = books.id")
+		q = q.Join("books_categories bc ON bc.book_id = books.id")
 		q = q.Where("bc.category_id = ANY(?)", params.Categories)
 	}
 
 	if len(params.Authors) > 0 {
-		q = q.Join("book_authors ba ON ba.book_id = books.id")
+		q = q.Join("books_authors ba ON ba.book_id = books.id")
 		q = q.Where("ba.author_id = ANY(?)", params.Authors)
 	}
 
