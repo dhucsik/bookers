@@ -50,6 +50,8 @@ const (
 
 	getStockByBookStmt = `SELECT id, user_id, book_id FROM stock_books WHERE book_id = $1`
 
+	getUserStockCountStmt = `SELECT COUNT(*) FROM stock_books WHERE user_id = $1`
+
 	deleteStockBookStmt = `DELETE FROM stock_books WHERE id = $1`
 
 	createNewRequestStmt = `INSERT INTO share_requests (sender_id, receiver_id, sender_book_id, receiver_book_id, sender_status, receiver_status)
@@ -68,4 +70,6 @@ const (
 
 	getRequestsStmt = `SELECT id, sender_id, receiver_id, sender_book_id, receiver_book_id, sender_status, receiver_status, created_at, updated_at
 	FROM share_requests WHERE sender_id = $1 OR receiver_id = $1`
+
+	getSuccessRequestCountStmt = `SELECT COUNT(*) FROM share_requests WHERE (sender_id = $1 OR receiver_id = $1) AND sender_status = 'sender_proved' AND receiver_status = 'receiver_proved'`
 )

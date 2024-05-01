@@ -23,6 +23,12 @@ type UserWithoutPassword struct {
 	Email    string `json:"email"`
 }
 
+type UserWithCounts struct {
+	*User
+	BooksCount int `json:"books_count"`
+	ShareCount int `json:"share_count"`
+}
+
 const (
 	FriendRequestSent     = "sent"
 	FriendRequestAccepted = "accepted"

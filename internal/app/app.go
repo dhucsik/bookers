@@ -99,7 +99,7 @@ func (a *App) InitRepositories(_ context.Context) error {
 func (a *App) InitServices(_ context.Context) error {
 	var err error
 
-	a.usersService = usersS.NewService(a.usersRepository)
+	a.usersService = usersS.NewService(a.usersRepository, a.booksRepository)
 	a.authService = auth.NewService(time.Hour, time.Hour, a.usersService)
 	a.authorsService = authorsS.NewService(a.authorsRepository)
 	a.categoriesService = categoriesS.NewService(a.categoriesRepository)

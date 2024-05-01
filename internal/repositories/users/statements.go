@@ -41,4 +41,8 @@ const (
 
 	getReceivedRequestFriendsStmt = `SELECT u.id, u.username, u.email, u.city
 	FROM users u JOIN friends f ON u.id = f.user_id WHERE f.friend_id = $1 AND f.status = 'sent'`
+
+	updateUsernameStmt = `UPDATE users SET username = $2 WHERE id = $1`
+
+	updatePasswordStmt = `UPDATE users SET password = $2 WHERE id = $1`
 )

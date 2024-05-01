@@ -54,6 +54,14 @@ type setCityRequest struct {
 	City string `json:"city"`
 }
 
+type updateUsernameRequest struct {
+	Username string `json:"username"`
+}
+
+type updatePasswordRequest struct {
+	Password string `json:"password"`
+}
+
 type getUserByIDResponse struct {
 	response.Response
 	Result getUserByIDResp `json:"result"`
@@ -64,11 +72,14 @@ type getUserByIDResp struct {
 	Username     string  `json:"username"`
 	Email        string  `json:"email"`
 	Role         string  `json:"role"`
+	Password     string  `json:"password"`
 	City         *string `json:"city,omitempty"`
 	FriendStatus string  `json:"friend_status"`
+	BooksCount   int     `json:"books_count"`
+	ShareCount   int     `json:"share_count"`
 }
 
-func newGetUserByIDResponse(user *models.User, req *models.FriendRequest) getUserByIDResp {
+func newGetUserByIDResponse(user *models.UserWithCounts, req *models.FriendRequest) getUserByIDResp {
 	friendStatus := "not_friends"
 
 	if req != nil {
@@ -89,8 +100,11 @@ func newGetUserByIDResponse(user *models.User, req *models.FriendRequest) getUse
 		ID:           user.ID,
 		Username:     user.Username,
 		Email:        user.Email,
+		Password:     user.Password,
 		City:         user.City,
 		FriendStatus: friendStatus,
+		BooksCount:   user.BooksCount,
+		ShareCount:   user.ShareCount,
 	}
 }
 

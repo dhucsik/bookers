@@ -29,6 +29,8 @@ type Repository interface {
 	ListRequests(ctx context.Context, userID int) ([]*models.ShareRequest, error)
 	GetStockBooksByUser(ctx context.Context, userID int) ([]*models.StockBook, error)
 	GetStockByBook(ctx context.Context, bookID int) ([]*models.StockBook, error)
+	GetUserStockCount(ctx context.Context, userID int) (int, error)
+	GetSuccessRequestCount(ctx context.Context, userID int) (int, error)
 	DeleteStockBook(ctx context.Context, bookID int) error
 }
 

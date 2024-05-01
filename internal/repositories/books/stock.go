@@ -97,3 +97,13 @@ func (r *repository) DeleteStockBook(ctx context.Context, bookID int) error {
 	_, err := r.db.Exec(ctx, deleteStockBookStmt, bookID)
 	return err
 }
+
+func (r *repository) GetUserStockCount(ctx context.Context, userID int) (int, error) {
+	var count int
+	err := r.db.QueryRow(ctx, getUserStockCountStmt, userID).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}

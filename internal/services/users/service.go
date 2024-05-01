@@ -5,13 +5,14 @@ import (
 
 	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
+	"github.com/dhucsik/bookers/internal/repositories/books"
 	"github.com/dhucsik/bookers/internal/repositories/users"
 )
 
 type Service interface {
 	CreateUser(ctx context.Context, user *models.User) (*models.User, error)
 	SetCity(ctx context.Context, id int, city string) error
-	GetUserByID(ctx context.Context, userID int) (*models.User, error)
+	GetUserByID(ctx context.Context, userID int) (*models.UserWithCounts, error)
 	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
 	DeleteUser(ctx context.Context, userID int) error
 	CreateRequest(ctx context.Context, userID, friendID int) error
@@ -20,15 +21,22 @@ type Service interface {
 	GetFriendRequest(ctx context.Context, userID, friendID int) (*models.FriendRequest, error)
 	GetSentRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
 	GetReceivedRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
+	UpdateUsername(ctx context.Context, userID int, username string) error
+	UpdatePassword(ctx context.Context, userID int, password string) error
 }
 
 type service struct {
-	userRepo users.Repository
+	userRepo  users.Repository
+	booksRepo books.Repository
 }
 
-func NewService(userRepo users.Repository) Service {
+func NewService(
+	userRepo users.Repository,
+	booksRepo books.Repository,
+) Service {
 	return &service{
-		userRepo: userRepo,
+		userRepo:  userRepo,
+		booksRepo: booksRepo,
 	}
 }
 
@@ -58,8 +66,36 @@ func (s *service) SetCity(ctx context.Context, userID int, city string) error {
 	return s.userRepo.SetCity(ctx, session.UserID, city)
 }
 
-func (s *service) GetUserByID(ctx context.Context, userID int) (*models.User, error) {
-	return s.userRepo.GetUserByID(ctx, userID)
+func (s *service) GetUserByID(ctx context.Context, userID int) (*models.UserWithCounts, error) {
+	var (
+		booksCount int
+		shareCount int
+	)
+
+	user, err := s.userRepo.GetUserByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, errors.ErrUserNotFound
+	}
+
+	booksCount, err = s.booksRepo.GetUserStockCount(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	shareCount, err = s.booksRepo.GetSuccessRequestCount(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.UserWithCounts{
+		User:       user,
+		BooksCount: booksCount,
+		ShareCount: shareCount,
+	}, nil
 }
 
 func (s *service) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
@@ -113,4 +149,12 @@ func (s *service) GetSentRequestFriends(ctx context.Context, userID int) ([]*mod
 
 func (s *service) GetReceivedRequestFriends(ctx context.Context, userID int) ([]*models.User, error) {
 	return s.userRepo.GetReceivedRequestFriends(ctx, userID)
+}
+
+func (s *service) UpdateUsername(ctx context.Context, userID int, username string) error {
+	return s.userRepo.UpdateUsername(ctx, userID, username)
+}
+
+func (s *service) UpdatePassword(ctx context.Context, userID int, password string) error {
+	return s.userRepo.UpdatePassword(ctx, userID, password)
 }

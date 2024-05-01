@@ -91,3 +91,13 @@ func (r *repository) ListRequests(ctx context.Context, userID int) ([]*models.Sh
 
 	return out, nil
 }
+
+func (r *repository) GetSuccessRequestCount(ctx context.Context, userID int) (int, error) {
+	var count int
+	err := r.db.QueryRow(ctx, getSuccessRequestCountStmt, userID).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}

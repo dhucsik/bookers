@@ -22,6 +22,8 @@ type Repository interface {
 	GetFriendRequest(ctx context.Context, userID, friendID int) (*models.FriendRequest, error)
 	GetSentRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
 	GetReceivedRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
+	UpdateUsername(ctx context.Context, userID int, username string) error
+	UpdatePassword(ctx context.Context, userID int, password string) error
 }
 
 type repository struct {
@@ -103,4 +105,14 @@ func (r *repository) GetUsersByIDs(ctx context.Context, ids []int) ([]*models.Us
 	}
 
 	return out, nil
+}
+
+func (r *repository) UpdateUsername(ctx context.Context, userID int, username string) error {
+	_, err := r.db.Exec(ctx, updateUsernameStmt, userID, username)
+	return err
+}
+
+func (r *repository) UpdatePassword(ctx context.Context, userID int, password string) error {
+	_, err := r.db.Exec(ctx, updatePasswordStmt, userID, password)
+	return err
 }
