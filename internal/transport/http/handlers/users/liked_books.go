@@ -21,7 +21,7 @@ import (
 // @Success 200 {object} response.Response "Success"
 // @Failure 400 {object} response.Response "Bad request"
 // @Failure 500 {object} response.Response "Internal server error"
-// @Router /users/books/liked [post]
+// @Router /users/liked-books [post]
 func (c *Controller) addLikedBook(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
@@ -53,7 +53,7 @@ func (c *Controller) addLikedBook(ctx echo.Context) error {
 // @Success 200 {object} response.Response "Success"
 // @Failure 400 {object} response.Response "Bad request"
 // @Failure 500 {object} response.Response "Internal server error"
-// @Router /users/books/liked [delete]
+// @Router /users/liked-books [delete]
 func (c *Controller) removeLikedBook(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
@@ -84,7 +84,7 @@ func (c *Controller) removeLikedBook(ctx echo.Context) error {
 // @Success 200 {object} listLikedBooksResponse "Success"
 // @Failure 400 {object} response.Response "Bad request"
 // @Failure 500 {object} response.Response "Internal server error"
-// @Router /users/books/liked [get]
+// @Router /users/liked-books [get]
 func (c *Controller) getLikedBooks(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
