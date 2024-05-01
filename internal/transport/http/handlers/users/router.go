@@ -25,6 +25,11 @@ func NewController(
 
 func (r *Controller) Init(router *echo.Group) {
 	router.POST("/users", r.createUser)
+
+	router.POST("users/liked-books", r.auth.Handler(r.addLikedBook))
+	router.DELETE("users/liked-books", r.auth.Handler(r.removeLikedBook))
+	router.GET("users/liked-books", r.auth.Handler(r.getLikedBooks))
+
 	router.PATCH("/users/:id/city", r.auth.Handler(r.setCity))
 	router.PATCH("/users/username", r.auth.Handler(r.updateUsername))
 	router.PATCH("/users/password", r.auth.Handler(r.updatePassword))
@@ -37,8 +42,4 @@ func (r *Controller) Init(router *echo.Group) {
 	router.GET("/users/friends", r.auth.Handler(r.getFriendsHandler))
 	router.GET("/users/friends/sent", r.auth.Handler(r.getSentRequests))
 	router.GET("/users/friends/received", r.auth.Handler(r.getReceivedRequests))
-
-	router.POST("users/liked_books", r.auth.Handler(r.addLikedBook))
-	router.DELETE("users/liked_books", r.auth.Handler(r.removeLikedBook))
-	router.GET("users/liked_books", r.auth.Handler(r.getLikedBooks))
 }
