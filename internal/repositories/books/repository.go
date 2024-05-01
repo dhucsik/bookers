@@ -33,6 +33,9 @@ type Repository interface {
 	GetUserStockCount(ctx context.Context, userID int) (int, error)
 	GetSuccessRequestCount(ctx context.Context, userID int) (int, error)
 	DeleteStockBook(ctx context.Context, bookID int) error
+	AddBookToLiked(ctx context.Context, userID, bookID int) error
+	RemoveBookFromLiked(ctx context.Context, userID, bookID int) error
+	GetLikedBooks(ctx context.Context, userID int) ([]*models.Book, error)
 }
 
 type repository struct {

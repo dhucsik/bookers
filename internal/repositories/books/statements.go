@@ -72,4 +72,11 @@ const (
 	FROM share_requests WHERE sender_id = $1 OR receiver_id = $1`
 
 	getSuccessRequestCountStmt = `SELECT COUNT(*) FROM share_requests WHERE (sender_id = $1 OR receiver_id = $1) AND sender_status = 'sender_proved' AND receiver_status = 'receiver_proved'`
+
+	addBookToLikedStmt = `INSERT INTO liked_books (user_id, book_id) VALUES ($1, $2)`
+
+	getLikedBooksStmt = `SELECT b.id, b.title, b.pub_date, b.edition, b.language, b.rating, b.image, b.description
+	FROM books b JOIN liked_books lb ON b.id = lb.book_id WHERE lb.user_id = $1`
+
+	deleteFromLikedStmt = `DELETE FROM liked_books WHERE user_id = $1 AND book_id = $2`
 )

@@ -23,6 +23,9 @@ type Service interface {
 	GetReceivedRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
 	UpdateUsername(ctx context.Context, userID int, username string) error
 	UpdatePassword(ctx context.Context, userID int, password string) error
+	GetLikedBooks(ctx context.Context, userID int) ([]*models.Book, error)
+	AddBookToLiked(ctx context.Context, userID, bookID int) error
+	RemoveBookFromLiked(ctx context.Context, userID, bookID int) error
 }
 
 type service struct {
@@ -166,4 +169,16 @@ func (s *service) UpdateUsername(ctx context.Context, userID int, username strin
 
 func (s *service) UpdatePassword(ctx context.Context, userID int, password string) error {
 	return s.userRepo.UpdatePassword(ctx, userID, password)
+}
+
+func (s *service) GetLikedBooks(ctx context.Context, userID int) ([]*models.Book, error) {
+	return s.booksRepo.GetLikedBooks(ctx, userID)
+}
+
+func (s *service) AddBookToLiked(ctx context.Context, userID, bookID int) error {
+	return s.booksRepo.AddBookToLiked(ctx, userID, bookID)
+}
+
+func (s *service) RemoveBookFromLiked(ctx context.Context, userID, bookID int) error {
+	return s.booksRepo.RemoveBookFromLiked(ctx, userID, bookID)
 }

@@ -570,6 +570,8 @@ definitions:
         type: integer
       id:
         type: integer
+      image_url:
+        type: string
       user:
         $ref: '#/definitions/models.UserWithoutPassword'
       user_id:
@@ -757,6 +759,11 @@ definitions:
       status_code:
         type: integer
     type: object
+  users.addLikedBookRequest:
+    properties:
+      book_id:
+        type: integer
+    type: object
   users.createUserRequest:
     properties:
       email:
@@ -845,6 +852,24 @@ definitions:
       result:
         $ref: '#/definitions/users.listFriendsResp'
       status_code:
+        type: integer
+    type: object
+  users.listLikedBooksResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        items:
+          $ref: '#/definitions/models.Book'
+        type: array
+      status_code:
+        type: integer
+    type: object
+  users.removeLikedBookRequest:
+    properties:
+      book_id:
         type: integer
     type: object
   users.setCityRequest:
@@ -3146,6 +3171,109 @@ paths:
       summary: Get sent friend requests
       tags:
       - friends
+  /users/liked_books:
+    delete:
+      consumes:
+      - application/json
+      description: Remove liked book
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.removeLikedBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Remove liked book
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get liked books
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/users.listLikedBooksResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get liked books
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Add liked book
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.addLikedBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Add liked book
+      tags:
+      - users
   /users/password:
     patch:
       consumes:

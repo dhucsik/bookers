@@ -138,3 +138,16 @@ func newListFriendsResponse(friends []*models.User) listFriendsResp {
 		Friends: resp,
 	}
 }
+
+type addLikedBookRequest struct {
+	BookID int `json:"book_id"`
+}
+
+type listLikedBooksResponse struct {
+	response.Response
+	Result []*models.Book `json:"result"`
+}
+
+type removeLikedBookRequest struct {
+	BookID int `json:"book_id"`
+}
