@@ -3297,7 +3297,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/liked_books": {
+        "/users/liked-books": {
             "get": {
                 "security": [
                     {

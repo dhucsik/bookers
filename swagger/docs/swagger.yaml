@@ -3171,7 +3171,7 @@ paths:
       summary: Get sent friend requests
       tags:
       - friends
-  /users/liked_books:
+  /users/liked-books:
     delete:
       consumes:
       - application/json
