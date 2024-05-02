@@ -12,6 +12,14 @@ func (c *Controller) receiveMessage(ctx echo.Context) error {
 		return err
 	}
 
+	if update.Message == nil {
+		return ctx.JSON(200, "ok")
+	}
+
+	if update.Message.Chat == nil {
+		return ctx.JSON(200, "ok")
+	}
+
 	if update.Message.Chat.ID == -1002123116824 {
 		text, _ := strings.CutPrefix(update.Message.Text, "/send -")
 		c.chat <- text
