@@ -4,12 +4,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type Controller struct{}
+type Controller struct {
+	chat chan string
+}
 
-func NewController() *Controller {
-	return &Controller{}
+func NewController(chat chan string) *Controller {
+	return &Controller{
+		chat: chat,
+	}
 }
 
 func (r *Controller) Init(router *echo.Group) {
-	router.File("/main", "dist/index.html")
+	router.POST("/webhook", r.receiveMessage)
+	router.POST("/send", r.sendMessage)
 }

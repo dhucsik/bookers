@@ -37,6 +37,7 @@ type App struct {
 	categoriesService categoriesS.Service
 	booksService      booksS.Service
 	quizzesService    quizzesS.Service
+	messageChat       chan string
 
 	httpServer *http.Server
 	db         *pgxpool.Pool
@@ -75,7 +76,8 @@ func NewApp(ctx context.Context) *App {
 
 func NewAppWithConfig(ctx context.Context, cfg *configs.Config) *App {
 	app := &App{
-		cfg: cfg,
+		cfg:         cfg,
+		messageChat: make(chan string, 5),
 	}
 
 	err := app.InitDatabase(ctx)
@@ -129,6 +131,7 @@ func (a *App) InitHTTPServer(_ context.Context) error {
 		a.categoriesService,
 		a.booksService,
 		a.quizzesService,
+		a.messageChat,
 	)
 
 	return nil
