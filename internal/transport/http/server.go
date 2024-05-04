@@ -80,7 +80,7 @@ func NewServer(
 
 	server.WithControllers(
 		authC.NewController(authService, usersService),
-		usersC.NewController(authMiddleware, usersService),
+		usersC.NewController(authMiddleware, usersService, booksService),
 		authorsC.NewController(authMiddleware, authorsService),
 		categoriesC.NewController(authMiddleware, categoriesService),
 		admin.NewController(authMiddleware, authorsService, categoriesService, booksService),

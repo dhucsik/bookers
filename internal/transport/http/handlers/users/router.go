@@ -16,10 +16,12 @@ type Controller struct {
 func NewController(
 	auth *middlewares.AuthMiddleware,
 	usersService users.Service,
+	booksService books.Service,
 ) *Controller {
 	return &Controller{
 		auth:         auth,
 		usersService: usersService,
+		bookService:  booksService,
 	}
 }
 
