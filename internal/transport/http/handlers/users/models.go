@@ -151,3 +151,8 @@ type listLikedBooksResponse struct {
 type removeLikedBookRequest struct {
 	BookID int `json:"book_id"`
 }
+
+type uploadProfilePicResponse struct {
+	response.Response
+	Result string `json:"result"`
+}

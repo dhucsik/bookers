@@ -225,3 +225,28 @@ func (r searchBooksRequest) convert() *models.SearchParams {
 		Authors:    r.AuthorIDs,
 	}
 }
+
+type searchStockBooksRequest struct {
+	Query      string `json:"query"`
+	Limit      int    `json:"limit"`
+	Offset     int    `json:"offset"`
+	Categories []int  `json:"categories"`
+	Authors    []int  `json:"authors"`
+	City       string `json:"city"`
+}
+
+func (r searchStockBooksRequest) convert() *models.SearchParams {
+	return &models.SearchParams{
+		Search:     r.Query,
+		Limit:      r.Limit,
+		Offset:     r.Offset,
+		Categories: r.Categories,
+		Authors:    r.Authors,
+		City:       r.City,
+	}
+}
+
+type searchStockBooksResponse struct {
+	response.Response
+	Result []*models.StockBookWithFields `json:"result"`
+}

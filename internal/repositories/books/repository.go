@@ -36,6 +36,7 @@ type Repository interface {
 	AddBookToLiked(ctx context.Context, userID, bookID int) error
 	RemoveBookFromLiked(ctx context.Context, userID, bookID int) error
 	GetLikedBooks(ctx context.Context, userID int) ([]*models.Book, error)
+	SearchStockBooks(ctx context.Context, params *models.SearchParams) ([]*models.StockBookWithFields, error)
 }
 
 type repository struct {

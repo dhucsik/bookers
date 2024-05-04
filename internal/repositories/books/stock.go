@@ -112,3 +112,43 @@ func (r *repository) GetUserStockCount(ctx context.Context, userID int) (int, er
 
 	return count, nil
 }
+
+func (r *repository) SearchStockBooks(ctx context.Context, params *models.SearchParams) ([]*models.StockBookWithFields, error) {
+	q, args, err := getStockBooks(params)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.Query(ctx, q, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var out []*models.StockBookWithFields
+	for rows.Next() {
+		stockBook := &models.StockBookWithFields{}
+		book := &models.Book{}
+		user := &models.UserWithoutPassword{}
+
+		err := rows.Scan(&stockBook.ID,
+			&stockBook.UserID, &stockBook.BookID,
+			&book.ID, &book.Title, &book.PubDate,
+			&book.Edition, &book.Language,
+			&book.Rating, &book.Image,
+			&book.Description, &user.ID,
+			&user.Username, &user.Email, &user.City)
+		if err != nil {
+			return nil, err
+		}
+
+		user.SetProfilePic()
+		stockBook.Book = book
+		stockBook.User = user
+		stockBook.SetImage()
+
+		out = append(out, stockBook)
+	}
+
+	return out, nil
+}

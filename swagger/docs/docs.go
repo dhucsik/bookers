@@ -1106,6 +1106,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/books/stock/search": {
+            "post": {
+                "description": "Search stock books",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "books"
+                ],
+                "summary": "Search stock books",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "search",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/books.searchStockBooksRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/books.searchStockBooksResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/books/stock/upload": {
             "post": {
                 "security": [
@@ -3516,6 +3562,68 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/profile/image": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Upload profile picture",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Upload profile picture",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "image",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/users.uploadProfilePicResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/users/username": {
             "patch": {
                 "security": [
@@ -4264,6 +4372,55 @@ const docTemplate = `{
                 }
             }
         },
+        "books.searchStockBooksRequest": {
+            "type": "object",
+            "properties": {
+                "authors": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "city": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "query": {
+                    "type": "string"
+                }
+            }
+        },
+        "books.searchStockBooksResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.StockBookWithFields"
+                    }
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
         "books.setRatingRequest": {
             "type": "object",
             "properties": {
@@ -4706,11 +4863,17 @@ const docTemplate = `{
         "models.UserWithoutPassword": {
             "type": "object",
             "properties": {
+                "city": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
+                },
+                "profile_pic": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"
@@ -5182,6 +5345,23 @@ const docTemplate = `{
             "properties": {
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "users.uploadProfilePicResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         }

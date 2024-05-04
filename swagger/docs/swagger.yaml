@@ -291,6 +291,38 @@ definitions:
       query:
         type: string
     type: object
+  books.searchStockBooksRequest:
+    properties:
+      authors:
+        items:
+          type: integer
+        type: array
+      categories:
+        items:
+          type: integer
+        type: array
+      city:
+        type: string
+      limit:
+        type: integer
+      offset:
+        type: integer
+      query:
+        type: string
+    type: object
+  books.searchStockBooksResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        items:
+          $ref: '#/definitions/models.StockBookWithFields'
+        type: array
+      status_code:
+        type: integer
+    type: object
   books.setRatingRequest:
     properties:
       rating:
@@ -579,10 +611,14 @@ definitions:
     type: object
   models.UserWithoutPassword:
     properties:
+      city:
+        type: string
       email:
         type: string
       id:
         type: integer
+      profile_pic:
+        type: string
       username:
         type: string
     type: object
@@ -886,6 +922,17 @@ definitions:
     properties:
       username:
         type: string
+    type: object
+  users.uploadProfilePicResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        type: string
+      status_code:
+        type: integer
     type: object
 host: bookers.kz
 info:
@@ -1993,6 +2040,36 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update stock image
+      tags:
+      - books
+  /books/stock/search:
+    post:
+      consumes:
+      - application/json
+      description: Search stock books
+      parameters:
+      - description: request
+        in: body
+        name: search
+        required: true
+        schema:
+          $ref: '#/definitions/books.searchStockBooksRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.searchStockBooksResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Search stock books
       tags:
       - books
   /books/stock/upload:
@@ -3309,6 +3386,46 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update password
+      tags:
+      - users
+  /users/profile/image:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload profile picture
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: image
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/users.uploadProfilePicResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Upload profile picture
       tags:
       - users
   /users/username:

@@ -53,4 +53,5 @@ type SearchParams struct {
 	Offset     int
 	Categories []int
 	Authors    []int
+	City       string
 }

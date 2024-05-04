@@ -40,6 +40,9 @@ type Service interface {
 	GetStockBooks(ctx context.Context, userID int) ([]*models.StockBookWithFields, error)
 	GetStockByBook(ctx context.Context, bookID int) ([]*models.StockBookWithFields, error)
 	DeleteStockBook(ctx context.Context, userID, stockID int) error
+	SearchStockByParams(ctx context.Context, params *models.SearchParams) ([]*models.StockBookWithFields, error)
+	UploadImage(ctx context.Context, body []byte, filename string) (string, error)
+	SetProfilePic(ctx context.Context, userID int, image *multipart.FileHeader) (string, error)
 }
 
 type service struct {

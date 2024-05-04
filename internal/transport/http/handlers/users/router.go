@@ -34,6 +34,7 @@ func (r *Controller) Init(router *echo.Group) {
 	router.PATCH("/users/username", r.auth.Handler(r.updateUsername))
 	router.PATCH("/users/password", r.auth.Handler(r.updatePassword))
 	router.DELETE("/users/:id", r.auth.Handler(r.deleteUser))
+	router.POST("/users/profile/image", r.auth.Handler(r.uploadProfilePicHandler))
 
 	router.GET("/users/:id", r.auth.Handler(r.getByID))
 

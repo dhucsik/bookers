@@ -51,6 +51,32 @@ func (s *service) UploadStockBook(ctx context.Context, book *models.UploadStockB
 	return id, imageURL, nil
 }
 
+func (s *service) SetProfilePic(ctx context.Context, userID int, image *multipart.FileHeader) (string, error) {
+	src, err := image.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+
+	var file bytes.Buffer
+	_, err = io.Copy(&file, src)
+	if err != nil {
+		return "", err
+	}
+
+	compressed, err := pngquant.CompressBytes(file.Bytes(), "5")
+	if err != nil {
+		return "", err
+	}
+
+	imageURL, err := s.UploadImage(ctx, compressed, fmt.Sprintf("users/%d.png", userID))
+	if err != nil {
+		return "", err
+	}
+
+	return imageURL, nil
+}
+
 func (s *service) UpdateImage(ctx context.Context, userID, stockID int, image *multipart.FileHeader) (string, error) {
 	stock, err := s.bookRepo.GetStockBook(ctx, stockID)
 	if err != nil {
@@ -211,4 +237,13 @@ func (s *service) GetStockByBook(ctx context.Context, bookID int) ([]*models.Sto
 			Book:      book,
 		}
 	}), nil
+}
+
+func (s *service) SearchStockByParams(ctx context.Context, params *models.SearchParams) ([]*models.StockBookWithFields, error) {
+	stockBooks, err := s.bookRepo.SearchStockBooks(ctx, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return stockBooks, nil
 }

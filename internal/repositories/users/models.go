@@ -21,7 +21,7 @@ func (m *userModel) convert() *models.User {
 		city = m.City.String
 	}
 
-	return &models.User{
+	out := &models.User{
 		ID:       m.ID,
 		Username: m.Username,
 		Email:    m.Email,
@@ -29,6 +29,9 @@ func (m *userModel) convert() *models.User {
 		Role:     m.Role,
 		City:     &city,
 	}
+
+	out.SetProfilePic()
+	return out
 }
 
 func convertUser(user *models.User) *userModel {
