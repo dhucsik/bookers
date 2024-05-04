@@ -622,6 +622,22 @@ definitions:
       username:
         type: string
     type: object
+  personal.sendMessageRequest:
+    properties:
+      message:
+        type: string
+    type: object
+  personal.sendMessageResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        type: string
+      status_code:
+        type: integer
+    type: object
   quizzes.addCommentRequest:
     properties:
       comment:
@@ -845,6 +861,8 @@ definitions:
         type: integer
       password:
         type: string
+      profile_pic:
+        type: string
       share_count:
         type: integer
       username:
@@ -876,6 +894,8 @@ definitions:
         type: string
       id:
         type: integer
+      profile_pic:
+        type: string
       username:
         type: string
     type: object
@@ -2880,6 +2900,36 @@ paths:
       summary: List quizzes by user ID
       tags:
       - quizzes
+  /send:
+    post:
+      consumes:
+      - application/json
+      description: Send message
+      parameters:
+      - description: request
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/personal.sendMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/personal.sendMessageResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Send message
+      tags:
+      - bot
   /users:
     post:
       consumes:

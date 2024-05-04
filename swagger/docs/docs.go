@@ -3008,6 +3008,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/send": {
+            "post": {
+                "description": "Send message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bot"
+                ],
+                "summary": "Send message",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/personal.sendMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/personal.sendMessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "post": {
                 "description": "Create user",
@@ -4880,6 +4926,31 @@ const docTemplate = `{
                 }
             }
         },
+        "personal.sendMessageRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "personal.sendMessageResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
         "quizzes.addCommentRequest": {
             "type": "object",
             "properties": {
@@ -5226,6 +5297,9 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
+                "profile_pic": {
+                    "type": "string"
+                },
                 "share_count": {
                     "type": "integer"
                 },
@@ -5273,6 +5347,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "profile_pic": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"

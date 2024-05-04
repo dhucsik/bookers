@@ -10,6 +10,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// sendMessage godoc
+// @Summary Send message
+// @Description Send message
+// @Tags bot
+// @Accept json
+// @Produce json
+// @Param message body sendMessageRequest true "request"
+// @Success 200 {object} sendMessageResponse "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /send [post]
 func (c *Controller) sendMessage(ctx echo.Context) error {
 	var req sendMessageRequest
 	if err := ctx.Bind(&req); err != nil {
