@@ -5,16 +5,6 @@ import (
 	"github.com/dhucsik/bookers/internal/util/response"
 )
 
-type errorResponse struct {
-	Message string `json:"message"`
-}
-
-func newErrorResponse(message string) errorResponse {
-	return errorResponse{
-		Message: message,
-	}
-}
-
 type createUserRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
@@ -73,6 +63,7 @@ type getUserByIDResp struct {
 	Email        string  `json:"email"`
 	Password     string  `json:"password"`
 	City         *string `json:"city,omitempty"`
+	ProfilePic   string  `json:"profile_pic"`
 	FriendStatus string  `json:"friend_status"`
 	BooksCount   int     `json:"books_count"`
 	ShareCount   int     `json:"share_count"`
@@ -101,6 +92,7 @@ func newGetUserByIDResponse(user *models.UserWithCounts, req *models.FriendReque
 		Email:        user.Email,
 		Password:     user.Password,
 		City:         user.City,
+		ProfilePic:   user.ProfilePic,
 		FriendStatus: friendStatus,
 		BooksCount:   user.BooksCount,
 		ShareCount:   user.ShareCount,
@@ -117,20 +109,22 @@ type listFriendsResp struct {
 }
 
 type listFriendsRespItem struct {
-	ID       int     `json:"id"`
-	Username string  `json:"username"`
-	Email    string  `json:"email"`
-	City     *string `json:"city,omitempty"`
+	ID         int     `json:"id"`
+	Username   string  `json:"username"`
+	Email      string  `json:"email"`
+	City       *string `json:"city,omitempty"`
+	ProfilePic string  `json:"profile_pic"`
 }
 
 func newListFriendsResponse(friends []*models.User) listFriendsResp {
 	resp := make([]*listFriendsRespItem, 0, len(friends))
 	for _, friend := range friends {
 		resp = append(resp, &listFriendsRespItem{
-			ID:       friend.ID,
-			Username: friend.Username,
-			Email:    friend.Email,
-			City:     friend.City,
+			ID:         friend.ID,
+			Username:   friend.Username,
+			Email:      friend.Email,
+			City:       friend.City,
+			ProfilePic: friend.ProfilePic,
 		})
 	}
 
