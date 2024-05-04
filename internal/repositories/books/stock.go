@@ -128,7 +128,9 @@ func (r *repository) SearchStockBooks(ctx context.Context, params *models.Search
 
 	var out []*models.StockBookWithFields
 	for rows.Next() {
-		stockBook := &models.StockBookWithFields{}
+		stockBook := &models.StockBookWithFields{
+			StockBook: &models.StockBook{},
+		}
 		book := &models.Book{}
 		user := &models.UserWithoutPassword{}
 
