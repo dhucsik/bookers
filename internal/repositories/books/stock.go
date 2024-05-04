@@ -2,6 +2,7 @@ package books
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/jackc/pgx/v5"
@@ -131,15 +132,21 @@ func (r *repository) SearchStockBooks(ctx context.Context, params *models.Search
 		book := &models.Book{}
 		user := &models.UserWithoutPassword{}
 
+		city := sql.NullString{}
+
 		err := rows.Scan(&stockBook.ID,
 			&stockBook.UserID, &stockBook.BookID,
 			&book.ID, &book.Title, &book.PubDate,
 			&book.Edition, &book.Language,
 			&book.Rating, &book.Image,
 			&book.Description, &user.ID,
-			&user.Username, &user.Email, &user.City)
+			&user.Username, &user.Email, &city)
 		if err != nil {
 			return nil, err
+		}
+
+		if city.Valid {
+			user.City = &city.String
 		}
 
 		user.SetProfilePic()
