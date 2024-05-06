@@ -60,6 +60,10 @@ func (c *Controller) sendMessage(ctx echo.Context) error {
 	}
 	defer gptresp.Body.Close()
 
+	if gptresp.StatusCode != http.StatusOK {
+		return response.NewErrorResponse(ctx, fmt.Errorf("unexpected status code: %d, %v", gptresp.StatusCode, gptresp))
+	}
+
 	var gptres gptResponse
 	if err := json.NewDecoder(gptresp.Body).Decode(&gptres); err != nil {
 		return response.NewErrorResponse(ctx, err)
