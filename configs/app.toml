@@ -16,5 +16,5 @@ name = "bookers"
   [env.s3_secret_key]
     value = "secret-key"
   [env.api_key]
-    value = "api-key
+    value = "api-key"
     

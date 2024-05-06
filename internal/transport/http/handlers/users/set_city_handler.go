@@ -17,7 +17,6 @@ import (
 // @Produce json
 // @Security ApiKeyAuth
 // @Param Authorization header string true "Authorization"
-// @Param id path int true "User ID"
 // @Param request body setCityRequest true "request"
 // @Success 200 {object} response.Response "Success"
 // @Failure 400 {object} response.Response "Bad request"
