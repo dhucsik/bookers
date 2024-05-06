@@ -32,7 +32,7 @@ func (r *Controller) Init(router *echo.Group) {
 	router.DELETE("/users/liked-books", r.auth.Handler(r.removeLikedBook))
 	router.GET("/users/liked-books", r.auth.Handler(r.getLikedBooks))
 
-	router.PUT("/users/:id/city", r.auth.Handler(r.setCity))
+	router.PUT("/users/city", r.auth.Handler(r.setCity))
 	router.PATCH("/users/username", r.auth.Handler(r.updateUsername))
 	router.PATCH("/users/password", r.auth.Handler(r.updatePassword))
 	router.DELETE("/users/:id", r.auth.Handler(r.deleteUser))
