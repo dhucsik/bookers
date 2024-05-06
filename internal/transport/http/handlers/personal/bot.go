@@ -46,7 +46,7 @@ func (c *Controller) sendMessage(ctx echo.Context) error {
 		return response.NewErrorResponse(ctx, err)
 	}
 
-	gptreq, err := http.NewRequest("POST", "https://api.openai.com/v1/engines/davinci-codex/completions", bytes.NewReader(reqBody))
+	gptreq, err := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.NewReader(reqBody))
 	if err != nil {
 		return response.NewErrorResponse(ctx, err)
 	}
@@ -61,7 +61,12 @@ func (c *Controller) sendMessage(ctx echo.Context) error {
 	defer gptresp.Body.Close()
 
 	if gptresp.StatusCode != http.StatusOK {
-		return response.NewErrorResponse(ctx, fmt.Errorf("unexpected status code: %d, %v", gptresp.StatusCode, gptresp))
+		var gpterr gptErrorResponse
+		if err := json.NewDecoder(gptresp.Body).Decode(&gpterr); err != nil {
+			return response.NewErrorResponse(ctx, err)
+		}
+
+		return response.NewErrorResponse(ctx, fmt.Errorf("gpt error: %s", gpterr.Error.Message))
 	}
 
 	var gptres gptResponse
@@ -134,4 +139,12 @@ type gptResponse struct {
 type choice struct {
 	Index   int        `json:"index"`
 	Message gptMessage `json:"message"`
+}
+
+type gptErrorResponse struct {
+	Error gptError `json:"error"`
+}
+
+type gptError struct {
+	Message string `json:"message"`
 }

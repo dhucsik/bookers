@@ -965,7 +965,7 @@ definitions:
       status_code:
         type: integer
     type: object
-host: bookers.kz
+host: localhost:8080
 info:
   contact: {}
   description: bookers server.
