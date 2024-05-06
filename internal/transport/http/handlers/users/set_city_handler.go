@@ -2,7 +2,6 @@ package users
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/dhucsik/bookers/internal/errors"
 	"github.com/dhucsik/bookers/internal/models"
@@ -23,12 +22,11 @@ import (
 // @Success 200 {object} response.Response "Success"
 // @Failure 400 {object} response.Response "Bad request"
 // @Failure 500 {object} response.Response "Internal server error"
-// @Router /users/{id}/city [patch]
+// @Router /users/city [put]
 func (c *Controller) setCity(ctx echo.Context) error {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		return response.NewBadRequest(ctx, err)
+	session, ok := models.GetSession(ctx.Request().Context())
+	if !ok {
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
 	}
 
 	var req setCityRequest
@@ -36,7 +34,7 @@ func (c *Controller) setCity(ctx echo.Context) error {
 		return response.NewBadRequest(ctx, err)
 	}
 
-	err = c.usersService.SetCity(ctx.Request().Context(), id, req.City)
+	err := c.usersService.SetCity(ctx.Request().Context(), session.UserID, req.City)
 	if err != nil {
 		return response.NewErrorResponse(ctx, err)
 	}

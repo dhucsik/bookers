@@ -244,3 +244,40 @@ func (c *Controller) getStockByBookHandler(ctx echo.Context) error {
 		Result:   books,
 	})
 }
+
+// getStockBookByIDHandler godoc
+// @Summary Get stock book by ID
+// @Description Get stock book by ID
+// @Tags books
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
+// @Param id path int true "Stock ID"
+// @Success 200 {object} getStockBookByIDResponse "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /books/stock/{id} [get]
+func (c *Controller) getStockBookByIDHandler(ctx echo.Context) error {
+	_, ok := models.GetSession(ctx.Request().Context())
+	if !ok {
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
+	}
+
+	stockIDStr := ctx.Param("id")
+	stockID, err := strconv.Atoi(stockIDStr)
+	if err != nil {
+		return response.NewBadRequest(ctx, err)
+	}
+
+	book, err := c.bookService.GetStockBook(ctx.Request().Context(), stockID)
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
+	}
+
+	return ctx.JSON(http.StatusOK, getStockBookByIDResponse{
+		Response: response.NewResponse(),
+		Result:   book,
+	})
+}

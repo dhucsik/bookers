@@ -112,6 +112,29 @@ func (s *service) UpdateImage(ctx context.Context, userID, stockID int, image *m
 	return imageURL, nil
 }
 
+func (s *service) GetStockBook(ctx context.Context, stockID int) (*models.StockBookWithFields, error) {
+	stock, err := s.bookRepo.GetStockBook(ctx, stockID)
+	if err != nil {
+		return nil, err
+	}
+
+	book, err := s.bookRepo.GetBookByID(ctx, stock.BookID)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := s.userRepo.GetUserByID(ctx, stock.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.StockBookWithFields{
+		StockBook: stock,
+		Book:      book,
+		User:      user.ToUserWithoutPassword(),
+	}, nil
+}
+
 func (s *service) DeleteStockBook(ctx context.Context, userID, stockID int) error {
 	stock, err := s.bookRepo.GetStockBook(ctx, stockID)
 	if err != nil {

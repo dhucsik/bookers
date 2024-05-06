@@ -1,16 +1,22 @@
 package personal
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 )
 
 type Controller struct {
-	chat chan string
+	chat   chan string
+	client *http.Client
+	apikey string
 }
 
-func NewController(chat chan string) *Controller {
+func NewController(chat chan string, apikey string) *Controller {
 	return &Controller{
-		chat: chat,
+		apikey: apikey,
+		chat:   chat,
+		client: http.DefaultClient,
 	}
 }
 

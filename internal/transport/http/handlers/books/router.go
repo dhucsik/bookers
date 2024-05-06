@@ -35,6 +35,7 @@ func (r *Controller) Init(router *echo.Group) {
 	router.GET("/books/stock", r.auth.Handler(r.getStockBooksHandler))
 	router.GET("/books/:id/stock", r.auth.Handler(r.getStockByBookHandler))
 	router.GET("/users/:id/stock", r.auth.Handler(r.getStockByUserHanlder))
+	router.GET("/books/stock/:id", r.auth.Handler(r.getStockBookByIDHandler))
 	router.PUT("/books/stock/:id/image", r.auth.Handler(r.updateStockImageHandler))
 	router.DELETE("/books/stock/:id", r.auth.Handler(r.deleteStockBookHandler))
 

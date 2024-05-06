@@ -132,6 +132,7 @@ func (a *App) InitHTTPServer(_ context.Context) error {
 		a.booksService,
 		a.quizzesService,
 		a.messageChat,
+		a.cfg.Env.Get("apikey"),
 	)
 
 	return nil

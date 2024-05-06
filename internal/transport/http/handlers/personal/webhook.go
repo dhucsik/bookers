@@ -1,8 +1,6 @@
 package personal
 
 import (
-	"strings"
-
 	"github.com/labstack/echo/v4"
 )
 
@@ -18,11 +16,6 @@ func (c *Controller) receiveMessage(ctx echo.Context) error {
 
 	if update.Message.Chat == nil {
 		return ctx.JSON(200, "ok")
-	}
-
-	if update.Message.Chat.ID == -1002123116824 {
-		text, _ := strings.CutPrefix(update.Message.Text, "/send -")
-		c.chat <- text
 	}
 
 	return ctx.JSON(200, "ok")

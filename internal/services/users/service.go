@@ -57,16 +57,7 @@ func (s *service) CreateUser(ctx context.Context, user *models.User) (*models.Us
 }
 
 func (s *service) SetCity(ctx context.Context, userID int, city string) error {
-	session, ok := models.GetSession(ctx)
-	if !ok {
-		return errors.ErrInvalidJWTToken
-	}
-
-	if session.UserID != userID && session.Role != "admin" {
-		return errors.ErrForbiddenForUser
-	}
-
-	return s.userRepo.SetCity(ctx, session.UserID, city)
+	return s.userRepo.SetCity(ctx, userID, city)
 }
 
 func (s *service) GetUserByID(ctx context.Context, userID int) (*models.UserWithCounts, error) {

@@ -15,4 +15,6 @@ name = "bookers"
     value = "access-key"
   [env.s3_secret_key]
     value = "secret-key"
+  [env.api_key]
+    value = "api-key
     

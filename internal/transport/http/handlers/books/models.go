@@ -50,6 +50,11 @@ type getStockBookResponse struct {
 	Result []*models.StockBookWithFields `json:"result"`
 }
 
+type getStockBookByIDResponse struct {
+	response.Response
+	Result *models.StockBookWithFields `json:"result"`
+}
+
 type categoryResp struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`

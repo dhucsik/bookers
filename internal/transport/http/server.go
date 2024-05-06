@@ -53,6 +53,7 @@ func NewServer(
 	booksService books.Service,
 	quizzesService quizzes.Service,
 	chat chan string,
+	apikey string,
 ) *Server {
 	srv := echo.New()
 	router := srv.Group("/api/v1")
@@ -86,7 +87,7 @@ func NewServer(
 		admin.NewController(authMiddleware, authorsService, categoriesService, booksService),
 		booksC.NewController(authMiddleware, booksService, quizzesService),
 		quizzesC.NewController(authMiddleware, quizzesService),
-		personal.NewController(chat),
+		personal.NewController(chat, apikey),
 		swag.NewController(),
 	)
 
