@@ -23,6 +23,7 @@ func (u *User) ToUserWithoutPassword() *UserWithoutPassword {
 		Username:   u.Username,
 		Email:      u.Email,
 		City:       u.City,
+		Phone:      u.Phone,
 		ProfilePic: u.ProfilePic,
 	}
 }

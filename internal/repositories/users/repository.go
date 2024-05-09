@@ -72,7 +72,7 @@ func (r *repository) GetUserByUsername(ctx context.Context, username string) (*m
 	row := r.db.QueryRow(ctx, getUserByUsernameStmt, username)
 
 	model := &userModel{}
-	if err := row.Scan(&model.ID, &model.Username, &model.Email, &model.Password, &model.Role, &model.City); err != nil {
+	if err := row.Scan(&model.ID, &model.Username, &model.Email, &model.Password, &model.Role, &model.City, &model.Phone); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil
 		}
