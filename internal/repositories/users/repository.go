@@ -57,7 +57,7 @@ func (r *repository) GetUserByID(ctx context.Context, userID int) (*models.User,
 	row := r.db.QueryRow(ctx, getUserByIDStmt, userID)
 
 	model := &userModel{}
-	if err := row.Scan(&model.ID, &model.Username, &model.Email, &model.Password, &model.Role, &model.City); err != nil {
+	if err := row.Scan(&model.ID, &model.Username, &model.Email, &model.Password, &model.Role, &model.City, &model.Phone); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil
 		}
@@ -98,7 +98,7 @@ func (r *repository) GetUsersByIDs(ctx context.Context, ids []int) ([]*models.Us
 	var out []*models.User
 	for rows.Next() {
 		model := &userModel{}
-		if err := rows.Scan(&model.ID, &model.Username, &model.Email, &model.Role, &model.City); err != nil {
+		if err := rows.Scan(&model.ID, &model.Username, &model.Email, &model.Role, &model.City, &model.Phone); err != nil {
 			return nil, err
 		}
 
