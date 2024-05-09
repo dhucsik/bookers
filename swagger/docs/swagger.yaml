@@ -628,6 +628,8 @@ definitions:
         type: string
       id:
         type: integer
+      phone:
+        type: string
       profile_pic:
         type: string
       username:
@@ -947,6 +949,11 @@ definitions:
   users.updatePasswordRequest:
     properties:
       password:
+        type: string
+    type: object
+  users.updatePhoneRequest:
+    properties:
+      phone:
         type: string
     type: object
   users.updateUsernameRequest:
@@ -3447,7 +3454,7 @@ paths:
       tags:
       - users
   /users/password:
-    patch:
+    put:
       consumes:
       - application/json
       description: Update password
@@ -3481,6 +3488,43 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update password
+      tags:
+      - users
+  /users/phone:
+    put:
+      consumes:
+      - application/json
+      description: Update phone
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.updatePhoneRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Update phone
       tags:
       - users
   /users/profile/image:
@@ -3524,7 +3568,7 @@ paths:
       tags:
       - users
   /users/username:
-    patch:
+    put:
       consumes:
       - application/json
       description: Update username

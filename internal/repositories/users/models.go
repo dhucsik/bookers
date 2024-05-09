@@ -13,12 +13,17 @@ type userModel struct {
 	Password string         `db:"password"`
 	Role     string         `db:"role"`
 	City     sql.NullString `db:"city"`
+	Phone    sql.NullString `db:"phone_number"`
 }
 
 func (m *userModel) convert() *models.User {
-	var city string
+	var city, phone string
 	if m.City.Valid {
 		city = m.City.String
+	}
+
+	if m.Phone.Valid {
+		phone = m.Phone.String
 	}
 
 	out := &models.User{
@@ -28,6 +33,7 @@ func (m *userModel) convert() *models.User {
 		Password: m.Password,
 		Role:     m.Role,
 		City:     &city,
+		Phone:    &phone,
 	}
 
 	out.SetProfilePic()

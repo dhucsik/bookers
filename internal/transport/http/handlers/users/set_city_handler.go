@@ -53,7 +53,7 @@ func (c *Controller) setCity(ctx echo.Context) error {
 // @Success 200 {object} response.Response "Success"
 // @Failure 400 {object} response.Response "Bad request"
 // @Failure 500 {object} response.Response "Internal server error"
-// @Router /users/username [patch]
+// @Router /users/username [put]
 func (c *Controller) updateUsername(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
@@ -85,7 +85,7 @@ func (c *Controller) updateUsername(ctx echo.Context) error {
 // @Success 200 {object} response.Response "Success"
 // @Failure 400 {object} response.Response "Bad request"
 // @Failure 500 {object} response.Response "Internal server error"
-// @Router /users/password [patch]
+// @Router /users/password [put]
 func (c *Controller) updatePassword(ctx echo.Context) error {
 	session, ok := models.GetSession(ctx.Request().Context())
 	if !ok {
@@ -98,6 +98,38 @@ func (c *Controller) updatePassword(ctx echo.Context) error {
 	}
 
 	err := c.usersService.UpdatePassword(ctx.Request().Context(), session.UserID, req.Password)
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
+	}
+
+	return ctx.JSON(http.StatusOK, response.NewResponse())
+}
+
+// updatePhone godoc
+// @Summary Update phone
+// @Description Update phone
+// @Tags users
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
+// @Param request body updatePhoneRequest true "request"
+// @Success 200 {object} response.Response "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /users/phone [put]
+func (c *Controller) updatePhone(ctx echo.Context) error {
+	session, ok := models.GetSession(ctx.Request().Context())
+	if !ok {
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
+	}
+
+	var req updatePhoneRequest
+	if err := ctx.Bind(&req); err != nil {
+		return response.NewBadRequest(ctx, err)
+	}
+
+	err := c.usersService.UpdatePhone(ctx.Request().Context(), session.UserID, req.Phone)
 	if err != nil {
 		return response.NewErrorResponse(ctx, err)
 	}

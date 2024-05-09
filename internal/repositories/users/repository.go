@@ -24,6 +24,7 @@ type Repository interface {
 	GetReceivedRequestFriends(ctx context.Context, userID int) ([]*models.User, error)
 	UpdateUsername(ctx context.Context, userID int, username string) error
 	UpdatePassword(ctx context.Context, userID int, password string) error
+	SetPhone(ctx context.Context, userID int, phone string) error
 }
 
 type repository struct {
@@ -114,5 +115,10 @@ func (r *repository) UpdateUsername(ctx context.Context, userID int, username st
 
 func (r *repository) UpdatePassword(ctx context.Context, userID int, password string) error {
 	_, err := r.db.Exec(ctx, updatePasswordStmt, userID, password)
+	return err
+}
+
+func (r *repository) SetPhone(ctx context.Context, userID int, phone string) error {
+	_, err := r.db.Exec(ctx, setPhoneNumberStmt, userID, phone)
 	return err
 }

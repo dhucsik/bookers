@@ -52,6 +52,10 @@ type updatePasswordRequest struct {
 	Password string `json:"password"`
 }
 
+type updatePhoneRequest struct {
+	Phone string `json:"phone"`
+}
+
 type getUserByIDResponse struct {
 	response.Response
 	Result getUserByIDResp `json:"result"`

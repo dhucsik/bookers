@@ -27,7 +27,7 @@ func (r *repository) GetFriends(ctx context.Context, userID int) ([]*models.User
 	var friends []*models.User
 	for rows.Next() {
 		friend := &userModel{}
-		if err := rows.Scan(&friend.ID, &friend.Username, &friend.Email, &friend.Password, &friend.Role, &friend.City); err != nil {
+		if err := rows.Scan(&friend.ID, &friend.Username, &friend.Email, &friend.Password, &friend.Role, &friend.City, &friend.Phone); err != nil {
 			return nil, err
 		}
 
@@ -65,7 +65,7 @@ func (r *repository) GetSentRequestFriends(ctx context.Context, userID int) ([]*
 	var friends []*models.User
 	for rows.Next() {
 		friend := &userModel{}
-		if err := rows.Scan(&friend.ID, &friend.Username, &friend.Email, &friend.City); err != nil {
+		if err := rows.Scan(&friend.ID, &friend.Username, &friend.Email, &friend.City, &friend.Phone); err != nil {
 			return nil, err
 		}
 
@@ -85,7 +85,7 @@ func (r *repository) GetReceivedRequestFriends(ctx context.Context, userID int) 
 	var friends []*models.User
 	for rows.Next() {
 		friend := &userModel{}
-		if err := rows.Scan(&friend.ID, &friend.Username, &friend.Email, &friend.City); err != nil {
+		if err := rows.Scan(&friend.ID, &friend.Username, &friend.Email, &friend.City, &friend.Phone); err != nil {
 			return nil, err
 		}
 

@@ -9,6 +9,7 @@ type User struct {
 	Password   string  `json:"password,omitempty"`
 	Role       string  `json:"role"`
 	City       *string `json:"city,omitempty"`
+	Phone      *string `json:"phone,omitempty"`
 	ProfilePic string  `json:"profile_pic,omitempty"`
 }
 
@@ -31,6 +32,7 @@ type UserWithoutPassword struct {
 	Username   string  `json:"username"`
 	Email      string  `json:"email,omitempty"`
 	City       *string `json:"city,omitempty"`
+	Phone      *string `json:"phone,omitempty"`
 	ProfilePic string  `json:"profile_pic,omitempty"`
 }
 
