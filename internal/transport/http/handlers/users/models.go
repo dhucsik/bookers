@@ -67,6 +67,7 @@ type getUserByIDResp struct {
 	Email        string  `json:"email"`
 	Password     string  `json:"password"`
 	City         *string `json:"city,omitempty"`
+	Phone        *string `json:"phone,omitempty"`
 	ProfilePic   string  `json:"profile_pic"`
 	FriendStatus string  `json:"friend_status"`
 	BooksCount   int     `json:"books_count"`
@@ -97,6 +98,7 @@ func newGetUserByIDResponse(user *models.UserWithCounts, req *models.FriendReque
 		Password:     user.Password,
 		City:         user.City,
 		ProfilePic:   user.ProfilePic,
+		Phone:        user.Phone,
 		FriendStatus: friendStatus,
 		BooksCount:   user.BooksCount,
 		ShareCount:   user.ShareCount,
@@ -117,6 +119,7 @@ type listFriendsRespItem struct {
 	Username   string  `json:"username"`
 	Email      string  `json:"email"`
 	City       *string `json:"city,omitempty"`
+	Phone      *string `json:"phone,omitempty"`
 	ProfilePic string  `json:"profile_pic"`
 }
 
@@ -128,6 +131,7 @@ func newListFriendsResponse(friends []*models.User) listFriendsResp {
 			Username:   friend.Username,
 			Email:      friend.Email,
 			City:       friend.City,
+			Phone:      friend.Phone,
 			ProfilePic: friend.ProfilePic,
 		})
 	}

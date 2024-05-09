@@ -5428,6 +5428,9 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
+                "phone": {
+                    "type": "string"
+                },
                 "profile_pic": {
                     "type": "string"
                 },
@@ -5478,6 +5481,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
                 },
                 "profile_pic": {
                     "type": "string"
