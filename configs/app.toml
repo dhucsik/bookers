@@ -8,7 +8,7 @@ name = "bookers"
   [env.postgres_dsn]
     value = "postgres://diploma:@localhost:5432/diploma?sslmode=disable"
   [env.s3_endpoint]
-    value = "https://hb.kz-ast.vkcs.cloud"
+    value = "https://fra1.digitaloceanspaces.com"
   [env.s3_bucket]
     value = "bookers-images"
   [env.s3_access_key]

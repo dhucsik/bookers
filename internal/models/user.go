@@ -14,7 +14,7 @@ type User struct {
 }
 
 func (u *User) SetProfilePic() {
-	u.ProfilePic = fmt.Sprintf("https://bookers-images.hb.kz-ast.vkcs.cloud/users/%d.png", u.ID)
+	u.ProfilePic = fmt.Sprintf("https://bookers-images.fra1.digitaloceanspaces.com/users/%d.png", u.ID)
 }
 
 func (u *User) ToUserWithoutPassword() *UserWithoutPassword {
@@ -38,7 +38,7 @@ type UserWithoutPassword struct {
 }
 
 func (u *UserWithoutPassword) SetProfilePic() {
-	u.ProfilePic = fmt.Sprintf("https://bookers-images.hb.kz-ast.vkcs.cloud/users/%d.png", u.ID)
+	u.ProfilePic = fmt.Sprintf("https://bookers-images.fra1.digitaloceanspaces.com/users/%d.png", u.ID)
 }
 
 type UserWithCounts struct {

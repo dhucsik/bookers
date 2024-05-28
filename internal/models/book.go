@@ -31,7 +31,7 @@ type StockBook struct {
 }
 
 func (sb *StockBook) SetImage() {
-	sb.ImageURL = fmt.Sprintf("https://bookers-images.hb.kz-ast.vkcs.cloud/stock/books/%d.png", sb.ID)
+	sb.ImageURL = fmt.Sprintf("https://bookers-images.fra1.digitaloceanspaces.com/stock/books/%d.png", sb.ID)
 
 }
 

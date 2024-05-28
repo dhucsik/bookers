@@ -167,7 +167,7 @@ func (s *service) UploadImage(ctx context.Context, body []byte, filename string)
 		return "", err
 	}
 
-	return fmt.Sprintf("https://bookers-images.hb.kz-ast.vkcs.cloud/%s", filename), nil
+	return fmt.Sprintf("https://bookers-images.fra1.digitaloceanspaces.com/%s", filename), nil
 }
 
 func (s *service) DeleteImage(ctx context.Context, filename string) error {

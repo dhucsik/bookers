@@ -73,7 +73,7 @@ func NewService(
 
 	sess, err := session.NewSession(&aws.Config{
 		Endpoint:    aws.String(endpoint),
-		Region:      aws.String("kz-ast"),
+		Region:      aws.String("Frankfurt — Germany"),
 		Credentials: credentials.NewStaticCredentials(accessKey, secretKey, ""),
 	})
 	if err != nil {
