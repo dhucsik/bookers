@@ -668,7 +668,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/books.listRequestsResponse"
+                            "$ref": "#/definitions/books.listApprovedBooksResponse"
                         }
                     },
                     "400": {
@@ -4309,6 +4309,35 @@ const docTemplate = `{
                 }
             }
         },
+        "books.approvedRequest": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "receiver_book": {
+                    "$ref": "#/definitions/models.Book"
+                },
+                "receiver_status": {
+                    "type": "string"
+                },
+                "sender_book": {
+                    "$ref": "#/definitions/models.Book"
+                },
+                "sender_status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/models.UserWithoutPassword"
+                }
+            }
+        },
         "books.authorResp": {
             "type": "object",
             "properties": {
@@ -4469,6 +4498,26 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.StockBookWithFields"
+                    }
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "books.listApprovedBooksResponse": {
+            "type": "object",
+            "properties": {
+                "inner_code": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/books.approvedRequest"
                     }
                 },
                 "status_code": {

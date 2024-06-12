@@ -255,3 +255,39 @@ type searchStockBooksResponse struct {
 	response.Response
 	Result []*models.StockBookWithFields `json:"result"`
 }
+
+type listApprovedBooksResponse struct {
+	response.Response
+	Result []*approvedRequest
+}
+
+type approvedRequest struct {
+	ID             int                         `json:"id"`
+	User           *models.UserWithoutPassword `json:"user"`
+	SenderBook     *models.Book                `json:"sender_book"`
+	ReceiverBook   *models.Book                `json:"receiver_book"`
+	SenderStatus   string                      `json:"sender_status"`
+	ReceiverStatus string                      `json:"receiver_status"`
+	CreatedAt      time.Time                   `json:"created_at"`
+	UpdatedAt      time.Time                   `json:"updated_at"`
+}
+
+func newListApprovedBooksResponse(userID int, reqs []*models.RequestWithFields) []*approvedRequest {
+	return lo.Map(reqs, func(req *models.RequestWithFields, _ int) *approvedRequest {
+		user := req.Receiver
+		if req.Receiver.ID == userID {
+			user = req.Sender
+		}
+
+		return &approvedRequest{
+			ID:             req.ID,
+			User:           user,
+			SenderBook:     req.SenderBook,
+			ReceiverBook:   req.ReceiverBook,
+			SenderStatus:   req.SenderStatus,
+			ReceiverStatus: req.ReceiverStatus,
+			CreatedAt:      req.CreatedAt,
+			UpdatedAt:      req.UpdatedAt,
+		}
+	})
+}

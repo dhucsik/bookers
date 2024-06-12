@@ -257,7 +257,7 @@ func (c *Controller) getRequestsHandler(ctx echo.Context) error {
 // @Produce json
 // @Security ApiKeyAuth
 // @Param Authorization header string true "Authorization"
-// @Success 200 {object} listRequestsResponse "Success"
+// @Success 200 {object} listApprovedBooksResponse "Success"
 // @Failure 400 {object} response.Response "Bad request"
 // @Failure 401 {object} response.Response "Unauthorized"
 // @Failure 500 {object} response.Response "Internal server error"
@@ -277,8 +277,8 @@ func (c *Controller) getApprovedRequestsHandler(ctx echo.Context) error {
 		return req.SenderStatus == models.StatusSenderProved && req.ReceiverStatus == models.StatusReceiverProved
 	})
 
-	return ctx.JSON(http.StatusOK, listRequestsResponse{
+	return ctx.JSON(http.StatusOK, listApprovedBooksResponse{
 		Response: response.NewResponse(),
-		Result:   out,
+		Result:   newListApprovedBooksResponse(session.UserID, out),
 	})
 }

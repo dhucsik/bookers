@@ -113,6 +113,25 @@ definitions:
       comment:
         type: string
     type: object
+  books.approvedRequest:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      receiver_book:
+        $ref: '#/definitions/models.Book'
+      receiver_status:
+        type: string
+      sender_book:
+        $ref: '#/definitions/models.Book'
+      sender_status:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/models.UserWithoutPassword'
+    type: object
   books.authorResp:
     properties:
       id:
@@ -217,6 +236,19 @@ definitions:
       result:
         items:
           $ref: '#/definitions/models.StockBookWithFields'
+        type: array
+      status_code:
+        type: integer
+    type: object
+  books.listApprovedBooksResponse:
+    properties:
+      inner_code:
+        type: string
+      message:
+        type: string
+      result:
+        items:
+          $ref: '#/definitions/books.approvedRequest'
         type: array
       status_code:
         type: integer
@@ -1714,7 +1746,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/books.listRequestsResponse'
+            $ref: '#/definitions/books.listApprovedBooksResponse'
         "400":
           description: Bad request
           schema:
