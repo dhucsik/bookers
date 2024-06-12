@@ -55,5 +55,6 @@ func (r *Controller) Init(router *echo.Group) {
 	router.PUT("/books/request/:id/sender_accepted", r.auth.Handler(r.senderAcceptedHandler))
 	router.PUT("/books/request/:id/approve", r.auth.Handler(r.approveRequest))
 	router.GET("/books/request", r.auth.Handler(r.getRequestsHandler))
+	router.GET("/books/exchanges", r.auth.Handler(r.getApprovedRequestsHandler))
 	router.GET("/books/request/:id", r.auth.Handler(r.getRequestHandler))
 }

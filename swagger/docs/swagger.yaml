@@ -1697,6 +1697,41 @@ paths:
       summary: Update comment request
       tags:
       - books
+  /books/exchanges:
+    get:
+      consumes:
+      - application/json
+      description: Get approved requests
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/books.listRequestsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get approved requests
+      tags:
+      - requests
   /books/request:
     get:
       consumes:

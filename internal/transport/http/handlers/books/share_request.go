@@ -8,6 +8,7 @@ import (
 	"github.com/dhucsik/bookers/internal/models"
 	"github.com/dhucsik/bookers/internal/util/response"
 	"github.com/labstack/echo/v4"
+	"github.com/samber/lo"
 )
 
 // createRequestHandler godoc
@@ -245,5 +246,39 @@ func (c *Controller) getRequestsHandler(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, listRequestsResponse{
 		Response: response.NewResponse(),
 		Result:   requests,
+	})
+}
+
+// getApprovedRequestsHandler godoc
+// @Summary Get approved requests
+// @Description Get approved requests
+// @Tags requests
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Authorization"
+// @Success 200 {object} listRequestsResponse "Success"
+// @Failure 400 {object} response.Response "Bad request"
+// @Failure 401 {object} response.Response "Unauthorized"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /books/exchanges [get]
+func (c *Controller) getApprovedRequestsHandler(ctx echo.Context) error {
+	session, ok := models.GetSession(ctx.Request().Context())
+	if !ok {
+		return response.NewErrorResponse(ctx, errors.ErrInvalidJWTToken)
+	}
+
+	requests, err := c.bookService.GetRequests(ctx.Request().Context(), session.UserID)
+	if err != nil {
+		return response.NewErrorResponse(ctx, err)
+	}
+
+	out := lo.Filter(requests, func(req *models.RequestWithFields, _ int) bool {
+		return req.SenderStatus == models.StatusSenderProved && req.ReceiverStatus == models.StatusReceiverProved
+	})
+
+	return ctx.JSON(http.StatusOK, listRequestsResponse{
+		Response: response.NewResponse(),
+		Result:   out,
 	})
 }
